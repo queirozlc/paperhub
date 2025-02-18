@@ -31,6 +31,9 @@ paperhub-*.tar
 # Ignore digested assets cache.
 /priv/static/cache_manifest.json
 
+# Ignore node_modules
+/node_modules/
+
 # In case you use Node.js/npm, you want to ignore these.
 npm-debug.log
 /assets/node_modules/
