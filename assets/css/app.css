@@ -1,1 +1,5 @@
 @import "tailwindcss" source("../..");
+
+@theme {
+  --color-background: #FAFAFA;
+}
