@@ -1,5 +1,2 @@
-@import "tailwindcss" source("../..");
-
-@theme {
-  --color-background: #FAFAFA;
-}
+@import 'tailwindcss' source('../..');
+@plugin "@tailwindcss/typography";

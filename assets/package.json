@@ -1,0 +1,23 @@
+{
+	"dependencies": {
+		"@inertiajs/react": "^2.0.3",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0"
+	},
+	"scripts": {
+		"format": "prettier --write ."
+	},
+	"name": "assets",
+	"module": "index.ts",
+	"type": "module",
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@tailwindcss/typography": "^0.5.16",
+		"@types/bun": "latest",
+		"@types/react": "^19.0.10",
+		"@types/react-dom": "^19.0.4"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	}
+}

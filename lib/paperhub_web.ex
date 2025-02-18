@@ -43,6 +43,7 @@ defmodule PaperhubWeb do
         layouts: [html: PaperhubWeb.Layouts]
 
       use Gettext, backend: PaperhubWeb.Gettext
+      import Inertia.Controller
 
       import Plug.Conn
 
@@ -52,8 +53,7 @@ defmodule PaperhubWeb do
 
   def live_view do
     quote do
-      use Phoenix.LiveView,
-        layout: {PaperhubWeb.Layouts, :app}
+      use Phoenix.LiveView
 
       unquote(html_helpers())
     end
@@ -70,6 +70,7 @@ defmodule PaperhubWeb do
   def html do
     quote do
       use Phoenix.Component
+      import Inertia.HTML
 
       # Import convenience functions from controllers
       import Phoenix.Controller,
