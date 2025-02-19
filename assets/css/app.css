@@ -5,14 +5,15 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: hsl(0, 0%, 96%);
+  --background: hsl(0, 0%, 100%);
+  --background-off: hsl(0, 0%, 96%);
   --foreground: hsl(240, 10%, 3.9%);
   --card: hsl(0, 0%, 100%);
   --card-foreground: hsl(240, 10%, 3.9%);
   --popover: hsl(0, 0%, 100%);
   --popover-foreground: hsl(240, 10%, 3.9%);
-  --primary: hsl(82, 100%, 43.54%);
-  --primary-foreground: hsl(164, 74%, 97.3%);
+  --primary: hsl(82, 82%, 50%);
+  --primary-foreground: hsl(82, 15%, 9.5%);
   --secondary: hsl(240, 4.8%, 95.9%);
   --secondary-foreground: hsl(240, 5.9%, 10%);
   --muted: hsl(240, 4.8%, 90%);
@@ -34,13 +35,14 @@
 
 .dark {
   --background: hsl(20, 14.3%, 4.1%);
+  --background-off: hsl(20, 14.3%, 5%);
   --foreground: hsl(0, 0%, 95%);
   --card: hsl(24, 9.8%, 10%);
   --card-foreground: hsl(0, 0%, 95%);
   --popover: hsl(0, 0%, 9%);
   --popover-foreground: hsl(0, 0%, 95%);
   --primary: hsl(82, 100%, 50%);
-  --primary-foreground: hsl(82, 74.6%, 50%);
+  --primary-foreground: hsl(0, 0%, 8.4%);
   --secondary: hsl(240, 3.7%, 15.9%);
   --secondary-foreground: hsl(0, 0%, 98%);
   --muted: hsl(0, 0%, 15%);
@@ -61,6 +63,7 @@
 
 @theme inline {
   --color-background: var(--background);
+  --color-background-off: var(--background-off);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
@@ -87,7 +90,7 @@
 
 @layer base {
   * {
-    @apply border-border antialiased outline-none;
+    @apply border-border outline-ring/50 antialiased;
   }
   body {
     @apply bg-background text-foreground;

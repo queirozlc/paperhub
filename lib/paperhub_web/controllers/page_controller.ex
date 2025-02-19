@@ -1,7 +1,12 @@
 defmodule PaperhubWeb.PageController do
+  alias Paperhub.Projects.Project
   use PaperhubWeb, :controller
 
-  def home(conn, _params) do
-    render_inertia(conn, "Home")
+  def index(conn, _params) do
+    projects = Ash.read!(Project)
+
+    conn
+    |> assign_prop(:projects, projects)
+    |> render_inertia("Home")
   end
 end

@@ -47,7 +47,8 @@ config :spark,
 
 config :paperhub,
   ecto_repos: [Paperhub.Repo],
-  generators: [timestamp_type: :utc_datetime]
+  generators: [timestamp_type: :utc_datetime],
+  ash_domains: [Paperhub.Projects]
 
 # Configures the endpoint
 config :paperhub, PaperhubWeb.Endpoint,
@@ -73,7 +74,8 @@ config :paperhub, Paperhub.Mailer, adapter: Swoosh.Adapters.Local
 config :esbuild,
   version: "0.25.0",
   paperhub: [
-    args: ~w(js/app.tsx --bundle --chunk-names=chunks/[name]-[hash] --splitting --format=esm --target=es2020 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
+    args:
+      ~w(js/app.tsx --bundle --chunk-names=chunks/[name]-[hash] --splitting --format=esm --target=es2020 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
     cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
