@@ -42,9 +42,7 @@ defmodule Paperhub.Projects.Project do
       allow_nil? false
       public? true
     end
-  end
 
-  identities do
-    identity :unique_slug, [:slug]
+    timestamps()
   end
 end
