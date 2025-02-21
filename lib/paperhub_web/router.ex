@@ -1,6 +1,10 @@
 defmodule PaperhubWeb.Router do
   use PaperhubWeb, :router
 
+  use AshAuthentication.Phoenix.Router
+  import AshAuthentication.Plug.Helpers
+  import PaperhubWeb.UserAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -9,16 +13,28 @@ defmodule PaperhubWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug Inertia.Plug
+    plug :load_from_session
   end
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :load_from_bearer
+    plug :set_actor, :user
   end
 
   scope "/", PaperhubWeb do
-    pipe_through :browser
+    pipe_through [:browser, :require_authenticated_user]
 
     get "/", PageController, :index
+    sign_out_route AuthController
+  end
+
+  scope "/", PaperhubWeb do
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
+
+    post "/magic_link/request", AuthController, :magic_link_request
+    get "/login", AuthController, :new
+    auth_routes AuthController, Paperhub.Accounts.User
   end
 
   # Other scopes may use custom stacks.

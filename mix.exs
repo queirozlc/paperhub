@@ -33,6 +33,9 @@ defmodule Paperhub.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:picosat_elixir, "~> 0.2"},
+      {:ash_authentication, "~> 4.1"},
+      {:ash_authentication_phoenix, "~> 2.0"},
       {:sourceror, "~> 1.7", only: [:dev, :test]},
       {:ash_postgres, "~> 2.0"},
       {:ash_phoenix, "~> 2.0"},
@@ -88,7 +91,8 @@ defmodule Paperhub.MixProject do
         "tailwind paperhub --minify",
         "esbuild paperhub --minify",
         "phx.digest"
-      ]
+      ],
+      "phx.routes": ["phx.routes", "ash_authentication.phoenix.routes"]
     ]
   end
 end

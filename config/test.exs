@@ -1,4 +1,5 @@
 import Config
+config :paperhub, token_signing_secret: "JJndAwQzw9wp4M/TYUVHd68z14lJEhCB"
 config :ash, disable_async?: true
 
 # Configure your database

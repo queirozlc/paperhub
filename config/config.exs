@@ -18,6 +18,7 @@ config :ash,
   include_embedded_source_by_default?: false,
   show_keysets_for_all_actions?: false,
   default_page_type: :keyset,
+  default_belongs_to_type: :integer,
   policies: [no_filter_static_forbidden_reads?: false]
 
 config :spark,
@@ -25,6 +26,8 @@ config :spark,
     remove_parens?: true,
     "Ash.Resource": [
       section_order: [
+        :authentication,
+        :tokens,
         :postgres,
         :resource,
         :code_interface,
@@ -48,7 +51,7 @@ config :spark,
 config :paperhub,
   ecto_repos: [Paperhub.Repo],
   generators: [timestamp_type: :utc_datetime],
-  ash_domains: [Paperhub.Projects]
+  ash_domains: [Paperhub.Accounts, Paperhub.Projects]
 
 # Configures the endpoint
 config :paperhub, PaperhubWeb.Endpoint,

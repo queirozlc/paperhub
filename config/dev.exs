@@ -63,7 +63,7 @@ config :paperhub, PaperhubWeb.Endpoint,
   ]
 
 # Enable dev routes for dashboard and mailbox
-config :paperhub, dev_routes: true
+config :paperhub, dev_routes: true, token_signing_secret: "RRXNLSCkryQEV1RII4vI2SLmPGikrwLH"
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
