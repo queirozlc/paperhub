@@ -6,7 +6,8 @@
 
 :root {
   --background: hsl(0, 0%, 100%);
-  --background-off: hsl(0, 0%, 96%);
+  --background-off: hsl(30, 20%, 98%);
+  --btn-color: oklch(27.6848% 0 0);
   --foreground: hsl(240, 10%, 3.9%);
   --card: hsl(0, 0%, 100%);
   --card-foreground: hsl(240, 10%, 3.9%);
@@ -35,7 +36,7 @@
 
 .dark {
   --background: hsl(20, 14.3%, 4.1%);
-  --background-off: hsl(20, 14.3%, 5%);
+  --background-off: hsl(223.81, 0%, 12%);
   --foreground: hsl(0, 0%, 95%);
   --card: hsl(24, 9.8%, 10%);
   --card-foreground: hsl(0, 0%, 95%);
@@ -59,6 +60,21 @@
 @theme {
   --default-font-family: var(--font-family);
   --font-brand: var(--brand-font);
+  --animate-button-pop: pop 0.25 ease-in-out;
+
+  @keyframes pop {
+    0% {
+      transform: scale(0.98);
+    }
+
+    40% {
+     transform: scale(1.02);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
 }
 
 @theme inline {

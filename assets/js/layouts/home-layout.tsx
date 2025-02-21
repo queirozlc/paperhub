@@ -54,7 +54,7 @@ const navItemsMobile: MobileNavItems[] = [
   },
   {
     Icon: LogOut,
-    href: '/logout',
+    href: '/sign-out',
     label: 'Log out'
   }
 ]
@@ -116,7 +116,7 @@ export function HomeLayout({ children }: { children: React.ReactNode }) {
         <Tabs {...tabProps} />
       </div>
 
-      <main className='bg-background-off relative min-h-[calc(100vh-7rem)] px-4 py-6'>
+      <main className='bg-background-off dark:bg-background relative min-h-[calc(100vh-7rem)] px-4 py-6'>
         {children}
       </main>
     </>
