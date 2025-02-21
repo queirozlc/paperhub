@@ -103,6 +103,12 @@ defmodule Paperhub.Accounts.User do
       allow_nil? false
       public? true
     end
+
+    attribute :name, :string, public?: true
+    attribute :bio, :string, public?: true
+    attribute :avatar, :string, public?: true
+
+    timestamps()
   end
 
   identities do

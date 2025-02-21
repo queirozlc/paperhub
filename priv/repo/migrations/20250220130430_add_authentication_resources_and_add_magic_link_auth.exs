@@ -9,7 +9,7 @@ defmodule Paperhub.Repo.Migrations.AddAuthenticationResourcesAndAddMagicLinkAuth
 
   def up do
     create table(:users, primary_key: false) do
-      add :id, :uuid, null: false, default: fragment("gen_random_uuid()"), primary_key: true
+      add :id, :bigserial, null: false, primary_key: true
       add :email, :citext, null: false
     end
 

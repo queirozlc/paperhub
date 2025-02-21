@@ -2,13 +2,13 @@
   "attributes": [
     {
       "allow_nil?": false,
-      "default": "fragment(\"gen_random_uuid()\")",
-      "generated?": false,
+      "default": "nil",
+      "generated?": true,
       "primary_key?": true,
       "references": null,
       "size": null,
       "source": "id",
-      "type": "uuid"
+      "type": "bigint"
     },
     {
       "allow_nil?": false,

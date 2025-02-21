@@ -4,5 +4,6 @@ defmodule Paperhub.Projects do
 
   resources do
     resource Paperhub.Projects.Project
+    resource Paperhub.Projects.ProjectCollaborator
   end
 end

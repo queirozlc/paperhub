@@ -7,9 +7,16 @@ defmodule Paperhub.Projects.Project do
     data_layer: AshPostgres.DataLayer,
     extensions: [AshJason.Resource]
 
+  alias Paperhub.Accounts.User
+  alias Paperhub.Projects.ProjectCollaborator
+
   postgres do
     table "projects"
     repo Paperhub.Repo
+
+    references do
+      reference :owner, on_delete: :delete
+    end
   end
 
   actions do
@@ -17,6 +24,8 @@ defmodule Paperhub.Projects.Project do
 
     create :create do
       accept [:title, :description]
+
+      change relate_actor(:owner)
 
       change Paperhub.Projects.Changes.Slugify
     end
@@ -44,5 +53,15 @@ defmodule Paperhub.Projects.Project do
     end
 
     timestamps()
+  end
+
+  relationships do
+    belongs_to :owner, User, allow_nil?: false, writable?: true
+
+    many_to_many :collaborators, User do
+      through ProjectCollaborator
+      source_attribute_on_join_resource :project_id
+      destination_attribute_on_join_resource :collaborator_id
+    end
   end
 end
