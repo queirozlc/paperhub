@@ -21,7 +21,6 @@ defmodule Paperhub.Accounts.User.Senders.SendMagicLinkEmail do
       end
 
     new()
-    # TODO: Replace with your email
     |> from({"noreply", "noreply@example.com"})
     |> to(to_string(email))
     |> subject("Your login link")
