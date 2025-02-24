@@ -9,11 +9,11 @@ defmodule Paperhub.Repo.Migrations.AddProjects do
 
   def up do
     create table(:projects, primary_key: false) do
-      add :id, :bigserial, null: false, primary_key: true
-      add :title, :text, null: false
+      add :id, :identity, null: false, primary_key: true
+      add :title, :text
       add :description, :text
-      add :content, :text
-      add :slug, :text, null: false
+      add :content, :map, default: %{}
+      add :slug, :text
 
       add :inserted_at, :utc_datetime_usec,
         null: false,

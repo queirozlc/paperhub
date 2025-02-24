@@ -11,7 +11,7 @@
       "type": "bigint"
     },
     {
-      "allow_nil?": false,
+      "allow_nil?": true,
       "default": "nil",
       "generated?": false,
       "primary_key?": false,
@@ -38,10 +38,10 @@
       "references": null,
       "size": null,
       "source": "content",
-      "type": "text"
+      "type": "map"
     },
     {
-      "allow_nil?": false,
+      "allow_nil?": true,
       "default": "nil",
       "generated?": false,
       "primary_key?": false,
