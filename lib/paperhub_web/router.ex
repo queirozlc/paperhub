@@ -26,6 +26,8 @@ defmodule PaperhubWeb.Router do
     pipe_through [:browser, :require_authenticated_user]
 
     get "/", PageController, :index
+    post "/projects", ProjectController, :create
+    get "/workspace/:public_id", ProjectController, :show
     sign_out_route AuthController
   end
 
