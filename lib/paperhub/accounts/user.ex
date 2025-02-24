@@ -3,7 +3,7 @@ defmodule Paperhub.Accounts.User do
     otp_app: :paperhub,
     domain: Paperhub.Accounts,
     authorizers: [Ash.Policy.Authorizer],
-    extensions: [AshAuthentication],
+    extensions: [AshAuthentication, AshJason.Resource],
     data_layer: AshPostgres.DataLayer
 
   authentication do
@@ -37,7 +37,8 @@ defmodule Paperhub.Accounts.User do
   end
 
   actions do
-    defaults [:read]
+    # The default action *create* is for test puposes only and shouldn't be used
+    defaults [:read, create: [:email]]
 
     read :get_by_subject do
       description "Get a user by the subject claim in a JWT"
@@ -92,6 +93,7 @@ defmodule Paperhub.Accounts.User do
     end
 
     policy always() do
+      authorize_if action(:read)
       forbid_if always()
     end
   end
