@@ -3,7 +3,11 @@ defmodule Paperhub.Projects do
     otp_app: :paperhub
 
   resources do
-    resource Paperhub.Projects.Project
+    resource Paperhub.Projects.Project do
+      define :list_projects, action: :list_projects
+      define :create_project, action: :create
+    end
+
     resource Paperhub.Projects.ProjectCollaborator
   end
 end
