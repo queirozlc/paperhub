@@ -36,6 +36,7 @@ defmodule Paperhub.MixProject do
       {:picosat_elixir, "~> 0.2"},
       {:ash_authentication, "~> 4.1"},
       {:ash_authentication_phoenix, "~> 2.0"},
+      {:sqids, "~> 0.2.0"},
       {:sourceror, "~> 1.7", only: [:dev, :test]},
       {:ash_postgres, "~> 2.0"},
       {:ash_phoenix, "~> 2.0"},
@@ -70,7 +71,8 @@ defmodule Paperhub.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:faker, "~> 0.19.0-alpha.1", only: :test}
     ]
   end
 
