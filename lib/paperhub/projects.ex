@@ -7,7 +7,5 @@ defmodule Paperhub.Projects do
       define :list_projects, action: :list_projects
       define :create_project, action: :create
     end
-
-    resource Paperhub.Projects.ProjectCollaborator
   end
 end

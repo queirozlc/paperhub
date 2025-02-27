@@ -1,6 +1,4 @@
 defmodule Paperhub.Projects.Project do
-  require Ash.Resource.Change.Builtins
-
   use Ash.Resource,
     otp_app: :paperhub,
     domain: Paperhub.Projects,
@@ -8,15 +6,12 @@ defmodule Paperhub.Projects.Project do
     extensions: [AshJason.Resource],
     authorizers: [Ash.Policy.Authorizer]
 
-  alias Paperhub.Accounts.User
-  alias Paperhub.Projects.ProjectCollaborator
-
   postgres do
     table "projects"
     repo Paperhub.Repo
 
     references do
-      reference :owner, on_delete: :delete
+      reference :team, on_delete: :delete
     end
   end
 
@@ -35,7 +30,7 @@ defmodule Paperhub.Projects.Project do
 
     create :create do
       primary? true
-      change relate_actor(:owner)
+      change relate_actor(:team)
 
       change before_action(fn changeset, _context ->
                # Put the default title as "Untitled Project" if the title is not provided
@@ -68,19 +63,22 @@ defmodule Paperhub.Projects.Project do
     attribute :title, :string, public?: true
     attribute :description, :string, public?: true
     attribute :content, :map, public?: true
+
+    attribute :visibility, :atom do
+      description "Even within teamspaces, projects can be private or team-visible"
+      constraints one_of: [:private, :public]
+      public? true
+      allow_nil? false
+      default :private
+    end
+
     attribute :slug, :string, public?: true
 
     timestamps()
   end
 
   relationships do
-    belongs_to :owner, User, allow_nil?: false, writable?: true, attribute_type: :integer
-
-    many_to_many :collaborators, User do
-      through ProjectCollaborator
-      source_attribute_on_join_resource :project_id
-      destination_attribute_on_join_resource :collaborator_id
-    end
+    belongs_to :team, Paperhub.Accounts.Team
   end
 
   calculations do
