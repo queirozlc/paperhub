@@ -1,6 +1,7 @@
 defmodule Paperhub.Projects.Changes.Slugify do
   use Ash.Resource.Change
   alias Ash.Changeset
+  alias Ash.Resource.Change
 
   @impl true
   @spec change(Changeset.t(), keyword, Change.context()) :: Changeset.t()
