@@ -1,4 +1,4 @@
-defmodule Paperhub.ProjectsTest do
+defmodule Paperhub.ProjectTest do
   alias Paperhub.{Projects, Projects.Project}
   use Paperhub.DataCase, async: true
   import ExUnitProperties
