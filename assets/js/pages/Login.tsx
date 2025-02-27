@@ -5,7 +5,6 @@ export default function LoginPage() {
     <div className='bg-background-off grid h-screen lg:grid-cols-12'>
       <div className='border-border/40 col-span-5 h-full w-full overflow-hidden border-r shadow-[1px_0_16px_rgba(0,0,0,0.05)] brightness-90 max-lg:hidden dark:brightness-75'>
         <img
-          src='/placeholder.svg'
           alt='Image'
           className='absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale'
         />

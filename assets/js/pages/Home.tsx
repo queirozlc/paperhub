@@ -1,15 +1,9 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { HomeLayout } from '@/layouts/home-layout'
-import { Head } from '@inertiajs/react'
+import type { Projects } from '@/models/project'
+import { Head, Link } from '@inertiajs/react'
 import { Plus, Search } from 'lucide-react'
-
-type Projects = {
-  id: number
-  title: string
-  description: string
-  slug: string
-}
 
 export default function Home({ projects }: { projects: Projects[] }) {
   return (
@@ -32,23 +26,19 @@ export default function Home({ projects }: { projects: Projects[] }) {
           <Plus size={16} />
         </Button>
 
-        <Button className='hidden sm:block'>Novo Projeto</Button>
+        <Link href={'/projects'} method='post'>
+          <div>
+            <Button className='hidden sm:block'>Novo Projeto</Button>
+          </div>
+        </Link>
       </section>
 
-      <section className='flex w-full flex-col justify-center gap-3 pt-10'>
-        {projects.map(({ description, id, slug, title }) => (
-          <div key={id}>
-            <h2 className='text-lg font-bold'>{title}</h2>
-            <p className='text-sm'>{description}</p>
-            <a
-              href={`/projects/${slug}`}
-              className='text-blue-500 hover:underline'
-            >
-              Ver mais
-            </a>
-          </div>
+      <div className='pt-10'>
+        {/* Project list goes here */}
+        {projects.map(({ title, id }) => (
+          <div key={id}>{title}</div>
         ))}
-      </section>
+      </div>
     </HomeLayout>
   )
 }
