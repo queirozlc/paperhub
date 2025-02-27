@@ -1,6 +1,16 @@
 {
   "attributes": [
     {
+      "allow_nil?": false,
+      "default": "nil",
+      "generated?": true,
+      "primary_key?": true,
+      "references": null,
+      "size": null,
+      "source": "id",
+      "type": "bigint"
+    },
+    {
       "allow_nil?": true,
       "default": "nil",
       "generated?": false,
@@ -14,7 +24,7 @@
       "allow_nil?": false,
       "default": "nil",
       "generated?": false,
-      "primary_key?": true,
+      "primary_key?": false,
       "references": {
         "deferrable": false,
         "destination_attribute": "id",
@@ -28,36 +38,7 @@
           "global": null,
           "strategy": null
         },
-        "name": "project_collaborators_project_id_fkey",
-        "on_delete": "delete",
-        "on_update": null,
-        "primary_key?": true,
-        "schema": "public",
-        "table": "projects"
-      },
-      "size": null,
-      "source": "project_id",
-      "type": "bigint"
-    },
-    {
-      "allow_nil?": false,
-      "default": "nil",
-      "generated?": false,
-      "primary_key?": true,
-      "references": {
-        "deferrable": false,
-        "destination_attribute": "id",
-        "destination_attribute_default": null,
-        "destination_attribute_generated": null,
-        "index?": false,
-        "match_type": null,
-        "match_with": null,
-        "multitenancy": {
-          "attribute": null,
-          "global": null,
-          "strategy": null
-        },
-        "name": "project_collaborators_collaborator_id_fkey",
+        "name": "team_memberships_member_id_fkey",
         "on_delete": "delete",
         "on_update": null,
         "primary_key?": true,
@@ -65,7 +46,36 @@
         "table": "users"
       },
       "size": null,
-      "source": "collaborator_id",
+      "source": "member_id",
+      "type": "bigint"
+    },
+    {
+      "allow_nil?": false,
+      "default": "nil",
+      "generated?": false,
+      "primary_key?": false,
+      "references": {
+        "deferrable": false,
+        "destination_attribute": "id",
+        "destination_attribute_default": null,
+        "destination_attribute_generated": null,
+        "index?": false,
+        "match_type": null,
+        "match_with": null,
+        "multitenancy": {
+          "attribute": null,
+          "global": null,
+          "strategy": null
+        },
+        "name": "team_memberships_team_id_fkey",
+        "on_delete": "delete",
+        "on_update": null,
+        "primary_key?": true,
+        "schema": "public",
+        "table": "teams"
+      },
+      "size": null,
+      "source": "team_id",
       "type": "bigint"
     }
   ],
@@ -74,7 +84,7 @@
   "custom_indexes": [],
   "custom_statements": [],
   "has_create_action": true,
-  "hash": "923A8C2EAE66B86501B5DE52202B184E424240A8295A41548A6A8591EEA12186",
+  "hash": "A36136CF59C2527F0993C1097741381E29A355CC1766EDF1BEAB71B3087E31DC",
   "identities": [],
   "multitenancy": {
     "attribute": null,
@@ -83,5 +93,5 @@
   },
   "repo": "Elixir.Paperhub.Repo",
   "schema": null,
-  "table": "project_collaborators"
+  "table": "team_memberships"
 }

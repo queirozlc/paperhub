@@ -11,23 +11,43 @@
       "type": "bigint"
     },
     {
+      "allow_nil?": true,
+      "default": "nil",
+      "generated?": false,
+      "primary_key?": false,
+      "references": null,
+      "size": null,
+      "source": "title",
+      "type": "text"
+    },
+    {
+      "allow_nil?": true,
+      "default": "nil",
+      "generated?": false,
+      "primary_key?": false,
+      "references": null,
+      "size": null,
+      "source": "description",
+      "type": "text"
+    },
+    {
+      "allow_nil?": true,
+      "default": "nil",
+      "generated?": false,
+      "primary_key?": false,
+      "references": null,
+      "size": null,
+      "source": "content",
+      "type": "map"
+    },
+    {
       "allow_nil?": false,
-      "default": "nil",
+      "default": "\"private\"",
       "generated?": false,
       "primary_key?": false,
       "references": null,
       "size": null,
-      "source": "email",
-      "type": "citext"
-    },
-    {
-      "allow_nil?": true,
-      "default": "nil",
-      "generated?": false,
-      "primary_key?": false,
-      "references": null,
-      "size": null,
-      "source": "name",
+      "source": "visibility",
       "type": "text"
     },
     {
@@ -37,17 +57,7 @@
       "primary_key?": false,
       "references": null,
       "size": null,
-      "source": "bio",
-      "type": "text"
-    },
-    {
-      "allow_nil?": true,
-      "default": "nil",
-      "generated?": false,
-      "primary_key?": false,
-      "references": null,
-      "size": null,
-      "source": "avatar",
+      "source": "slug",
       "type": "text"
     },
     {
@@ -69,6 +79,35 @@
       "size": null,
       "source": "updated_at",
       "type": "utc_datetime_usec"
+    },
+    {
+      "allow_nil?": true,
+      "default": "nil",
+      "generated?": false,
+      "primary_key?": false,
+      "references": {
+        "deferrable": false,
+        "destination_attribute": "id",
+        "destination_attribute_default": null,
+        "destination_attribute_generated": null,
+        "index?": false,
+        "match_type": null,
+        "match_with": null,
+        "multitenancy": {
+          "attribute": null,
+          "global": null,
+          "strategy": null
+        },
+        "name": "projects_team_id_fkey",
+        "on_delete": "delete",
+        "on_update": null,
+        "primary_key?": true,
+        "schema": "public",
+        "table": "teams"
+      },
+      "size": null,
+      "source": "team_id",
+      "type": "bigint"
     }
   ],
   "base_filter": null,
@@ -76,23 +115,8 @@
   "custom_indexes": [],
   "custom_statements": [],
   "has_create_action": true,
-  "hash": "548C5EF36D010302BB0580D3334908E5EA8085F9D4A59CEEEC7515477B542606",
-  "identities": [
-    {
-      "all_tenants?": false,
-      "base_filter": null,
-      "index_name": "users_unique_email_index",
-      "keys": [
-        {
-          "type": "atom",
-          "value": "email"
-        }
-      ],
-      "name": "unique_email",
-      "nils_distinct?": true,
-      "where": null
-    }
-  ],
+  "hash": "DEC560A994D3FC4A8311E438F3B711B89B46A083812B0B58B7CAA89BBBC20381",
+  "identities": [],
   "multitenancy": {
     "attribute": null,
     "global": null,
@@ -100,5 +124,5 @@
   },
   "repo": "Elixir.Paperhub.Repo",
   "schema": null,
-  "table": "users"
+  "table": "projects"
 }
