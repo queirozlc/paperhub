@@ -25,6 +25,7 @@ defmodule Paperhub.Accounts.User do
       magic_link do
         identity_field :email
         registration_enabled? true
+        single_use_token? true
 
         sender Paperhub.Accounts.User.Senders.SendMagicLinkEmail
       end
@@ -37,8 +38,7 @@ defmodule Paperhub.Accounts.User do
   end
 
   actions do
-    # The default action *create* is for test puposes only and shouldn't be used
-    defaults [:read, create: [:email]]
+    defaults [:read]
 
     read :get_by_subject do
       description "Get a user by the subject claim in a JWT"
@@ -106,11 +106,16 @@ defmodule Paperhub.Accounts.User do
       public? true
     end
 
+    attribute :admin?, :boolean, allow_nil?: false, default: false
     attribute :name, :string, public?: true
     attribute :bio, :string, public?: true
     attribute :avatar, :string, public?: true
 
     timestamps()
+  end
+
+  relationships do
+    has_many :teams, Paperhub.Accounts.Team, destination_attribute: :owner_id
   end
 
   identities do
