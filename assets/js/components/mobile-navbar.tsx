@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import type { User } from '@/models/user'
 import { Link } from '@inertiajs/react'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { ThemeSwitcher } from './ui/theme-switcher'
@@ -9,13 +10,13 @@ export type MobileNavItems = {
   href: string
 }
 
-export function MobileNavbar({
-  items,
-  open
-}: {
+type Props = {
   items: MobileNavItems[]
   open: boolean
-}) {
+  user: User
+}
+
+export function MobileNavbar({ items, open, user }: Props) {
   return (
     <nav
       className={cn(
@@ -28,7 +29,9 @@ export function MobileNavbar({
     >
       <div className='flex flex-col gap-3'>
         <div className='flex w-full items-center justify-between py-5'>
-          <span className='text-base font-medium'>Lucas Queiroz</span>
+          <span className='text-accent-foreground text-base font-medium'>
+            {user.name || user.email}
+          </span>
           <Avatar>
             <AvatarImage sizes='20' src='https://github.com/queirozlc.png' />
             <AvatarFallback>LQ</AvatarFallback>
@@ -37,7 +40,7 @@ export function MobileNavbar({
 
         <div className='group flex h-12 items-center justify-between rounded-md px-3 ease-in-out'>
           <span className='text-muted-foreground group-hover:text-foreground text-base font-medium'>
-            Theme
+            Tema
           </span>
 
           <ThemeSwitcher />

@@ -9,7 +9,9 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Tabs } from '@/components/ui/tabs'
 import { useTabs, type Tab } from '@/components/ui/tabs/use-tabs'
-import { Link } from '@inertiajs/react'
+import { ThemeSwitcher } from '@/components/ui/theme-switcher'
+import type { User } from '@/models/user'
+import { Link, usePage } from '@inertiajs/react'
 import {
   FolderOpen,
   HomeIcon,
@@ -20,7 +22,7 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 
-const navItems: Tab[] = [
+const tabs: Tab[] = [
   {
     href: '/',
     label: 'Projetos',
@@ -41,7 +43,7 @@ const navItems: Tab[] = [
   }
 ]
 
-const navItemsMobile: MobileNavItems[] = [
+const navItems: MobileNavItems[] = [
   {
     Icon: HomeIcon,
     href: '/',
@@ -61,9 +63,15 @@ const navItemsMobile: MobileNavItems[] = [
 
 export function HomeLayout({ children }: { children: React.ReactNode }) {
   const { tabProps } = useTabs({
-    tabs: navItems,
+    tabs,
     initialTabId: 'projects'
   })
+  const {
+    props: { user }
+  } = usePage<{
+    user: User
+  }>()
+
   const [open, setOpen] = useState(false)
 
   return (
@@ -86,7 +94,7 @@ export function HomeLayout({ children }: { children: React.ReactNode }) {
             <MobileMenu open={open} setOpen={setOpen} />
           </div>
 
-          <div className='items-cnter hidden gap-2 sm:flex'>
+          <div className='hidden items-center gap-2 sm:flex'>
             {/* Notification for desktop and medium devices */}
             <Button size={'icon'} variant={'outline'} className='rounded-full'>
               <LucideBell size={16} />
@@ -106,12 +114,49 @@ export function HomeLayout({ children }: { children: React.ReactNode }) {
                 </Avatar>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent></DropdownMenuContent>
+              <DropdownMenuContent className='mt-1 mr-8 w-full text-sm'>
+                <div className='flex flex-col gap-1 px-2 py-4'>
+                  <span className='text-accent-foreground text-sm font-medium'>
+                    {user.name || 'Lucas'}
+                  </span>
+
+                  <span className='text-muted-foreground text-sm font-medium'>
+                    {user.name || user.email}
+                  </span>
+                </div>
+
+                <div className='group flex h-12 items-center justify-between rounded-md px-3 ease-in-out'>
+                  <span className='text-muted-foreground group-hover:text-foreground font-medium'>
+                    Tema
+                  </span>
+
+                  <ThemeSwitcher />
+                </div>
+
+                <ul className='flex flex-col'>
+                  {navItems.map(({ href, Icon, label }, i) => (
+                    <li
+                      className='hover:bg-muted group flex h-12 cursor-pointer items-center justify-center rounded-md px-3 transition-colors duration-300 ease-in-out'
+                      key={i}
+                    >
+                      <Link
+                        href={href}
+                        className='flex grow items-center justify-between transition-colors duration-200 ease-in-out'
+                      >
+                        <span className='text-muted-foreground group-hover:text-foreground font-medium'>
+                          {label}
+                        </span>
+                        <Icon className='group-hover:text-foreground text-muted-foreground size-4' />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </DropdownMenuContent>
             </DropdownMenu>
           </div>
         </header>
 
-        <MobileNavbar items={navItemsMobile} open={open} />
+        <MobileNavbar items={navItems} open={open} user={user} />
 
         <Tabs {...tabProps} />
       </div>
