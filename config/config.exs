@@ -17,6 +17,8 @@ config :paperhub,
   ecto_repos: [Paperhub.Repo],
   generators: [timestamp_type: :utc_datetime]
 
+config :paperhub, Paperhub.Repo, migration_primary_key: [type: :identity]
+
 # Configures the endpoint
 config :paperhub, PaperhubWeb.Endpoint,
   url: [host: "localhost"],
