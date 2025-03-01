@@ -33,14 +33,7 @@ defmodule Paperhub.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:picosat_elixir, "~> 0.2"},
-      {:ash_authentication, "~> 4.1"},
-      {:ash_authentication_phoenix, "~> 2.0"},
-      {:sourceror, "~> 1.7", only: [:dev, :test]},
-      {:ash_postgres, "~> 2.0"},
-      {:ash_phoenix, "~> 2.0"},
-      {:ash, "~> 3.0"},
-      {:igniter, "~> 0.5", only: [:dev, :test]},
+      {:sqids, "~> 0.2.0"},
       {:phoenix, "~> 1.7.19"},
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.10"},
@@ -50,7 +43,6 @@ defmodule Paperhub.MixProject do
       {:phoenix_live_view, "~> 1.0.0"},
       {:inertia, "~> 2.2.0"},
       {:floki, ">= 0.30.0", only: :test},
-      {:ash_jason, "~> 2.0.0"},
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:slugify, "~> 1.3"},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
@@ -70,7 +62,8 @@ defmodule Paperhub.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:faker, "~> 0.19.0-alpha.1", only: :test}
     ]
   end
 

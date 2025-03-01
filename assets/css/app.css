@@ -7,7 +7,6 @@
 :root {
   --background: hsl(0, 0%, 100%);
   --background-off: hsl(30, 20%, 98%);
-  --btn-color: oklch(27.6848% 0 0);
   --foreground: hsl(240, 10%, 3.9%);
   --card: hsl(0, 0%, 100%);
   --card-foreground: hsl(240, 10%, 3.9%);
