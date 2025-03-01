@@ -1,6 +1,8 @@
 defmodule PaperhubWeb.Router do
   use PaperhubWeb, :router
 
+  import PaperhubWeb.UserAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +10,7 @@ defmodule PaperhubWeb.Router do
     plug :put_root_layout, html: {PaperhubWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
     plug Inertia.Plug
   end
 
@@ -15,26 +18,21 @@ defmodule PaperhubWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", PaperhubWeb do
-    pipe_through [:browser]
+  ## Authentication routes
 
-    get "/onboarding", OnboardingController, :index
+  scope "/", PaperhubWeb do
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
+
+    get "/login", UserSessionController, :new
+    post "/magic_link/request", UserSessionController, :magic_link_request
+    post "/users/log_in", UserSessionController, :create
   end
 
   scope "/", PaperhubWeb do
-    pipe_through [:browser]
+    pipe_through [:browser, :require_authenticated_user]
 
-    # get "/", PageController, :index
-    # post "/projects", ProjectController, :create
-    # get "/workspace/:public_id", ProjectController, :show
-  end
-
-  scope "/", PaperhubWeb do
-    pipe_through [:browser]
-
-    post "/magic_link/request", AuthController, :magic_link_request
-    get "/login", AuthController, :new
-    get "/verify-email", AuthController, :verify_email
+    get "/", PageController, :index
+    delete "/users/log_out", UserSessionController, :delete
   end
 
   # Other scopes may use custom stacks.
