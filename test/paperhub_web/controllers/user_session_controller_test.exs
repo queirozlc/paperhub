@@ -1,6 +1,8 @@
 defmodule PaperhubWeb.UserSessionControllerTest do
   use PaperhubWeb.ConnCase, async: true
 
+  alias Paperhub.Repo
+  alias Paperhub.{Accounts, Accounts.UserToken}
   import Paperhub.AccountsFixtures
 
   setup do
@@ -9,75 +11,80 @@ defmodule PaperhubWeb.UserSessionControllerTest do
 
   describe "GET /users/log_in" do
     test "renders log in page", %{conn: conn} do
-      conn = get(conn, ~p"/users/log_in")
-      response = html_response(conn, 200)
-      assert response =~ "Log in"
-      assert response =~ ~p"/users/register"
-      assert response =~ "Forgot your password?"
+      conn = get(conn, ~p"/login")
+      assert inertia_component(conn) == "Login"
     end
 
     test "redirects if already logged in", %{conn: conn, user: user} do
-      conn = conn |> log_in_user(user) |> get(~p"/users/log_in")
+      conn = conn |> log_in_user(user) |> get(~p"/login")
       assert redirected_to(conn) == ~p"/"
     end
   end
 
-  describe "POST /users/log_in" do
-    test "logs the user in", %{conn: conn, user: user} do
-      conn =
-        post(conn, ~p"/users/log_in", %{
-          "user" => %{"email" => user.email, "password" => valid_user_password()}
-        })
+  describe "POST /magic_link/request" do
+    test "sends a magic link when user not exists", %{conn: conn} do
+      email = Faker.Internet.email()
+      conn = post(conn, ~p"/magic_link/request", %{"email" => email})
+      # redirect to verify email with email param
+      assert redirected_to(conn) == ~p"/verify_email/#{email}"
+      assert Accounts.get_user_by_email(email).email == email
+    end
 
-      assert get_session(conn, :user_token)
+    test "sends a magic link for an existing user", %{conn: conn, user: user} do
+      conn = post(conn, ~p"/magic_link/request", %{"email" => user.email})
+      assert redirected_to(conn) == ~p"/verify_email/#{user.email}"
+      assert Accounts.get_user_by_email(user.email).email == user.email
+    end
+
+    test "returns error when tries to request link without email", %{conn: conn} do
+      conn = post(conn, ~p"/magic_link/request", %{"email" => ""})
+      assert inertia_component(conn) == "Login"
+      assert inertia_props(conn) == %{errors: %{email: "can't be blank"}, flash: %{}}
+    end
+  end
+
+  describe "GET /magic_link/sign_in/:token" do
+    setup %{conn: conn, user: user} do
+      token =
+        extract_user_token(fn url ->
+          Accounts.deliver_magic_link_token(user, url)
+        end)
+
+      %{conn: conn, user: user, token: token}
+    end
+
+    test "returns an error if is a invalid token", %{conn: conn} do
+      invalid_token = "oops, invalid token"
+      conn = get(conn, ~p"/magic_link/sign_in/#{invalid_token}")
+      assert redirected_to(conn) == ~p"/login"
+      assert Phoenix.Flash.get(conn.assigns[:flash], :error) == "Invalid token."
+    end
+
+    test "login user when token is a valid token", %{conn: conn, token: token} do
+      conn = get(conn, ~p"/magic_link/sign_in/#{token}")
       assert redirected_to(conn) == ~p"/"
-
-      # Now do a logged in request and assert on the menu
-      conn = get(conn, ~p"/")
-      response = html_response(conn, 200)
-      assert response =~ user.email
-      assert response =~ ~p"/users/settings"
-      assert response =~ ~p"/users/log_out"
+      assert fetch_cookies(conn, signed: ["_paperhub_web_user_remember_me"])
     end
 
-    test "logs the user in with remember me", %{conn: conn, user: user} do
-      conn =
-        post(conn, ~p"/users/log_in", %{
-          "user" => %{
-            "email" => user.email,
-            "password" => valid_user_password(),
-            "remember_me" => "true"
-          }
-        })
+    test "returns an error if token is expired", %{conn: conn, token: token} do
+      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+      conn = get(conn, ~p"/magic_link/sign_in/#{token}")
+      assert redirected_to(conn) == ~p"/login"
+      assert Phoenix.Flash.get(conn.assigns[:flash], :error) == "Invalid token."
+    end
+  end
 
-      assert conn.resp_cookies["_paperhub_web_user_remember_me"]
+  describe "GET /verify_email/:email" do
+    test "renders /verify_email with email as props", %{conn: conn, user: user} do
+      conn = get(conn, ~p"/verify_email/#{user.email}")
+      assert inertia_component(conn) == "VerifyEmail"
+
+      assert inertia_props(conn) == %{errors: %{}, email: user.email, flash: %{}}
+    end
+
+    test "redirects when user's already logged in", %{conn: conn, user: user} do
+      conn = conn |> log_in_user(user) |> get(~p"/verify_email/#{user.email}")
       assert redirected_to(conn) == ~p"/"
-    end
-
-    test "logs the user in with return to", %{conn: conn, user: user} do
-      conn =
-        conn
-        |> init_test_session(user_return_to: "/foo/bar")
-        |> post(~p"/users/log_in", %{
-          "user" => %{
-            "email" => user.email,
-            "password" => valid_user_password()
-          }
-        })
-
-      assert redirected_to(conn) == "/foo/bar"
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Welcome back!"
-    end
-
-    test "emits error message with invalid credentials", %{conn: conn, user: user} do
-      conn =
-        post(conn, ~p"/users/log_in", %{
-          "user" => %{"email" => user.email, "password" => "invalid_password"}
-        })
-
-      response = html_response(conn, 200)
-      assert response =~ "Log in"
-      assert response =~ "Invalid email or password"
     end
   end
 
@@ -86,14 +93,12 @@ defmodule PaperhubWeb.UserSessionControllerTest do
       conn = conn |> log_in_user(user) |> delete(~p"/users/log_out")
       assert redirected_to(conn) == ~p"/"
       refute get_session(conn, :user_token)
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Logged out successfully"
     end
 
-    test "succeeds even if the user is not logged in", %{conn: conn} do
+    test "does not allow if the user is not logged in", %{conn: conn} do
       conn = delete(conn, ~p"/users/log_out")
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) == ~p"/login"
       refute get_session(conn, :user_token)
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Logged out successfully"
     end
   end
 end
