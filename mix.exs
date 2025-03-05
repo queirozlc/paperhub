@@ -64,7 +64,8 @@ defmodule Paperhub.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:faker, "~> 0.19.0-alpha.1", only: :test}
+      {:faker, "~> 0.19.0-alpha.1", only: :test},
+      {:sobelow, "~> 0.13", only: [:dev, :test], runtime: false}
     ]
   end
 
@@ -76,18 +77,17 @@ defmodule Paperhub.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "ash.setup", "assets.setup", "assets.build", "run priv/repo/seeds.exs"],
+      setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ash.setup --quiet", "test"],
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["tailwind paperhub", "esbuild paperhub"],
       "assets.deploy": [
         "tailwind paperhub --minify",
         "esbuild paperhub --minify",
         "phx.digest"
-      ],
-      "phx.routes": ["phx.routes", "ash_authentication.phoenix.routes"]
+      ]
     ]
   end
 end
