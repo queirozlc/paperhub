@@ -18,46 +18,6 @@ defmodule Paperhub.Accounts.UserNotifier do
   end
 
   @doc """
-  Deliver instructions to confirm account.
-  """
-  def deliver_confirmation_instructions(user, url) do
-    deliver(user.email, "Confirmation instructions", """
-
-    ==============================
-
-    Hi #{user.email},
-
-    You can confirm your account by visiting the URL below:
-
-    #{url}
-
-    If you didn't create an account with us, please ignore this.
-
-    ==============================
-    """)
-  end
-
-  @doc """
-  Deliver instructions to reset a user password.
-  """
-  def deliver_reset_password_instructions(user, url) do
-    deliver(user.email, "Reset password instructions", """
-
-    ==============================
-
-    Hi #{user.email},
-
-    You can reset your password by visiting the URL below:
-
-    #{url}
-
-    If you didn't request this change, please ignore this.
-
-    ==============================
-    """)
-  end
-
-  @doc """
   Delivers a magic link to the user
   """
   def deliver_magic_link(user, url) do
@@ -67,9 +27,11 @@ defmodule Paperhub.Accounts.UserNotifier do
 
     Hi #{user.email},
 
-    You can sign in by visiting the URL below:
+    You can login to your account by visiting the URL below:
 
     #{url}
+
+    If you didn't create an account with us, please ignore this.
 
     ==============================
     """)

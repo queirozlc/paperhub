@@ -13,8 +13,6 @@ defmodule Paperhub.DataCase do
   by setting `use Paperhub.DataCase, async: true`, although
   this option is not recommended for other databases.
   """
-  alias Paperhub.Accounts.User
-  alias AshAuthentication.{Info, Strategy, Strategy.MagicLink}
   alias Ecto.Adapters.SQL.Sandbox
 
   use ExUnit.CaseTemplate
@@ -57,23 +55,5 @@ defmodule Paperhub.DataCase do
         opts |> Keyword.get(String.to_existing_atom(key), key) |> to_string()
       end)
     end)
-  end
-
-  defp email, do: Faker.Internet.email()
-
-  def build_user! do
-    user =
-      User
-      |> Ash.Changeset.for_create(:create, %{"email" => email()})
-      |> Ash.create!(authorize?: false)
-
-    strategy = Info.strategy!(User, :magic_link)
-
-    with {:ok, token} <- MagicLink.request_token_for(strategy, user),
-         {:ok, signed_in_user} <- Strategy.action(strategy, :sign_in, %{"token" => token}) do
-      signed_in_user
-    else
-      {:error, reason} -> raise "Failed to sign in user: #{inspect(reason)}"
-    end
   end
 end

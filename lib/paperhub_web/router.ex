@@ -14,9 +14,9 @@ defmodule PaperhubWeb.Router do
     plug Inertia.Plug
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
-  end
+  # pipeline :api do
+  #   plug :accepts, ["json"]
+  # end
 
   ## Authentication routes
 
@@ -24,8 +24,9 @@ defmodule PaperhubWeb.Router do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
     get "/login", UserSessionController, :new
+    get "/verify_email/:email", UserSessionController, :verify_email
+    get "/magic_link/sign_in/:token", UserSessionController, :sign_in_with_magic_link
     post "/magic_link/request", UserSessionController, :magic_link_request
-    post "/users/log_in", UserSessionController, :create
   end
 
   scope "/", PaperhubWeb do

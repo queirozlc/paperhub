@@ -8,17 +8,30 @@ defmodule PaperhubWeb.UserSessionController do
     render_inertia(conn, "Login")
   end
 
-  def create(conn, %{"user" => user_params}) do
-    %{"email" => email, "password" => password} = user_params
-
-    if user = Accounts.get_user_by_email_and_password(email, password) do
-      conn
-      |> put_flash(:info, "Welcome back!")
-      |> UserAuth.log_in_user(user, user_params)
+  def magic_link_request(conn, %{"email" => email} = user_params) do
+    with {:ok, user} <- Accounts.get_or_register_user(user_params),
+         {:ok, _} <-
+           Accounts.deliver_magic_link_token(user, &url(~p"/magic_link/sign_in/#{&1}")) do
+      redirect(conn, to: ~p"/verify_email/#{email}")
     else
-      # In order to prevent user enumeration attacks, don't disclose whether the email is registered.
-      render(conn, :new, error_message: "Invalid email or password")
+      {:error, changeset} ->
+        conn
+        |> assign_errors(changeset)
+        |> render_inertia("Login")
     end
+  end
+
+  def sign_in_with_magic_link(conn, %{"token" => token}) do
+    case Accounts.sign_in_magic_link(token) do
+      {:ok, user} -> UserAuth.log_in_user(conn, user, %{"remember_me" => "true"})
+      :error -> conn |> put_flash(:error, "Invalid token.") |> redirect(to: ~p"/login")
+    end
+  end
+
+  def verify_email(conn, %{"email" => email}) do
+    conn
+    |> assign_prop(:email, email)
+    |> render_inertia("VerifyEmail")
   end
 
   def delete(conn, _params) do
