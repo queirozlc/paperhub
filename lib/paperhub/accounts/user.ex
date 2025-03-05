@@ -2,6 +2,8 @@ defmodule Paperhub.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Paperhub.Organizations.{Member, Team}
+
   @type t :: %__MODULE__{
           id: integer(),
           email: String.t(),
@@ -22,6 +24,13 @@ defmodule Paperhub.Accounts.User do
     field :bio, :string
     field :avatar, :string
     field :admin?, :boolean, default: false
+    has_many :teams, Paperhub.Organizations.Team, foreign_key: :owner_id
+
+    many_to_many :memberships, Team,
+      join_through: Member,
+      on_delete: :delete_all,
+      join_keys: [member_id: :id, team_id: :id],
+      unique: true
 
     timestamps(type: :utc_datetime)
   end
