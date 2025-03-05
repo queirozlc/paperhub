@@ -51,7 +51,7 @@ config :esbuild,
 
 # Configure tailwind (the version is required)
 config :tailwind,
-  version: "4.0.0",
+  version: "4.0.9",
   paperhub: [
     args: ~w(
       --input=css/app.css
