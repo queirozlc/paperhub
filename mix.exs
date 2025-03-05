@@ -10,7 +10,15 @@ defmodule Paperhub.MixProject do
       start_permanent: Mix.env() == :prod,
       consolidate_protocols: Mix.env() != :dev,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test,
+        "coveralls.cobertura": :test
+      ]
     ]
   end
 
@@ -65,7 +73,8 @@ defmodule Paperhub.MixProject do
       {:bandit, "~> 1.5"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:faker, "~> 0.19.0-alpha.1", only: :test},
-      {:sobelow, "~> 0.13", only: [:dev, :test], runtime: false}
+      {:sobelow, "~> 0.13", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.18", only: :test}
     ]
   end
 
