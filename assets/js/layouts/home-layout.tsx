@@ -56,8 +56,9 @@ const navItems: MobileNavItems[] = [
   },
   {
     Icon: LogOut,
-    href: '/sign-out',
-    label: 'Log out'
+    href: '/users/log_out',
+    label: 'Log out',
+    method: 'delete'
   }
 ]
 
@@ -134,7 +135,7 @@ export function HomeLayout({ children }: { children: React.ReactNode }) {
                 </div>
 
                 <ul className='flex flex-col'>
-                  {navItems.map(({ href, Icon, label }, i) => (
+                  {navItems.map(({ href, Icon, label, method }, i) => (
                     <li
                       className='hover:bg-muted group flex h-12 cursor-pointer items-center justify-center rounded-md px-3 transition-colors duration-300 ease-in-out'
                       key={i}
@@ -142,6 +143,7 @@ export function HomeLayout({ children }: { children: React.ReactNode }) {
                       <Link
                         href={href}
                         className='flex grow items-center justify-between transition-colors duration-200 ease-in-out'
+                        method={method || 'get'}
                       >
                         <span className='text-muted-foreground group-hover:text-foreground font-medium'>
                           {label}

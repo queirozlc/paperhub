@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils'
 import type { User } from '@/models/user'
 import { Link } from '@inertiajs/react'
+import type { ComponentProps } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { ThemeSwitcher } from './ui/theme-switcher'
 
@@ -8,6 +9,7 @@ export type MobileNavItems = {
   label: string
   Icon: React.ElementType
   href: string
+  method?: ComponentProps<typeof Link>['method']
 }
 
 type Props = {
