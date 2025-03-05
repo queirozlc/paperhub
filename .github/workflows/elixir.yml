@@ -1,4 +1,3 @@
-
 name: Elixir CI
 
 on:
@@ -20,7 +19,7 @@ jobs:
     services:
       db:
         image: postgres:16
-        ports: ['5432:5432']
+        ports: ["5432:5432"]
         env:
           POSTGRES_PASSWORD: postgres
         options: >-
@@ -34,11 +33,11 @@ jobs:
       # Specify the OTP and Elixir versions to use when building
       # and running the workflow steps.
       matrix:
-        otp: ['25.0', '26.0', '27.0']
-        elixir: ['1.15', '1.17', '1.18']
+        otp: ["25.0", "26.0", "27.0"]
+        elixir: ["1.15", "1.17", "1.18"]
         exclude:
-          - otp: '27.0'
-            elixir: '1.15'
+          - otp: "27.0"
+            elixir: "1.15"
     steps:
       # Step: Setup Elixir + Erlang image as the base.
       - name: Checkout Code
@@ -105,7 +104,8 @@ jobs:
 
       # Step: Upload the coverage report to Codecov.
       - name: Upload Coverage Report
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           files: cover/excoveralls.json
           token: ${{ secrets.CODECOV_TOKEN }}
+          slug: ${{ github.repository }}
