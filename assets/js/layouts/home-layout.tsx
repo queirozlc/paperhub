@@ -117,12 +117,14 @@ export function HomeLayout({ children }: { children: React.ReactNode }) {
 
               <DropdownMenuContent className='mt-1 mr-8 w-full text-sm'>
                 <div className='flex flex-col gap-1 px-2 py-4'>
-                  <span className='text-accent-foreground text-sm font-medium'>
-                    {user.name || 'Lucas'}
-                  </span>
+                  {user.name && (
+                    <span className='text-accent-foreground text-sm font-medium'>
+                      {user.name}
+                    </span>
+                  )}
 
                   <span className='text-muted-foreground text-sm font-medium'>
-                    {user.name || user.email}
+                    {user.email}
                   </span>
                 </div>
 
@@ -163,7 +165,7 @@ export function HomeLayout({ children }: { children: React.ReactNode }) {
         <Tabs {...tabProps} />
       </div>
 
-      <main className='bg-background-off dark:bg-background relative min-h-[calc(100vh-7rem)] px-4 py-6'>
+      <main className='bg-background-off dark:bg-background-off/30 relative min-h-[calc(100vh-7rem)] px-4 py-6'>
         {children}
       </main>
     </>
