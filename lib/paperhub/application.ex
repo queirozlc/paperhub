@@ -17,7 +17,8 @@ defmodule Paperhub.Application do
       # Start a worker by calling: Paperhub.Worker.start_link(arg)
       # {Paperhub.Worker, arg},
       # Start to serve requests, typically the last entry
-      PaperhubWeb.Endpoint
+      PaperhubWeb.Endpoint,
+      {AshAuthentication.Supervisor, [otp_app: :paperhub]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

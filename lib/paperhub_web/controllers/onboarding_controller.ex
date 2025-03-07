@@ -1,10 +1,9 @@
-defmodule PaperhubWeb.PageController do
+defmodule PaperhubWeb.OnboardingController do
   use PaperhubWeb, :controller
 
   def index(conn, _params) do
     conn
-    |> assign_prop(:projects, [])
     |> assign_prop(:user, conn.assigns.current_user)
-    |> render("Home")
+    |> render_inertia("Onboarding")
   end
 end
