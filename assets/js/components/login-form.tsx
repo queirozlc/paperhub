@@ -3,14 +3,14 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 import { useForm } from '@inertiajs/react'
-import { Mail } from 'lucide-react'
+import { LoaderIcon, Mail } from 'lucide-react'
 import type React from 'react'
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<'form'>) {
-  const { post, data, setData } = useForm({
+  const { post, data, setData, processing } = useForm({
     email: ''
   })
 
@@ -92,9 +92,16 @@ export function LoginForm({
           <Button
             type='submit'
             className='font-brand h-12 w-full text-lg font-semibold'
+            disabled={processing}
           >
-            Continuar com e-mail
-            <Mail className='size-5' />
+            {processing ? (
+              <LoaderIcon className='size-5 animate-spin' />
+            ) : (
+              <>
+                Continuar com e-mail
+                <Mail className='size-5' />
+              </>
+            )}
           </Button>
         </div>
       </form>
