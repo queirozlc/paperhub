@@ -32,6 +32,8 @@ defmodule Paperhub.Accounts.User do
       join_keys: [member_id: :id, team_id: :id],
       unique: true
 
+    belongs_to :current_team, Paperhub.Organizations.Team, foreign_key: :current_team_id
+
     timestamps(type: :utc_datetime)
   end
 
