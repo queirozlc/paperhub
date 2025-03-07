@@ -12,6 +12,7 @@
     "motion": "^12.4.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-scan": "^0.2.9",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7"
   },
