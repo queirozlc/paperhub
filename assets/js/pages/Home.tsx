@@ -1,11 +1,19 @@
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { HomeLayout } from '@/layouts/home-layout'
+import { cn } from '@/lib/utils'
 import type { Projects } from '@/models/project'
-import { Head, Link } from '@inertiajs/react'
-import { Plus, Search } from 'lucide-react'
+import { Head } from '@inertiajs/react'
+import { ChevronDown, Plus, Search } from 'lucide-react'
+import { useState } from 'react'
 
 export default function Home({ projects }: { projects: Projects[] }) {
+  const [projectDropDownOpen, setProjectDropDownOpen] = useState(false)
+
   return (
     <HomeLayout>
       <Head title='PaperHub | Projetos' />
@@ -26,11 +34,27 @@ export default function Home({ projects }: { projects: Projects[] }) {
           <Plus size={16} />
         </Button>
 
-        <Link href={'/projects'} method='post'>
-          <div>
-            <Button className='hidden sm:block'>Novo Projeto</Button>
-          </div>
-        </Link>
+        <DropdownMenu
+          open={projectDropDownOpen}
+          onOpenChange={(value) => setProjectDropDownOpen(value)}
+        >
+          <DropdownMenuTrigger asChild>
+            <Button
+              size={'lg'}
+              className='hidden items-center gap-1 rounded-md sm:flex'
+            >
+              Criar Novo...
+              <ChevronDown
+                className={cn(
+                  'size-5 transition-transform duration-200 ease-in-out',
+                  {
+                    'rotate-180': projectDropDownOpen
+                  }
+                )}
+              />
+            </Button>
+          </DropdownMenuTrigger>
+        </DropdownMenu>
       </section>
 
       <div className='pt-10'>
