@@ -1,8 +1,6 @@
 defmodule PaperhubWeb.Router do
   use PaperhubWeb, :router
 
-  use AshAuthentication.Phoenix.Router
-  import AshAuthentication.Plug.Helpers
   import PaperhubWeb.UserAuth
 
   pipeline :browser do
@@ -12,30 +10,30 @@ defmodule PaperhubWeb.Router do
     plug :put_root_layout, html: {PaperhubWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
     plug Inertia.Plug
-    plug :load_from_session
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
-    plug :load_from_bearer
-    plug :set_actor, :user
+  # pipeline :api do
+  #   plug :accepts, ["json"]
+  # end
+
+  ## Authentication routes
+
+  scope "/", PaperhubWeb do
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
+
+    get "/login", UserSessionController, :new
+    get "/verify_email/:email", UserSessionController, :verify_email
+    get "/magic_link/sign_in/:token", UserSessionController, :sign_in_with_magic_link
+    post "/magic_link/request", UserSessionController, :magic_link_request
   end
 
   scope "/", PaperhubWeb do
     pipe_through [:browser, :require_authenticated_user]
 
     get "/", PageController, :index
-    get "/onboarding", OnboardingController, :index
-  end
-
-  scope "/", PaperhubWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated]
-
-    post "/magic_link/request", AuthController, :magic_link_request
-    get "/login", AuthController, :new
-    auth_routes AuthController, Paperhub.Accounts.User
-    get "/verify-email/:email", AuthController, :verify_email
+    delete "/users/log_out", UserSessionController, :delete
   end
 
   # Other scopes may use custom stacks.

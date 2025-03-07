@@ -1,117 +1,99 @@
 defmodule Paperhub.Accounts.User do
-  use Ash.Resource,
-    otp_app: :paperhub,
-    domain: Paperhub.Accounts,
-    authorizers: [Ash.Policy.Authorizer],
-    extensions: [AshAuthentication, AshJason.Resource],
-    data_layer: AshPostgres.DataLayer
+  use Ecto.Schema
+  import Ecto.Changeset
 
-  authentication do
-    add_ons do
-      log_out_everywhere do
-        apply_on_password_change?(true)
-      end
-    end
+  alias Paperhub.Organizations.{Member, Team}
 
-    tokens do
-      enabled? true
-      token_resource Paperhub.Accounts.Token
-      signing_secret Paperhub.Secrets
-      store_all_tokens? true
-      require_token_presence_for_authentication? true
-    end
+  @type t :: %__MODULE__{
+          id: integer(),
+          email: String.t(),
+          confirmed_at: DateTime.t(),
+          name: String.t(),
+          bio: String.t(),
+          avatar: String.t(),
+          admin?: boolean(),
+          inserted_at: DateTime.t(),
+          updated_at: DateTime.t()
+        }
 
-    strategies do
-      magic_link do
-        identity_field :email
-        registration_enabled? true
+  @derive {Jason.Encoder, only: [:id, :email, :name, :bio, :avatar, :admin?]}
+  schema "users" do
+    field :email, :string
+    field :confirmed_at, :utc_datetime
+    field :name, :string
+    field :bio, :string
+    field :avatar, :string
+    field :admin?, :boolean, default: false
+    has_many :teams, Paperhub.Organizations.Team, foreign_key: :owner_id
 
-        sender Paperhub.Accounts.User.Senders.SendMagicLinkEmail
-      end
+    many_to_many :memberships, Team,
+      join_through: Member,
+      on_delete: :delete_all,
+      join_keys: [member_id: :id, team_id: :id],
+      unique: true
+
+    timestamps(type: :utc_datetime)
+  end
+
+  @doc """
+  A user changeset for registration.
+
+  It is important to validate the length of email.
+  Otherwise databases may truncate the email without warnings, which
+  could lead to unpredictable or insecure behaviour.
+
+  ## Options
+
+    * `:validate_email` - Validates the uniqueness of the email, in case
+      you don't want to validate the uniqueness of the email (like when
+      using this changeset for validations on a LiveView form before
+      submitting the form), this option can be set to `false`.
+      Defaults to `true`.
+  """
+  def registration_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [:email])
+    |> validate_email(opts)
+  end
+
+  defp validate_email(changeset, opts) do
+    changeset
+    |> validate_required([:email])
+    |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "must have the @ sign and no spaces")
+    |> validate_length(:email, max: 160)
+    |> maybe_validate_unique_email(opts)
+  end
+
+  defp maybe_validate_unique_email(changeset, opts) do
+    if Keyword.get(opts, :validate_email, true) do
+      changeset
+      |> unsafe_validate_unique(:email, Paperhub.Repo)
+      |> unique_constraint(:email)
+    else
+      changeset
     end
   end
 
-  postgres do
-    table "users"
-    repo Paperhub.Repo
-  end
+  @doc """
+  A user changeset for changing the email.
 
-  actions do
-    defaults [:read]
-
-    read :get_by_subject do
-      description "Get a user by the subject claim in a JWT"
-      argument :subject, :string, allow_nil?: false
-      get? true
-      prepare AshAuthentication.Preparations.FilterBySubject
-    end
-
-    read :get_by_email do
-      description "Looks up a user by their email"
-      get? true
-
-      argument :email, :ci_string do
-        allow_nil? false
-      end
-
-      filter expr(email == ^arg(:email))
-    end
-
-    create :sign_in_with_magic_link do
-      description "Sign in or register a user with magic link."
-
-      argument :token, :string do
-        description "The token from the magic link that was sent to the user"
-        allow_nil? false
-      end
-
-      upsert? true
-      upsert_identity :unique_email
-      upsert_fields [:email]
-
-      # Uses the information from the token to create or sign in the user
-      change AshAuthentication.Strategy.MagicLink.SignInChange
-
-      metadata :token, :string do
-        allow_nil? false
-      end
-    end
-
-    action :request_magic_link do
-      argument :email, :ci_string do
-        allow_nil? false
-      end
-
-      run AshAuthentication.Strategy.MagicLink.Request
+  It requires the email to change otherwise an error is added.
+  """
+  def email_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [:email])
+    |> validate_email(opts)
+    |> case do
+      %{changes: %{email: _}} = changeset -> changeset
+      %{} = changeset -> add_error(changeset, :email, "did not change")
     end
   end
 
-  policies do
-    bypass AshAuthentication.Checks.AshAuthenticationInteraction do
-      authorize_if always()
-    end
-
-    policy always() do
-      forbid_if always()
-    end
-  end
-
-  attributes do
-    integer_primary_key :id
-
-    attribute :email, :ci_string do
-      allow_nil? false
-      public? true
-    end
-
-    attribute :name, :string, public?: true
-    attribute :bio, :string, public?: true
-    attribute :avatar, :string, public?: true
-
-    timestamps()
-  end
-
-  identities do
-    identity :unique_email, [:email]
+  @doc """
+  Confirms the account by setting `confirmed_at`.
+  """
+  def confirm_changeset(user) do
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
+    change(user, confirmed_at: now)
   end
 end
