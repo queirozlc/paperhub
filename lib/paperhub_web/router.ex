@@ -33,6 +33,7 @@ defmodule PaperhubWeb.Router do
     pipe_through [:browser, :require_authenticated_user]
 
     get "/", PageController, :index
+    get "/onboarding", PageController, :onboarding
     delete "/users/log_out", UserSessionController, :delete
   end
 

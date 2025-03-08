@@ -4,6 +4,7 @@ defmodule PaperhubWeb.UserAuth do
   import Plug.Conn
   import Phoenix.Controller
 
+  alias Paperhub.Repo
   alias Paperhub.Accounts
 
   # Make the remember me cookie valid for 60 days.
@@ -33,7 +34,27 @@ defmodule PaperhubWeb.UserAuth do
     |> renew_session()
     |> put_token_in_session(token)
     |> maybe_write_remember_me_cookie(token, params)
-    |> redirect(to: user_return_to || signed_in_path(conn))
+    |> redirect(to: redirect_after_login(conn, user, user_return_to))
+  end
+
+  # This function redirects the user for correct path after login
+  # Every user must have at least one team to access the application home
+  # This team's usually the user's first name, so we check if it exists
+  # and redirect to the onboarding page if it doesn't
+  defp redirect_after_login(conn, user, nil) do
+    if user.current_team_id do
+      signed_in_path(conn)
+    else
+      ~p"/onboarding"
+    end
+  end
+
+  defp redirect_after_login(_conn, user, path) do
+    if user.current_team_id do
+      path
+    else
+      ~p"/onboarding"
+    end
   end
 
   defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}) do
@@ -83,7 +104,7 @@ defmodule PaperhubWeb.UserAuth do
     conn
     |> renew_session()
     |> delete_resp_cookie(@remember_me_cookie)
-    |> redirect(to: ~p"/")
+    |> redirect(to: ~p"/login")
   end
 
   @doc """
@@ -93,6 +114,7 @@ defmodule PaperhubWeb.UserAuth do
   def fetch_current_user(conn, _opts) do
     {user_token, conn} = ensure_user_token(conn)
     user = user_token && Accounts.get_user_by_session_token(user_token)
+    user && Repo.put_team_id(user.current_team_id)
     assign(conn, :current_user, user)
   end
 
