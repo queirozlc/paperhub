@@ -15,7 +15,7 @@ defmodule Paperhub.Organizations.Team do
     belongs_to :owner, Paperhub.Accounts.User, foreign_key: :owner_id
 
     many_to_many :members, Paperhub.Accounts.User,
-      join_through: Paperhub.Organizations.Member,
+      join_through: Paperhub.Organizations.Membership,
       join_keys: [team_id: :id, member_id: :id],
       on_delete: :delete_all,
       unique: true

@@ -1,6 +1,4 @@
 defmodule Paperhub.ProjectsFixtures do
-  import Paperhub.OrganizationsFixtures, only: [team_fixture: 0]
-
   @moduledoc """
   This module defines test helpers for creating
   entities via the `Paperhub.Projects` context.
@@ -9,9 +7,7 @@ defmodule Paperhub.ProjectsFixtures do
   @doc """
   Generate a project.
   """
-  def project_fixture(attrs \\ %{}) do
-    team = team_fixture()
-
+  def project_fixture(team, attrs \\ %{}) do
     {:ok, project} =
       attrs
       |> Enum.into(%{

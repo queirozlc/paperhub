@@ -35,6 +35,7 @@ defmodule PaperhubWeb.Router do
     get "/", PageController, :index
     get "/onboarding", PageController, :onboarding
     delete "/users/log_out", UserSessionController, :delete
+    post "/teams", TeamController, :create
   end
 
   # Other scopes may use custom stacks.

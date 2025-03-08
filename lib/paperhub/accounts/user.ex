@@ -2,7 +2,7 @@ defmodule Paperhub.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Paperhub.Organizations.{Member, Team}
+  alias Paperhub.Organizations.{Membership, Team}
 
   @type t :: %__MODULE__{
           id: integer(),
@@ -27,12 +27,13 @@ defmodule Paperhub.Accounts.User do
     has_many :teams, Paperhub.Organizations.Team, foreign_key: :owner_id
 
     many_to_many :memberships, Team,
-      join_through: Member,
-      on_delete: :delete_all,
+      join_through: Membership,
       join_keys: [member_id: :id, team_id: :id],
       unique: true
 
-    belongs_to :current_team, Paperhub.Organizations.Team, foreign_key: :current_team_id
+    belongs_to :current_team, Paperhub.Organizations.Team,
+      foreign_key: :current_team_id,
+      on_replace: :update
 
     timestamps(type: :utc_datetime)
   end
@@ -58,6 +59,14 @@ defmodule Paperhub.Accounts.User do
     |> validate_email(opts)
   end
 
+  def onboarding_changeset(user, team, attrs) do
+    user
+    |> cast(attrs, [:name])
+    |> validate_required([:name])
+    |> put_assoc(:current_team, team)
+    |> foreign_key_constraint(:current_team_id)
+  end
+
   defp validate_email(changeset, opts) do
     changeset
     |> validate_required([:email])
@@ -69,7 +78,7 @@ defmodule Paperhub.Accounts.User do
   defp maybe_validate_unique_email(changeset, opts) do
     if Keyword.get(opts, :validate_email, true) do
       changeset
-      |> unsafe_validate_unique(:email, Paperhub.Repo)
+      |> unsafe_validate_unique(:email, Paperhub.Repo, repo_opts: [skip_team_id: true])
       |> unique_constraint(:email)
     else
       changeset

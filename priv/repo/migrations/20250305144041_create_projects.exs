@@ -11,5 +11,6 @@ defmodule Paperhub.Repo.Migrations.CreateProjects do
     end
 
     create index(:projects, [:team_id])
+    create unique_index(:projects, [:team_id, :id], name: :unique_team_project_idx)
   end
 end

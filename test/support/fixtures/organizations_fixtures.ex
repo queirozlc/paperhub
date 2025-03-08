@@ -12,7 +12,7 @@ defmodule Paperhub.OrganizationsFixtures do
   def team_fixture(attrs \\ %{}) do
     user = user_fixture()
 
-    {:ok, team} =
+    {:ok, %{team: team}} =
       attrs
       |> Enum.into(%{
         name: Faker.Company.name()

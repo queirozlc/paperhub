@@ -14,6 +14,7 @@ defmodule PaperhubWeb.ConnCase do
   by setting `use PaperhubWeb.ConnCase, async: true`, although
   this option is not recommended for other databases.
   """
+  alias Paperhub.Repo
 
   use ExUnit.CaseTemplate
 
@@ -43,6 +44,7 @@ defmodule PaperhubWeb.ConnCase do
   It returns an updated `conn`.
   """
   def log_in_user(conn, user) do
+    Repo.put_team_id(user.current_team_id)
     token = Paperhub.Accounts.generate_user_session_token(user)
 
     conn
