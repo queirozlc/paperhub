@@ -1,6 +1,8 @@
 defmodule PaperhubWeb.UserSessionControllerTest do
   use PaperhubWeb.ConnCase, async: true
 
+  import Ecto.Query
+
   alias Paperhub.Repo
   alias Paperhub.{Accounts, Accounts.UserToken}
   import Paperhub.AccountsFixtures
@@ -62,12 +64,18 @@ defmodule PaperhubWeb.UserSessionControllerTest do
 
     test "login user when token is a valid token", %{conn: conn, token: token} do
       conn = get(conn, ~p"/magic_link/sign_in/#{token}")
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) == ~p"/onboarding"
       assert fetch_cookies(conn, signed: ["_paperhub_web_user_remember_me"])
     end
 
     test "returns an error if token is expired", %{conn: conn, token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+      {1, nil} =
+        from(
+          ut in UserToken,
+          update: [set: [inserted_at: ^~N[2020-01-01 00:00:00]]]
+        )
+        |> Repo.update_all([], skip_team_id: true)
+
       conn = get(conn, ~p"/magic_link/sign_in/#{token}")
       assert redirected_to(conn) == ~p"/login"
       assert Phoenix.Flash.get(conn.assigns[:flash], :error) == "Invalid token."
@@ -91,7 +99,7 @@ defmodule PaperhubWeb.UserSessionControllerTest do
   describe "DELETE /users/log_out" do
     test "logs the user out", %{conn: conn, user: user} do
       conn = conn |> log_in_user(user) |> delete(~p"/users/log_out")
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) == ~p"/login"
       refute get_session(conn, :user_token)
     end
 
