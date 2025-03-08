@@ -4,26 +4,29 @@ defmodule Paperhub.ProjectsTest do
   alias Paperhub.Projects
 
   describe "projects" do
-    alias Paperhub.Projects.Project
-
+    alias Paperhub.{Organizations.Team, Projects, Projects.Project}
     import Paperhub.ProjectsFixtures
     import Paperhub.OrganizationsFixtures, only: [team_fixture: 0]
 
     @invalid_attrs %{description: nil, title: nil, visibility: nil}
 
-    test "list_projects/0 returns all projects" do
-      project = project_fixture()
+    setup do
+      team = team_fixture()
+      Repo.put_team_id(team.id)
+      %{team: team}
+    end
+
+    test "list_projects/0 returns all projects", %{team: team} do
+      project = project_fixture(team)
       assert Projects.list_projects() == [project]
     end
 
-    test "get_project!/1 returns the project with given id" do
-      project = project_fixture()
+    test "get_project!/1 returns the project with given id", %{team: team} do
+      project = project_fixture(team)
       assert Projects.get_project!(project.id) == project
     end
 
-    test "create_project/1 with valid data creates a project" do
-      team = team_fixture()
-
+    test "create_project/1 with valid data creates a project", %{team: team} do
       valid_attrs = %{
         description: "some description",
         title: "some title",
@@ -36,13 +39,13 @@ defmodule Paperhub.ProjectsTest do
       assert project.visibility == :public
     end
 
-    test "create_project/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Projects.create_project(@invalid_attrs, team_fixture())
+    test "create_project/1 with invalid data returns error changeset", %{team: team} do
+      assert {:error, %Ecto.Changeset{}} = Projects.create_project(@invalid_attrs, team)
     end
 
     test "create_project/1 with invalid team returns error changeset" do
       assert {:error, %Ecto.Changeset{} = changeset} =
-               Projects.create_project(%{}, %Paperhub.Organizations.Team{})
+               Projects.create_project(%{}, %Team{})
 
       assert errors_on(changeset) == %{team_id: ["can't be blank"]}
     end
@@ -55,13 +58,13 @@ defmodule Paperhub.ProjectsTest do
       }
 
       assert {:error, %Ecto.Changeset{} = changeset} =
-               Projects.create_project(valid_attrs, %Paperhub.Organizations.Team{id: 1000})
+               Projects.create_project(valid_attrs, %Team{id: 1000})
 
       assert errors_on(changeset) == %{team_id: ["does not exist"]}
     end
 
-    test "update_project/2 with valid data updates the project" do
-      project = project_fixture()
+    test "update_project/2 with valid data updates the project", %{team: team} do
+      project = project_fixture(team)
 
       update_attrs = %{
         description: "some updated description",
@@ -75,20 +78,20 @@ defmodule Paperhub.ProjectsTest do
       assert project.visibility == :private
     end
 
-    test "update_project/2 with invalid data returns error changeset" do
-      project = project_fixture()
+    test "update_project/2 with invalid data returns error changeset", %{team: team} do
+      project = project_fixture(team)
       assert {:error, %Ecto.Changeset{}} = Projects.update_project(project, @invalid_attrs)
       assert project == Projects.get_project!(project.id)
     end
 
-    test "delete_project/1 deletes the project" do
-      project = project_fixture()
+    test "delete_project/1 deletes the project", %{team: team} do
+      project = project_fixture(team)
       assert {:ok, %Project{}} = Projects.delete_project(project)
       assert_raise Ecto.NoResultsError, fn -> Projects.get_project!(project.id) end
     end
 
-    test "change_project/1 returns a project changeset" do
-      project = project_fixture()
+    test "change_project/1 returns a project changeset", %{team: team} do
+      project = project_fixture(team)
       assert %Ecto.Changeset{} = Projects.change_project(project)
     end
   end

@@ -4,6 +4,7 @@ defmodule Paperhub.Accounts do
   """
 
   import Ecto.Query, warn: false
+  alias Paperhub.Organizations.Team
   alias Paperhub.Repo
 
   alias Paperhub.Accounts.{User, UserNotifier, UserToken}
@@ -23,7 +24,7 @@ defmodule Paperhub.Accounts do
 
   """
   def get_user_by_email(email) when is_binary(email) do
-    Repo.get_by(User, email: email)
+    Repo.get_by(User, %{email: email}, skip_team_id: true)
   end
 
   @doc """
@@ -40,7 +41,7 @@ defmodule Paperhub.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user!(id), do: Repo.get!(User, id, skip_team_id: true)
 
   ## User registration
 
@@ -65,7 +66,6 @@ defmodule Paperhub.Accounts do
   @doc """
   Tries to get a user by the given attributes, or registers a new user if none is found.
   """
-  @spec get_or_register_user(map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   def get_or_register_user(%{"email" => email} = attrs) do
     case get_user_by_email(email) do
       %User{} = user ->
@@ -87,6 +87,12 @@ defmodule Paperhub.Accounts do
   """
   def change_user_registration(%User{} = user, attrs \\ %{}) do
     User.registration_changeset(user, attrs, validate_email: false)
+  end
+
+  ## User edition
+
+  def onboarding_change(user, team, attrs) do
+    User.onboarding_changeset(user, team, attrs)
   end
 
   ## Settings
@@ -133,7 +139,7 @@ defmodule Paperhub.Accounts do
     context = "change:#{user.email}"
 
     with {:ok, query} <- UserToken.verify_change_email_token_query(token, context),
-         %UserToken{sent_to: email} <- Repo.one(query),
+         %UserToken{sent_to: email} <- Repo.one(query, skip_team_id: true),
          {:ok, _} <- Repo.transaction(user_email_multi(user, email, context)) do
       :ok
     else
@@ -149,7 +155,9 @@ defmodule Paperhub.Accounts do
 
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, changeset)
-    |> Ecto.Multi.delete_all(:tokens, UserToken.by_user_and_contexts_query(user, [context]))
+    |> Ecto.Multi.delete_all(:tokens, UserToken.by_user_and_contexts_query(user, [context]),
+      skip_team_id: true
+    )
   end
 
   @doc ~S"""
@@ -185,14 +193,14 @@ defmodule Paperhub.Accounts do
   """
   def get_user_by_session_token(token) do
     {:ok, query} = UserToken.verify_session_token_query(token)
-    Repo.one(query)
+    Repo.one(query, skip_team_id: true)
   end
 
   @doc """
   Deletes the signed token with the given context.
   """
   def delete_user_session_token(token) do
-    Repo.delete_all(UserToken.by_token_and_context_query(token, "session"))
+    Repo.delete_all(UserToken.by_token_and_context_query(token, "session"), skip_team_id: true)
     :ok
   end
 
@@ -206,7 +214,7 @@ defmodule Paperhub.Accounts do
   """
   def sign_in_magic_link(token) do
     with {:ok, query} <- UserToken.verify_email_token_query(token, "magic_link"),
-         %User{} = user <- Repo.one(query),
+         %User{} = user <- Repo.one(query, skip_team_id: true),
          {:ok, %{user: user}} <- Repo.transaction(confirm_user_multi(user)) do
       {:ok, user}
     else
@@ -217,7 +225,9 @@ defmodule Paperhub.Accounts do
   defp confirm_user_multi(user) do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, User.confirm_changeset(user))
-    |> Ecto.Multi.delete_all(:tokens, UserToken.by_user_and_contexts_query(user, ["magic_link"]))
+    |> Ecto.Multi.delete_all(:tokens, UserToken.by_user_and_contexts_query(user, ["magic_link"]),
+      skip_team_id: true
+    )
   end
 
   @doc """
@@ -230,5 +240,14 @@ defmodule Paperhub.Accounts do
     {encoded_token, user_token} = UserToken.build_email_token(user, "magic_link")
     Repo.insert!(user_token)
     UserNotifier.deliver_magic_link(user, confirmation_url_fun.(encoded_token))
+  end
+
+  ## Aggregates
+  @doc """
+  Returns the number of teams the user owns.
+  """
+  def count_teams(user) do
+    from(t in Team, where: t.owner_id == ^user.id, select: count(t.id))
+    |> Repo.one(skip_team_id: true)
   end
 end

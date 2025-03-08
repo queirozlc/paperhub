@@ -2,10 +2,13 @@ defmodule Paperhub.AccountsTest do
   use Paperhub.DataCase
 
   alias Paperhub.Accounts
+  require Ecto.Query, warn: false
 
   import Paperhub.AccountsFixtures
   import Faker.Internet, only: [email: 0]
   alias Paperhub.Accounts.{User, UserToken}
+
+  @skip_team_id skip_team_id: true
 
   describe "get_user_by_email/1" do
     test "does not return the user if the email does not exist" do
@@ -169,7 +172,10 @@ defmodule Paperhub.AccountsTest do
         end)
 
       {:ok, token} = Base.url_decode64(token, padding: false)
-      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
+
+      assert user_token =
+               Repo.get_by(UserToken, %{token: :crypto.hash(:sha256, token)}, @skip_team_id)
+
       assert user_token.user_id == user.id
       assert user_token.sent_to == user.email
       assert user_token.context == "change:current@example.com"
@@ -191,31 +197,37 @@ defmodule Paperhub.AccountsTest do
 
     test "updates the email with a valid token", %{user: user, token: token, email: email} do
       assert Accounts.update_user_email(user, token) == :ok
-      changed_user = Repo.get!(User, user.id)
+      changed_user = Repo.get!(User, user.id, @skip_team_id)
       assert changed_user.email != user.email
       assert changed_user.email == email
       assert changed_user.confirmed_at
       assert changed_user.confirmed_at != user.confirmed_at
-      refute Repo.get_by(UserToken, user_id: user.id)
+      refute Repo.get_by(UserToken, %{user_id: user.id}, @skip_team_id)
     end
 
     test "does not update email with invalid token", %{user: user} do
       assert Accounts.update_user_email(user, "oops") == :error
-      assert Repo.get!(User, user.id).email == user.email
-      assert Repo.get_by(UserToken, user_id: user.id)
+      assert Repo.get!(User, user.id, @skip_team_id).email == user.email
+      assert Repo.get_by(UserToken, %{user_id: user.id}, @skip_team_id)
     end
 
     test "does not update email if user email changed", %{user: user, token: token} do
       assert Accounts.update_user_email(%{user | email: "current@example.com"}, token) == :error
-      assert Repo.get!(User, user.id).email == user.email
-      assert Repo.get_by(UserToken, user_id: user.id)
+      assert Repo.get!(User, user.id, @skip_team_id).email == user.email
+      assert Repo.get_by(UserToken, %{user_id: user.id}, @skip_team_id)
     end
 
     test "does not update email if token expired", %{user: user, token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+      {1, nil} =
+        from(
+          u in UserToken,
+          update: [set: [inserted_at: ^~N[2020-01-01 00:00:00]]]
+        )
+        |> Repo.update_all([], skip_team_id: true)
+
       assert Accounts.update_user_email(user, token) == :error
-      assert Repo.get!(User, user.id).email == user.email
-      assert Repo.get_by(UserToken, user_id: user.id)
+      assert Repo.get!(User, user.id, @skip_team_id).email == user.email
+      assert Repo.get_by(UserToken, %{user_id: user.id}, @skip_team_id)
     end
   end
 
@@ -226,7 +238,7 @@ defmodule Paperhub.AccountsTest do
 
     test "generates a token", %{user: user} do
       token = Accounts.generate_user_session_token(user)
-      assert user_token = Repo.get_by(UserToken, token: token)
+      assert user_token = Repo.get_by(UserToken, %{token: token}, @skip_team_id)
       assert user_token.context == "session"
 
       # Creating the same token for another user should fail
@@ -257,7 +269,13 @@ defmodule Paperhub.AccountsTest do
     end
 
     test "does not return user for expired token", %{token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+      {1, nil} =
+        from(
+          u in UserToken,
+          update: [set: [inserted_at: ^~N[2020-01-01 00:00:00]]]
+        )
+        |> Repo.update_all([], skip_team_id: true)
+
       refute Accounts.get_user_by_session_token(token)
     end
   end
@@ -287,21 +305,27 @@ defmodule Paperhub.AccountsTest do
       assert {:ok, signed_user} = Accounts.sign_in_magic_link(token)
       assert signed_user.confirmed_at
       assert signed_user.confirmed_at != user.confirmed_at
-      assert Repo.get!(User, user.id).confirmed_at
-      refute Repo.get_by(UserToken, user_id: user.id)
+      assert Repo.get!(User, user.id, @skip_team_id).confirmed_at
+      refute Repo.get_by(UserToken, %{user_id: user.id}, @skip_team_id)
     end
 
     test "does not login with invalid token", %{user: user} do
       assert Accounts.sign_in_magic_link("oops") == :error
-      refute Repo.get!(User, user.id).confirmed_at
-      assert Repo.get_by(UserToken, user_id: user.id)
+      refute Repo.get!(User, user.id, @skip_team_id).confirmed_at
+      assert Repo.get_by(UserToken, %{user_id: user.id}, @skip_team_id)
     end
 
     test "does not login email if token expired", %{user: user, token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+      {1, nil} =
+        from(
+          u in UserToken,
+          update: [set: [inserted_at: ^~N[2020-01-01 00:00:00]]]
+        )
+        |> Repo.update_all([], skip_team_id: true)
+
       assert Accounts.sign_in_magic_link(token) == :error
-      refute Repo.get!(User, user.id).confirmed_at
-      assert Repo.get_by(UserToken, user_id: user.id)
+      refute Repo.get!(User, user.id, @skip_team_id).confirmed_at
+      assert Repo.get_by(UserToken, %{user_id: user.id}, @skip_team_id)
     end
   end
 end

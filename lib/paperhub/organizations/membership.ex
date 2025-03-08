@@ -1,9 +1,9 @@
-defmodule Paperhub.Organizations.Member do
+defmodule Paperhub.Organizations.Membership do
   use Ecto.Schema
   import Ecto.Changeset
 
   @primary_key false
-  schema "members" do
+  schema "memberships" do
     field :role, Ecto.Enum, values: [:admin, :member], default: :member
     belongs_to :member, Paperhub.Accounts.User, foreign_key: :member_id
     belongs_to :team, Paperhub.Organizations.Team
@@ -12,8 +12,8 @@ defmodule Paperhub.Organizations.Member do
   end
 
   @doc false
-  def changeset(member, attrs) do
-    member
+  def changeset(membership, attrs) do
+    membership
     |> cast(attrs, [:role, :member_id, :team_id])
     |> validate_required([:member_id, :team_id])
     |> foreign_key_constraint(:member_id)

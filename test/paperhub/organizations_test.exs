@@ -13,31 +13,44 @@ defmodule Paperhub.OrganizationsTest do
 
     test "list_teams/0 returns all teams" do
       team = team_fixture()
-      assert Organizations.list_teams() == [team]
+      assert Organizations.list_teams(team.owner_id) == [team]
     end
 
     test "get_team!/1 returns the team with given id" do
       team = team_fixture()
-      assert Organizations.get_team!(team.id) == team
+      assert Organizations.get_team!(team.id, team.owner_id) == team
     end
 
     test "create_team/1 with valid data creates a team" do
       user = user_fixture()
       valid_attrs = %{name: "some name"}
 
-      assert {:ok, %Team{} = team} = Organizations.create_team(valid_attrs, user)
+      assert {:ok, %{team: %Team{} = team}} = Organizations.create_team(valid_attrs, user)
       assert team.name == "some name"
+    end
+
+    test "create_team/1 with valid data creates a team and sets it as the user's current team" do
+      user = user_fixture()
+      valid_attrs = %{name: "some name"}
+
+      assert {:ok, %{team: %Team{} = team, user: user}} =
+               Organizations.create_team(valid_attrs, user, default_team?: true)
+
+      assert team.name == "some name"
+      assert user.current_team_id == team.id
     end
 
     test "create_team/1 with invalid data returns error changeset" do
       user = user_fixture()
-      assert {:error, %Ecto.Changeset{}} = Organizations.create_team(@invalid_attrs, user)
+
+      assert {:error, :team, %Ecto.Changeset{}, %{}} =
+               Organizations.create_team(@invalid_attrs, user)
     end
 
     test "create_team/1 with no existing owner returns error changeset" do
       valid_attrs = %{name: "some name"}
 
-      assert {:error, %Ecto.Changeset{} = changeset} =
+      assert {:error, :team, %Ecto.Changeset{} = changeset, %{}} =
                Organizations.create_team(valid_attrs, %User{id: 1000})
 
       assert errors_on(changeset) == %{owner_id: ["does not exist"]}
@@ -54,13 +67,13 @@ defmodule Paperhub.OrganizationsTest do
     test "update_team/2 with invalid data returns error changeset" do
       team = team_fixture()
       assert {:error, %Ecto.Changeset{}} = Organizations.update_team(team, @invalid_attrs)
-      assert team == Organizations.get_team!(team.id)
+      assert team == Organizations.get_team!(team.id, team.owner_id)
     end
 
     test "delete_team/1 deletes the team" do
       team = team_fixture()
       assert {:ok, %Team{}} = Organizations.delete_team(team)
-      assert_raise Ecto.NoResultsError, fn -> Organizations.get_team!(team.id) end
+      assert_raise Ecto.NoResultsError, fn -> Organizations.get_team!(team.id, team.owner_id) end
     end
 
     test "change_team/1 returns a team changeset" do
