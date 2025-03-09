@@ -41,15 +41,7 @@ defmodule Paperhub.Accounts.User do
     end
   end
 
-  code_interface do
-    # This should no be used in the application
-    # is just for testing and debugging purposes
-    define :create, action: :create
-  end
-
   actions do
-    defaults [:read, create: [:email]]
-
     read :get_by_subject do
       description "Get a user by the subject claim in a JWT"
       argument :subject, :string, allow_nil?: false
