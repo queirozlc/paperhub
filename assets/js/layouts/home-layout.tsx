@@ -56,9 +56,8 @@ const navItems: MobileNavItems[] = [
   },
   {
     Icon: LogOut,
-    href: '/users/log_out',
-    label: 'Log out',
-    method: 'delete'
+    href: '/sign-out',
+    label: 'Log out'
   }
 ]
 

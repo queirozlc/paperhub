@@ -3,45 +3,28 @@ defmodule PaperhubWeb.UserAuth do
 
   import Plug.Conn
   import Phoenix.Controller
+  import AshAuthentication.Phoenix.Plug
 
-  alias Paperhub.Accounts
-
-  # Make the remember me cookie valid for 60 days.
-  # If you want bump or reduce this value, also change
-  # the token expiry itself in UserToken.
-  @max_age 60 * 60 * 24 * 60
-  @remember_me_cookie "_paperhub_web_user_remember_me"
-  @remember_me_options [sign: true, max_age: @max_age, same_site: "Lax"]
-
-  @doc """
-  Logs the user in.
-
-  It renews the session ID and clears the whole session
-  to avoid fixation attacks. See the renew_session
-  function to customize this behaviour.
-
-  It also sets a `:live_socket_id` key in the session,
-  so LiveView sessions are identified and automatically
-  disconnected on log out. The line can be safely removed
-  if you are not using LiveView.
-  """
-  def log_in_user(conn, user, params \\ %{}) do
-    token = Accounts.generate_user_session_token(user)
-    user_return_to = get_session(conn, :user_return_to)
+  def log_in_user(conn, user) do
+    return_to = get_session(conn, :return_to)
 
     conn
     |> renew_session()
-    |> put_token_in_session(token)
-    |> maybe_write_remember_me_cookie(token, params)
-    |> redirect(to: user_return_to || signed_in_path(conn))
+    |> store_in_session(user)
+    |> assign(:current_user, user)
+    |> redirect(to: redirect_path(conn, user, return_to))
   end
 
-  defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}) do
-    put_resp_cookie(conn, @remember_me_cookie, token, @remember_me_options)
+  defp redirect_path(conn, user, nil) do
+    if user.current_team_id == nil do
+      ~p"/onboarding"
+    else
+      signed_in_path(conn)
+    end
   end
 
-  defp maybe_write_remember_me_cookie(conn, _token, _params) do
-    conn
+  defp redirect_path(_conn, user, path) do
+    if user.current_team_id == nil, do: ~p"/onboarding", else: path
   end
 
   # This function renews the session ID and erases the whole
@@ -68,45 +51,29 @@ defmodule PaperhubWeb.UserAuth do
   end
 
   @doc """
-  Logs the user out.
-
-  It clears all session data for safety. See renew_session.
+  Redirects users to complete their onboarding if they haven't yet.
+  This is useful in case of users trying to access the application through url
   """
-  def log_out_user(conn) do
-    user_token = get_session(conn, :user_token)
-    user_token && Accounts.delete_user_session_token(user_token)
-
-    if live_socket_id = get_session(conn, :live_socket_id) do
-      PaperhubWeb.Endpoint.broadcast(live_socket_id, "disconnect", %{})
+  def redirect_if_onboarding_not_completed(conn, _opts) do
+    if conn.assigns[:current_user].current_team_id == nil do
+      conn
+      |> redirect(to: ~p"/onboarding")
+      |> halt()
+    else
+      conn
     end
-
-    conn
-    |> renew_session()
-    |> delete_resp_cookie(@remember_me_cookie)
-    |> redirect(to: ~p"/")
   end
 
   @doc """
-  Authenticates the user by looking into the session
-  and remember me token.
+  Does not allow users to access the onboarding page if they have already completed it.
   """
-  def fetch_current_user(conn, _opts) do
-    {user_token, conn} = ensure_user_token(conn)
-    user = user_token && Accounts.get_user_by_session_token(user_token)
-    assign(conn, :current_user, user)
-  end
-
-  defp ensure_user_token(conn) do
-    if token = get_session(conn, :user_token) do
-      {token, conn}
+  def redirect_if_onboarding_is_completed(conn, _opts) do
+    if conn.assigns[:current_user].current_team_id != nil do
+      conn
+      |> redirect(to: ~p"/")
+      |> halt()
     else
-      conn = fetch_cookies(conn, signed: [@remember_me_cookie])
-
-      if token = conn.cookies[@remember_me_cookie] do
-        {token, put_token_in_session(conn, token)}
-      else
-        {nil, conn}
-      end
+      conn
     end
   end
 
@@ -125,7 +92,6 @@ defmodule PaperhubWeb.UserAuth do
 
   @doc """
   Used for routes that require the user to be authenticated.
-
   If you want to enforce the user email is confirmed before
   they use the application at all, here would be a good place.
   """
@@ -134,17 +100,10 @@ defmodule PaperhubWeb.UserAuth do
       conn
     else
       conn
-      |> put_flash(:error, "You must log in to access this page.")
       |> maybe_store_return_to()
       |> redirect(to: ~p"/login")
       |> halt()
     end
-  end
-
-  defp put_token_in_session(conn, token) do
-    conn
-    |> put_session(:user_token, token)
-    |> put_session(:live_socket_id, "users_sessions:#{Base.url_encode64(token)}")
   end
 
   defp maybe_store_return_to(%{method: "GET"} = conn) do

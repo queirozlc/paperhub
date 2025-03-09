@@ -15,7 +15,7 @@ export default function Onboarding({ user }: { user: User }) {
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
-    post('/teams')
+    post('/teams/default')
   }
 
   return (
