@@ -2,6 +2,7 @@ defmodule PaperhubWeb.AuthController do
   require Phoenix.Router
   use PaperhubWeb, :controller
   use AshAuthentication.Phoenix.Controller
+  alias PaperhubWeb.UserAuth
   alias AshAuthentication.{Info, Strategy}
   alias Paperhub.Accounts.User
 
@@ -9,12 +10,13 @@ defmodule PaperhubWeb.AuthController do
     render_inertia(conn, "Login")
   end
 
-  def magic_link_request(conn, user_params) do
+  def magic_link_request(conn, %{"email" => email} = user_params) do
     strategy = Info.strategy!(User, :magic_link)
 
     case Strategy.action(strategy, :request, user_params) do
       :ok ->
-        redirect(conn, to: ~p"/login")
+        conn
+        |> redirect(to: ~p"/verify_email/#{email}")
 
       {:error, _} ->
         conn
@@ -34,13 +36,7 @@ defmodule PaperhubWeb.AuthController do
   end
 
   def success(conn, _activity, user, _token) do
-    return_to = get_session(conn, :return_to) || ~p"/"
-
-    conn
-    |> delete_session(:return_to)
-    |> store_in_session(user)
-    |> assign(:current_user, user)
-    |> redirect(to: return_to)
+    UserAuth.log_in_user(conn, user)
   end
 
   def failure(conn, _activity, _reason) do

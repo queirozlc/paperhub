@@ -5,6 +5,6 @@ defmodule PaperhubWeb.PageController do
     conn
     |> assign_prop(:projects, [])
     |> assign_prop(:user, conn.assigns.current_user)
-    |> render("Home")
+    |> render_inertia("Home")
   end
 end

@@ -23,19 +23,32 @@ defmodule PaperhubWeb.Router do
   end
 
   scope "/", PaperhubWeb do
-    pipe_through [:browser, :require_authenticated_user]
-
+    pipe_through [:browser, :require_authenticated_user, :redirect_if_onboarding_not_completed]
     get "/", PageController, :index
+    sign_out_route AuthController
+  end
+
+  scope "/", PaperhubWeb do
+    pipe_through [:browser, :require_authenticated_user, :redirect_if_onboarding_is_completed]
+
     get "/onboarding", OnboardingController, :index
   end
 
   scope "/", PaperhubWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated]
+    pipe_through [:browser, :require_authenticated_user]
+    post "/teams/default", TeamController, :create_default
+  end
+
+  scope "/", PaperhubWeb do
+    pipe_through [
+      :browser,
+      :redirect_if_user_is_authenticated
+    ]
 
     post "/magic_link/request", AuthController, :magic_link_request
     get "/login", AuthController, :new
     auth_routes AuthController, Paperhub.Accounts.User
-    get "/verify-email/:email", AuthController, :verify_email
+    get "/verify_email/:email", AuthController, :verify_email
   end
 
   # Other scopes may use custom stacks.

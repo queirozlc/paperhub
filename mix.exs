@@ -99,7 +99,11 @@ defmodule Paperhub.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ash.setup --quiet", "test"],
-      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
+      "assets.setup": [
+        "tailwind.install --if-missing",
+        "esbuild.install --if-missing",
+        "cmd --cd assets bun install"
+      ],
       "assets.build": ["tailwind paperhub", "esbuild paperhub"],
       "assets.deploy": [
         "tailwind paperhub --minify",

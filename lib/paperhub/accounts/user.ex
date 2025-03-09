@@ -25,6 +25,7 @@ defmodule Paperhub.Accounts.User do
       magic_link do
         identity_field :email
         registration_enabled? true
+        single_use_token? true
 
         sender Paperhub.Accounts.User.Senders.SendMagicLinkEmail
       end
@@ -34,10 +35,20 @@ defmodule Paperhub.Accounts.User do
   postgres do
     table "users"
     repo Paperhub.Repo
+
+    references do
+      reference :current_team, index?: true
+    end
+  end
+
+  code_interface do
+    # This should no be used in the application
+    # is just for testing and debugging purposes
+    define :create, action: :create
   end
 
   actions do
-    defaults [:read]
+    defaults [:read, create: [:email]]
 
     read :get_by_subject do
       description "Get a user by the subject claim in a JWT"
@@ -84,6 +95,20 @@ defmodule Paperhub.Accounts.User do
 
       run AshAuthentication.Strategy.MagicLink.Request
     end
+
+    read :get_user do
+      get? true
+      argument :id, :integer, allow_nil?: false
+
+      filter expr(id == ^arg(:id))
+    end
+
+    update :set_current_team do
+      accept [:name]
+
+      argument :team_id, :integer, allow_nil?: false
+      change set_attribute(:current_team_id, arg(:team_id))
+    end
   end
 
   policies do
@@ -91,8 +116,8 @@ defmodule Paperhub.Accounts.User do
       authorize_if always()
     end
 
-    policy always() do
-      forbid_if always()
+    policy action([:get_user, :set_current_team]) do
+      authorize_if always()
     end
   end
 
@@ -109,6 +134,10 @@ defmodule Paperhub.Accounts.User do
     attribute :avatar, :string, public?: true
 
     timestamps()
+  end
+
+  relationships do
+    belongs_to :current_team, Paperhub.Accounts.Team, allow_nil?: true
   end
 
   identities do
