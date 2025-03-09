@@ -29,6 +29,9 @@ config :paperhub, PaperhubWeb.Endpoint,
     tailwind: {Tailwind, :install_and_run, [:paperhub, ~w(--watch)]}
   ]
 
+config :ash_authentication, debug_authentication_failures?: true
+config :ash, :policies, show_policy_breakdowns?: true
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
