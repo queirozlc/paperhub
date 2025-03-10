@@ -42,6 +42,8 @@ defmodule Paperhub.Accounts.User do
   end
 
   actions do
+    defaults [:read]
+
     read :get_by_subject do
       description "Get a user by the subject claim in a JWT"
       argument :subject, :string, allow_nil?: false
@@ -88,13 +90,6 @@ defmodule Paperhub.Accounts.User do
       run AshAuthentication.Strategy.MagicLink.Request
     end
 
-    read :get_user do
-      get? true
-      argument :id, :integer, allow_nil?: false
-
-      filter expr(id == ^arg(:id))
-    end
-
     update :set_current_team do
       accept [:name]
 
@@ -108,9 +103,24 @@ defmodule Paperhub.Accounts.User do
       authorize_if always()
     end
 
-    policy action([:get_user, :set_current_team]) do
+    policy action(:read) do
+      authorize_if expr(id == ^actor(:id))
+    end
+
+    policy action(:set_current_team) do
+      # users cannot set the team of another user
+      authorize_if expr(id == ^actor(:id))
+      # check if the user is a member of the team
+      authorize_if __MODULE__.Checks.CanSetAsCurrentTeam
+    end
+
+    policy action([:sign_in_with_magic_link]) do
       authorize_if always()
     end
+  end
+
+  validations do
+    validate match(:email, ~r/@/), where: changing(:email)
   end
 
   attributes do
@@ -124,12 +134,17 @@ defmodule Paperhub.Accounts.User do
     attribute :name, :string, public?: true
     attribute :bio, :string, public?: true
     attribute :avatar, :string, public?: true
+    attribute :admin?, :boolean, default: false
 
     timestamps()
   end
 
   relationships do
     belongs_to :current_team, Paperhub.Accounts.Team, allow_nil?: true
+
+    has_many :memberships, Paperhub.Accounts.Membership do
+      destination_attribute :member_id
+    end
   end
 
   identities do

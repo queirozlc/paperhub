@@ -5,6 +5,8 @@ defmodule Paperhub.Accounts.Membership do
     extensions: [AshJason.Resource],
     data_layer: AshPostgres.DataLayer
 
+  require Ash.Query
+
   postgres do
     table "memberships"
     repo Paperhub.Repo
@@ -17,6 +19,31 @@ defmodule Paperhub.Accounts.Membership do
 
   resource do
     require_primary_key? false
+  end
+
+  actions do
+    default_accept [:member_id, :team_id, :role]
+    defaults [:read, :create]
+
+    action :team_member? do
+      argument :member_id, :integer, allow_nil?: false
+      argument :team_id, :integer, allow_nil?: false
+      returns :boolean
+
+      run fn %{arguments: %{member_id: member_id, team_id: team_id}}, _ ->
+        Ash.Query.new(__MODULE__)
+        |> Ash.Query.filter(member_id == ^member_id)
+        |> Ash.Query.filter(team_id == ^team_id)
+        |> Ash.read_one!()
+        |> case do
+          nil ->
+            {:ok, false}
+
+          _ ->
+            {:ok, true}
+        end
+      end
+    end
   end
 
   attributes do

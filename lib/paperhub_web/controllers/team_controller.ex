@@ -8,8 +8,6 @@ defmodule PaperhubWeb.TeamController do
         redirect(conn, to: ~p"/")
 
       {:error, changeset} ->
-        dbg(changeset)
-
         conn
         |> assign_errors(changeset)
         |> redirect(to: ~p"/onboarding")

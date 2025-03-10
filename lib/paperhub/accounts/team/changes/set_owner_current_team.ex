@@ -5,13 +5,17 @@ defmodule Paperhub.Accounts.Team.Changes.SetOwnerCurrentTeam do
   alias Paperhub.Accounts
 
   def change(changeset, _opts, _context) do
-    Changeset.after_action(changeset, &set_owner_current_team/2)
+    Changeset.after_transaction(changeset, &set_owner_current_team/2)
   end
 
-  defp set_owner_current_team(_changeset, team) do
-    Accounts.get_user!(team.owner_id)
-    |> Accounts.set_current_team!(team.id, %{name: team.name})
+  defp set_owner_current_team(_changeset, {:ok, team}) do
+    case Accounts.set_current_team(team.owner, team.id, actor: team.owner) do
+      {:ok, _user} -> {:ok, team}
+      {:error, changeset} -> {:error, changeset}
+    end
+  end
 
-    {:ok, team}
+  defp set_owner_current_team(_changeset, {:error, changeset}) do
+    {:error, changeset}
   end
 end

@@ -23,6 +23,7 @@ defmodule Paperhub.Accounts.Team do
       transaction? true
 
       change relate_actor(:owner)
+      change Paperhub.Accounts.Team.Changes.AssociateMember
       change Paperhub.Accounts.Team.Changes.SetOwnerCurrentTeam
     end
   end

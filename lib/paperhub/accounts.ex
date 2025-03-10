@@ -7,13 +7,15 @@ defmodule Paperhub.Accounts do
 
     resource Paperhub.Accounts.User do
       define :set_current_team, action: :set_current_team, args: [:team_id]
-      define :get_user, action: :get_user, args: [:id]
     end
 
     resource Paperhub.Accounts.Team do
       define :create_default_team, action: :default_team
     end
 
-    resource Paperhub.Accounts.Membership
+    resource Paperhub.Accounts.Membership do
+      define :create_membership, action: :create
+      define :team_member?, action: :team_member?, args: [:member_id, :team_id]
+    end
   end
 end
