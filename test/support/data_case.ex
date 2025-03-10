@@ -25,6 +25,8 @@ defmodule Paperhub.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Paperhub.DataCase
+      import Ash.Test
+      import Paperhub.Generator
     end
   end
 
