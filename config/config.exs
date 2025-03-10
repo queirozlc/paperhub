@@ -51,7 +51,7 @@ config :spark,
 config :paperhub,
   ecto_repos: [Paperhub.Repo],
   generators: [timestamp_type: :utc_datetime],
-  ash_domains: [Paperhub.Accounts]
+  ash_domains: [Paperhub.Organization, Paperhub.Accounts]
 
 config :paperhub, Paperhub.Repo, migration_primary_key: [type: :identity]
 
