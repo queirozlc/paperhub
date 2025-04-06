@@ -41,6 +41,13 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # Setup tests with RSpec
+  gem "rspec-rails", "~> 7.0.0"
+
+  gem "rubocop-rspec", require: false
+
+  gem "rubocop-rspec_rails", require: false
 end
 
 group :development do
