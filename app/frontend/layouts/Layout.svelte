@@ -3,9 +3,10 @@
 </script>
 
 <script lang="ts">
+  import { ModeWatcher } from 'mode-watcher'
+
   let { children } = $props()
 </script>
 
-<h1>Hello world</h1>
-
+<ModeWatcher />
 {@render children()}

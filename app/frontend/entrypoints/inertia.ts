@@ -1,6 +1,6 @@
+import Layout from '@/layouts/Layout.svelte'
 import { createInertiaApp, type ResolvedComponent } from '@inertiajs/svelte'
 import { mount } from 'svelte'
-import Layout from '@/layouts/Layout.svelte'
 
 createInertiaApp({
   // Set default page title
@@ -28,7 +28,7 @@ createInertiaApp({
     //
     return {
       default: page.default,
-      layout: name.startsWith('Auth/') ? undefined : page.layout || Layout,
+      layout: page.layout || Layout,
     }
   },
 
