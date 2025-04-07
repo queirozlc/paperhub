@@ -4,6 +4,7 @@ inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 plugins:
   - rubocop-rspec
   - rubocop-rspec_rails
+  - rubocop-factory_bot
 
 # Overwrite or add rules to create your own house style
 #

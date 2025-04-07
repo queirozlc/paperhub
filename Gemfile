@@ -44,12 +44,18 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 
-  # Setup tests with RSpec
-  gem "rspec-rails", "~> 7.0.0"
-
   gem "rubocop-rspec", require: false
 
   gem "rubocop-rspec_rails", require: false
+
+  # Code style checking for factory_bot files (https://github.com/rubocop/rubocop-factory_bot)
+  gem "rubocop-factory_bot", require: false
+
+  gem "factory_bot_rails"
+end
+
+group :test do
+  gem "rspec-rails", "~> 7.0.0"
 end
 
 group :development do
