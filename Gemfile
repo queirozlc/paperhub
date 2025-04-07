@@ -52,6 +52,9 @@ group :development, :test do
   gem "rubocop-factory_bot", require: false
 
   gem "factory_bot_rails"
+
+  # Bullet is a tool to help reduce N+ queries and unused eager loading (https://github.com/flyerhzm/bullet)
+  gem "bullet"
 end
 
 group :test do
