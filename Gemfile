@@ -20,6 +20,8 @@ gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"
 
+gem "inertia_rails", "~> 3.7"
+
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
@@ -54,3 +56,5 @@ group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
 end
+
+gem "vite_rails", "~> 3.0"

@@ -1,0 +1,16 @@
+{
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "compilerOptions": {
+    "strict": false,
+    "target": "esNext",
+    "module": "esNext",
+    "moduleResolution": "node",
+    "types": ["vite/client", "vitest/globals"],
+    "paths": {
+      "@/*": ["./app/frontend/*"],
+      "@test/*": ["./spec/frontend/*"]
+    }
+  },
+  "include": ["app/frontend/**/*", "spec/frontend/**/*"],
+  "exclude": ["node_modules", "public"]
+}
