@@ -1,4 +1,4 @@
-![Logo](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/th5xamgrr6se0x5ro4g6.png)
+![Paperhub Logo Favicon](https://github.com/user-attachments/assets/3261346b-44f4-4ceb-a376-a9ebcbd66c91)
 
 # Paperhub
 
