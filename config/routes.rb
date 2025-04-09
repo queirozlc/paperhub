@@ -1,4 +1,15 @@
 Rails.application.routes.draw do
+  authenticated :user do
+    root to: "home#index", as: :authenticated_root
+  end
+
+  root to: redirect("/sign_in")
+
+  devise_for :users, path: "", controllers: {
+    sessions: "users/sessions"
+  }
+
+  get "verify_email" => "users/confirmations#show", as: :verify_email
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
