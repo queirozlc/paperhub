@@ -109,7 +109,7 @@
     @apply border-border outline-ring/50 antialiased;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background-off text-foreground;
   }
 
   h1 {

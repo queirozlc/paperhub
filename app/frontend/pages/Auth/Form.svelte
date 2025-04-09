@@ -16,7 +16,7 @@
     e.preventDefault()
     $form
       .transform((data) => ({
-        user: { ...data },
+        user: { ...data, remember_me: true },
       }))
       .post('/sign_in')
   }

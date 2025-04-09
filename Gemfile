@@ -9,6 +9,10 @@ gem "puma", ">= 5.0"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 
+gem "devise-passwordless"
+
+gem "devise", "~> 4.9"
+
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
 
@@ -19,6 +23,8 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"
+
+gem "vite_rails", "~> 3.0"
 
 gem "inertia_rails", "~> 3.7"
 
@@ -66,6 +72,6 @@ group :development do
   gem "web-console"
 
   gem "erb-formatter", require: false
-end
 
-gem "vite_rails", "~> 3.0"
+  gem "letter_opener"
+end
