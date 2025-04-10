@@ -43,17 +43,17 @@
           </h1>
 
           <p class="text-muted-foreground/60">
-            Enviamos um e-mail para{' '}
+            Enviamos um e-mail para
             <span class="text-accent-foreground font-semibold">
               {email}
-            </span>{' '}
+            </span>
             com um link para verificação. Clique no link para continuar.
           </p>
 
           {#if isGmail(email)}
             <a
               target="__blank"
-              href={`https://mail.google.com/mail/u/0/#search/from%3APaperhub%20%3Chello%40resend.paperhub.app%3E`}
+              href="https://mail.google.com/mail/u/0/#search/from%3APaperhub%20%3Chello%40resend.paperhub.app%3E"
             >
               <Button
                 type="submit"
