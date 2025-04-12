@@ -1,16 +1,7 @@
-class Users::ConfirmationsController < ApplicationController
-  before_action :require_unauthenticated
+class Users::ConfirmationsController < Users::BaseController
+  before_action :require_unauthenticated_user!
 
   def show
-    render inertia: "Confirmations/Show", props: { email: params.fetch(:email, "") }
+    render inertia: "Users/Confirmations", props: { email: params.expect(:email) }
   end
-
-
-
-  private
-    def require_unauthenticated
-      return unless user_signed_in?
-
-      redirect_to authenticated_root_path, flash: { error: "You are already signed in." }
-    end
 end
