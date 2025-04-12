@@ -9,9 +9,13 @@ gem "puma", ">= 5.0"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 
+gem "devise", "~> 4.9"
+
 gem "devise-passwordless"
 
-gem "devise", "~> 4.9"
+gem "devise-verifiable"
+
+gem "acts_as_tenant"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
@@ -61,6 +65,8 @@ group :development, :test do
 
   # Bullet is a tool to help reduce N+ queries and unused eager loading (https://github.com/flyerhzm/bullet)
   gem "bullet"
+
+  gem "pry-rails"
 end
 
 group :test do

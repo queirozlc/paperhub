@@ -3,11 +3,17 @@ Rails.application.routes.draw do
     root to: "home#index", as: :authenticated_root
   end
 
+  authenticate do
+    get "onboarding" => "users/onboarding#edit", as: :user_onboarding
+    patch "onboarding" => "users/onboarding#update", as: :user_onboarding_update
+  end
+
   root to: redirect("/sign_in")
 
   devise_for :users, path: "", controllers: {
-    sessions: "users/sessions"
-  }
+    sessions: "users/sessions",
+    verification: "users/onboarding"
+  }, skip: %i[verification]
 
   get "verify_email" => "users/confirmations#show", as: :verify_email
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

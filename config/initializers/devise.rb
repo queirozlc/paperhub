@@ -337,4 +337,6 @@ Devise.setup do |config|
   # be expired. In other words, each time you sign in, all existing magic links
   # will be considered invalid.
   config.passwordless_expire_old_tokens_on_sign_in = true
+
+  config.fields_for_verification = [ :name ]
 end

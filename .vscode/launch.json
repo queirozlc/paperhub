@@ -1,0 +1,11 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach to rdbg Process",
+      "type": "rdbg",
+      "request": "attach",
+      "debugPort": "${workspaceRoot}/tmp/sockets/rdbg.socket",
+    },
+  ]
+}
