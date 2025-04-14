@@ -5,6 +5,10 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   scan_ruby:
     runs-on: ubuntu-latest
@@ -19,11 +23,22 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Scan for common Rails security vulnerabilities using static analysis
-        run: bin/brakeman --no-pager
-
-  lint:
+  test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CI: true
+      RUBY_YJIT_ENABLE: 1
+      RAILS_ENV: test
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        ports: ['5432:5432']
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,5 +49,28 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install depedencies
+        run: bun i --frozen-lockfile
+
+      - name: Scan for common Rails security vulnerabilities using static analysis
+        run: bin/brakeman --no-pager
+
       - name: Lint code for consistent style
-        run: bin/rubocop -f github
+        run: bin/rubocop -f github --parallel
+
+      - name: Run Eslint
+        run: bun lint
+
+      - name: Setup PostgreSQL
+        run: bin/rails db:create
+
+      - name: Compile assets
+        run: bin/rails assets:precompile
+
+      - name: Run Rails tests
+        run: bin/rspec
