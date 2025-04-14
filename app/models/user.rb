@@ -8,6 +8,7 @@ class User < ApplicationRecord
   has_many :teams, dependent: :destroy, inverse_of: :owner
   has_many :memberships, dependent: :destroy, inverse_of: :member
   has_many :teams, through: :memberships
+  has_one_attached :avatar
   acts_as_tenant :active_team, class_name: "Team", foreign_key: "active_team_id", optional: true
 
   validates :name, length: { minimum: 3 }, allow_blank: true

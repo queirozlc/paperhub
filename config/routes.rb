@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
+  resources :projects
   authenticated :user do
-    root to: "home#index", as: :authenticated_root
+    root to: "projects#index", as: :authenticated_root
   end
 
   authenticate do
