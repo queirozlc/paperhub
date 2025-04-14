@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   inertia_share flash: -> { flash.to_hash }
   inertia_share if: :user_signed_in? do
     {
-      user: current_user
+      user: serialized_user
     }
   end
 
@@ -30,6 +30,14 @@ class ApplicationController < ActionController::Base
   private
     def set_tenant
       return unless current_user
-      Current.user = @user
+      Current.user = current_user
+    end
+
+    def serialized_user
+      return unless current_user
+
+      current_user.as_json(
+        only: %i[id email name teams]
+      )
     end
 end
