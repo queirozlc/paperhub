@@ -41,6 +41,8 @@
   },
   "scripts": {
     "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json",
-    "format": "prettier --write ./app/frontend"
+    "format": "prettier --write ./app/frontend",
+    "lint": "eslint --ext .js,.ts,.svelte ./app/frontend"
   }
 }
+
