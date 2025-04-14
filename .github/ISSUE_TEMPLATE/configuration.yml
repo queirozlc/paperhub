@@ -1,0 +1,29 @@
+name: '⚙️ Settings'
+description: Create a ticket for configuration purposes (deploys, ci stuff etc)
+title: '⚙️ [Configuration]: <title>'
+labels: ['config ⚙️']
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 'Summary'
+      description: Provide a brief explanation of the feature
+      placeholder: Describe in a few lines your feature request
+    validations:
+      required: true
+  - type: textarea
+    id: reference_issues
+    attributes:
+      label: 'Reference Issues'
+      description: Common issues
+      placeholder: '#Issues IDs'
+    validations:
+      required: false
+  - type: textarea
+    id: unresolved_question
+    attributes:
+      label: 'Unresolved questions'
+      description: What questions still remain unresolved ?
+      placeholder: Identify any unresolved issues.
+    validations:
+      required: false
