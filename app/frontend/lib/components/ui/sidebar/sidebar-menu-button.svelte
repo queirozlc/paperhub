@@ -97,7 +97,7 @@
     <Tooltip.Content
       side="right"
       align="center"
-      hidden={sidebar.state !== 'collapsed' || sidebar.isMobile}
+      hidden={sidebar.isMobile}
       children={tooltipContent}
       {...tooltipContentProps}
     />

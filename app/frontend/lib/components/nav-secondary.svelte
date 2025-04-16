@@ -22,7 +22,7 @@
   <Sidebar.GroupContent>
     <Sidebar.Menu>
       {#each items as item (item.title)}
-        <Sidebar.MenuItem>
+        <Sidebar.MenuItem class="font-semibold">
           <Sidebar.MenuButton>
             {#snippet child({ props })}
               <a href={item.url} {...props}>

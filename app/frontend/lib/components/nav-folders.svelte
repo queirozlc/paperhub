@@ -2,11 +2,12 @@
   import * as DropdownMenu from '@/lib/components/ui/dropdown-menu'
   import * as Sidebar from '@/lib/components/ui/sidebar'
   import { ArrowUpRight, Ellipsis, Link, StarOff, Trash2 } from '@lucide/svelte'
+  import { Folder, Plus } from '@voolt_technologies/untitledui-svelte'
 
   let {
-    favorites,
+    folders,
   }: {
-    favorites: {
+    folders: {
       name: string
       url: string
       emoji: string
@@ -17,9 +18,19 @@
 </script>
 
 <Sidebar.Group class="group-data-[collapsible=icon]:hidden">
-  <Sidebar.GroupLabel>Favorites</Sidebar.GroupLabel>
+  <Sidebar.GroupLabel
+    class="cursor-pointer hover:bg-sidebar-accent font-semibold text-sm gap-2"
+  >
+    <Folder class="size-4 text-muted-foreground [&>path]:stroke-[2.5]" />
+    Pastas
+
+    <Sidebar.GroupAction showOnHover>
+      <Plus />
+    </Sidebar.GroupAction>
+  </Sidebar.GroupLabel>
+
   <Sidebar.Menu>
-    {#each favorites as item (item.name)}
+    {#each folders as item (item.name)}
       <Sidebar.MenuItem>
         <Sidebar.MenuButton>
           {#snippet child({ props })}
@@ -67,11 +78,14 @@
         </DropdownMenu.Root>
       </Sidebar.MenuItem>
     {/each}
-    <Sidebar.MenuItem>
-      <Sidebar.MenuButton class="text-sidebar-foreground/70">
-        <Ellipsis />
-        <span>More</span>
-      </Sidebar.MenuButton>
-    </Sidebar.MenuItem>
+
+    {#if folders.length}
+      <Sidebar.MenuItem>
+        <Sidebar.MenuButton class="text-sidebar-foreground/70">
+          <Ellipsis />
+          <span>More</span>
+        </Sidebar.MenuButton>
+      </Sidebar.MenuItem>
+    {/if}
   </Sidebar.Menu>
 </Sidebar.Group>
