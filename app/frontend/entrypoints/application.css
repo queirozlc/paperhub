@@ -23,7 +23,7 @@
   --accent-foreground: hsl(240, 5.9%, 10%);
   --destructive: hsl(0, 84.2%, 60.2%);
   --destructive-foreground: hsl(0, 0%, 98%);
-  --sidebar: oklch(0.985 0 0);
+  --sidebar: oklch(0.958 0.001 360);
   --sidebar-foreground: oklch(0.141 0.005 285.823);
   --sidebar-primary: oklch(0.21 0.006 285.885);
   --sidebar-primary-foreground: oklch(0.985 0 0);
@@ -31,6 +31,8 @@
   --sidebar-accent-foreground: hsl(240, 3.7%, 26.8%);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
+  --tooltip: hsl(240, 3.7%, 2.42%);
+  --tooltip-foreground: hsl(0, 12.42%, 88.42%);
   --border: oklch(0.95 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
   --ring: hsl(240, 5.9%, 10%);
@@ -54,7 +56,7 @@
   --primary-foreground: hsl(0, 0%, 8.4%);
   --secondary: hsl(240, 3.7%, 15.9%);
   --secondary-foreground: hsl(0, 0%, 98%);
-  --muted: oklch(0.274 0.006 286.033);
+  --muted: hsl(240, 3.7%, 15.9%);
   --muted-foreground: hsl(240, 5%, 64.9%);
   --accent: hsl(240, 3.75%, 15.8%);
   --accent-foreground: hsl(0, 0%, 98%);
@@ -65,7 +67,10 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.552 0.016 285.938);
-  --destructive: hsl(0, 62.8%, 30.6%);
+  --sidebar: oklch(0.27 0 0);
+  --tooltip: hsl(236.42, 3.94%, 18.42%);
+  --tooltip-foreground: oklch(0.984 0.0062 283.11);
+  --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: hsl(0, 85.7%, 97.3%);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
@@ -108,7 +113,7 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-  --color-sidebar: var(--muted);
+  --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
@@ -119,6 +124,8 @@
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
+  --color-tooltip: var(--tooltip);
+  --color-tooltip-foreground: var(--tooltip-foreground);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --radius-sm: calc(var(--radius) - 4px);

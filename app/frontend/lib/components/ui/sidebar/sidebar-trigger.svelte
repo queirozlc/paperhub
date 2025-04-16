@@ -19,7 +19,7 @@
 
 <Button
   type="button"
-  onclick={(e) => {
+  onclick={(e: MouseEvent) => {
     onclick?.(e)
     sidebar.toggle()
   }}
@@ -29,6 +29,6 @@
   class={cn('size-7', className)}
   {...restProps}
 >
-  <PanelLeft />
+  <PanelLeft class="text-secondary-foreground" />
   <span class="sr-only">Toggle Sidebar</span>
 </Button>

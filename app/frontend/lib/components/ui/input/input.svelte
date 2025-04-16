@@ -2,10 +2,8 @@
   import { cn } from '@/lib/utils'
   import type { WithElementRef } from 'bits-ui'
   import type { HTMLInputAttributes } from 'svelte/elements'
-  import type { InputEvents } from './index'
 
   type $$Props = WithElementRef<HTMLInputAttributes>
-  type $$Events = InputEvents
 
   let className: $$Props['class'] = undefined
   export let value: $$Props['value'] = undefined
