@@ -59,7 +59,7 @@
 
         {#snippet child({ props })}
           <Link href={item.url} {...props}>
-            <item.icon />
+            <item.icon class="[&>path]:stroke-[2.5]" />
             <span class="grow">{item.title}</span>
 
             {#if item.badge}
