@@ -70,7 +70,7 @@
   --sidebar: oklch(0.27 0 0);
   --tooltip: hsl(236.42, 3.94%, 18.42%);
   --tooltip-foreground: oklch(0.984 0.0062 283.11);
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: oklch(0.577 0.213 22.325);
   --destructive-foreground: hsl(0, 85.7%, 97.3%);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);

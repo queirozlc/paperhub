@@ -1,4 +1,6 @@
 class ProjectsController < ApplicationController
+  include ActionView::Helpers::DateHelper
+
   before_action :set_project, only: %i[ show edit update destroy ]
 
   inertia_share flash: -> { flash.to_hash }
@@ -41,7 +43,7 @@ class ProjectsController < ApplicationController
     @project = Project.new(project_params)
 
     if @project.save
-      redirect_to @project, notice: "Project was successfully created."
+      redirect_to authenticated_root_path, notice: "Project was successfully created."
     else
       redirect_to new_project_url, inertia: { errors: @project.errors }
     end
@@ -62,6 +64,7 @@ class ProjectsController < ApplicationController
     redirect_to projects_url, notice: "Project was successfully destroyed."
   end
 
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project
@@ -74,8 +77,6 @@ class ProjectsController < ApplicationController
     end
 
     def serialize_project(project)
-      project.as_json(only: [
-        :id, :team_id, :title, :description, :visibility
-      ])
+      project.as_json
     end
 end

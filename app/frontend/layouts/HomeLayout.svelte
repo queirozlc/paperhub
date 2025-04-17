@@ -103,7 +103,6 @@
   type Props = {
     projects: ProjectType[]
     teams: TeamType[]
-    flash?: { notice?: string }
   } & ComponentProps<typeof Sidebar.Root>
 
   let { ref = $bindable(null), children, ...restProps }: Props = $props()
@@ -167,7 +166,7 @@
         </Button>
       </div>
     </header>
-    <div class="flex flex-1 flex-col gap-6 px-4 py-10">
+    <div class="flex flex-1 relative flex-col gap-2 py-10">
       {@render children()}
     </div>
   </Sidebar.Inset>

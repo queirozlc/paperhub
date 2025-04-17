@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  resources :projects
+  resources :projects, except: :index
+
   authenticated :user do
     root to: "projects#index", as: :authenticated_root
   end
