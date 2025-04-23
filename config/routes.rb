@@ -1,13 +1,10 @@
 Rails.application.routes.draw do
-  resources :projects, except: :index
-
   authenticated :user do
     root to: "projects#index", as: :authenticated_root
-  end
-
-  authenticate do
     get "onboarding" => "users/onboarding#edit", as: :user_onboarding
     patch "onboarding" => "users/onboarding#update", as: :user_onboarding_update
+    resources :projects, except: %i[index new]
+    delete "projects" => "projects#destroy_all", as: :projects_destroy_all
   end
 
   root to: redirect("/sign_in")

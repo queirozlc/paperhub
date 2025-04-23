@@ -1,5 +1,6 @@
 class Users::OnboardingController < Users::BaseController
   before_action :set_user
+  before_action :require_unverified_user!
 
   def edit
     render inertia: "Users/Onboarding"

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe User, type: :model do
+RSpec.describe User do
   context "when looking up a user" do
     it "finds a user by email when the email condition is met" do
       user = create(:user)
