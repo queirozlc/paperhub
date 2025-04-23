@@ -2,7 +2,6 @@ class ProjectsController < ApplicationController
   include ActionView::Helpers::DateHelper
 
   before_action :set_project, only: %i[ show edit update destroy ]
-
   inertia_share flash: -> { flash.to_hash }
 
   # GET /projects
@@ -23,14 +22,6 @@ class ProjectsController < ApplicationController
     }
   end
 
-  # GET /projects/new
-  def new
-    @project = Project.new
-    render inertia: "Project/New", props: {
-      project: serialize_project(@project)
-    }
-  end
-
   # GET /projects/1/edit
   def edit
     render inertia: "Project/Edit", props: {
@@ -41,6 +32,7 @@ class ProjectsController < ApplicationController
   # POST /projects
   def create
     @project = Project.new(project_params)
+
 
     if @project.save
       redirect_to authenticated_root_path, notice: "Project was successfully created."
@@ -61,7 +53,13 @@ class ProjectsController < ApplicationController
   # DELETE /projects/1
   def destroy
     @project.destroy!
-    redirect_to projects_url, notice: "Project was successfully destroyed."
+    redirect_to authenticated_root_url, notice: "Project was successfully destroyed."
+  end
+
+  # DELETE /projects
+  def destroy_all
+    Project.where(id: project_id_params).destroy_all
+    redirect_to authenticated_root_url, notice: "Projects were successfully destroyed."
   end
 
 
@@ -74,6 +72,10 @@ class ProjectsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def project_params
       params.expect(project: [ :title, :description ])
+    end
+
+    def project_id_params
+      params.expect(ids: [])
     end
 
     def serialize_project(project)

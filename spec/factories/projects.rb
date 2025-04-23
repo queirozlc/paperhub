@@ -1,8 +1,8 @@
 FactoryBot.define do
-  factory :project do
-    team { nil }
-    name { "MyString" }
-    description { "MyString" }
+  factory :blank_project do
+    team { association :team }
+    title { "" }
+    description { "" }
     visibility { 1 }
   end
 end

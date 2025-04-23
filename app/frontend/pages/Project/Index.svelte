@@ -18,10 +18,11 @@
   import { Blocks, FileStack } from '@lucide/svelte'
   import { router } from '@inertiajs/svelte'
   import type { ProjectType } from './types'
+  import type { ComponentProps } from 'svelte'
 
   type Props = {
     projects: ProjectType[]
-  }
+  } & ComponentProps<typeof HomeLayout>
 
   let { projects }: Props = $props()
 

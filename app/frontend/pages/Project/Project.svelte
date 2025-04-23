@@ -1,7 +1,25 @@
 <script lang="ts">
-  import { ListChecks } from '@lucide/svelte'
-  import type { ProjectType } from './types'
+  import {
+    AlertDialog,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogRemove,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+  } from '@/lib/components/ui/alert-dialog'
+  import Checkbox from '@/lib/components/ui/checkbox/checkbox.svelte'
+  import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+  } from '@/lib/components/ui/dropdown-menu'
   import { Separator } from '@/lib/components/ui/separator'
+  import { router } from '@inertiajs/svelte'
+  import { ListChecks } from '@lucide/svelte'
   import {
     DotsVertical,
     File06 as File,
@@ -10,15 +28,13 @@
   } from '@voolt_technologies/untitledui-svelte'
   import { formatDistanceToNowStrict } from 'date-fns'
   import { ptBR } from 'date-fns/locale'
-  import {
-    DropdownMenu,
-    DropdownMenuTrigger,
-  } from '@/lib/components/ui/dropdown-menu'
-  import Checkbox from '@/lib/components/ui/checkbox/checkbox.svelte'
-  import { onMount } from 'svelte'
-  import { router } from '@inertiajs/svelte'
+  import type { ProjectType } from './types'
 
-  let { projects }: { projects: ProjectType[] } = $props()
+  type Props = {
+    projects: ProjectType[]
+  }
+
+  let { projects }: Props = $props()
 
   const daysAgo = (date: Date) =>
     formatDistanceToNowStrict(date, {
@@ -28,6 +44,7 @@
 
   let editMode = $state(false)
   let selectedProjects: number[] = $state([])
+  let openBulkDelete = $state(false)
 
   function toggleCheck(isChecked: boolean) {
     if (isChecked) {
@@ -54,20 +71,32 @@
   function resetEditMode() {
     editMode = false
     selectedProjects = []
+    openBulkDelete = false
   }
 
-  onMount(() => {
-    const handleKeydown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') resetEditMode()
-    }
+  function removeProject(id: number) {
+    router.delete(`/projects/${id}`, {
+      preserveState: true,
+      preserveScroll: true,
+    })
+  }
 
-    document.addEventListener('keydown', handleKeydown)
+  function destroyAll() {
+    router.delete('/projects', {
+      data: {
+        ids: selectedProjects,
+      },
+    })
 
-    return () => {
-      document.removeEventListener('keydown', handleKeydown)
-    }
-  })
+    resetEditMode()
+  }
+
+  const handleKeydown = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') resetEditMode()
+  }
 </script>
+
+<svelte:window onkeydown={handleKeydown} />
 
 <!-- Grid Container -->
 <div class="mt-5 grid grid-cols-[1fr_auto_auto_100px] px-4">
@@ -142,39 +171,92 @@
         </span>
       </div>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          class="cursor-pointer p-1 hover:bg-sidebar-accent rounded-md"
-        >
-          <DotsVertical class="size-4 text-accent-foreground" />
-        </DropdownMenuTrigger>
-      </DropdownMenu>
+      <AlertDialog>
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            class="cursor-pointer p-1 hover:bg-sidebar-accent rounded-md"
+          >
+            <DotsVertical class="size-4 text-accent-foreground" />
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent class="mr-2">
+            <AlertDialogTrigger>
+              <DropdownMenuItem
+                class="text-destructive data-[highlighted]:bg-destructive/10 data-[highlighted]:text-destructive"
+              >
+                <Trash01 />
+                <span class="font-medium font-brand"> Mover para lixeira </span>
+              </DropdownMenuItem>
+            </AlertDialogTrigger>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Tem certeza disso?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Você está prestes a mover o projeto <strong
+                >{project.title}</strong
+              > para a lixeira. Isso significa que você não poderá acessá-lo até
+              que o restaure. Você tem certeza de que deseja continuar?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter class="gap-4">
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogRemove onclick={() => removeProject(project.id)}
+              >Remover</AlertDialogRemove
+            >
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   {/each}
   <!-- Align in center -->
 </div>
 
-{#if editMode}
-  <div
-    class="flex absolute bottom-4 items-center border border-border gap-4 bg-background rounded-md px-4 py-2 shadow-[1px_1px_4px_1px_rgba(0,0,0,0.1)] left-1/2 -translate-x-1/2 -translate-y-1/2"
-  >
-    <span class="text-sm font-brand font-medium text-accent-foreground">
-      {selectedProjects.length} projeto(s) selecionados
-    </span>
+<AlertDialog
+  open={openBulkDelete}
+  onOpenChange={() => (openBulkDelete = !openBulkDelete)}
+>
+  {#if editMode}
+    <div
+      class="flex absolute bottom-4 items-center border border-border gap-4 bg-background rounded-md px-4 py-2 shadow-[1px_1px_4px_1px_rgba(0,0,0,0.1)] left-1/2 -translate-x-1/2 -translate-y-1/2"
+    >
+      <span class="text-sm font-brand font-medium text-accent-foreground">
+        {selectedProjects.length} projeto(s) selecionados
+      </span>
 
-    <div class="flex items-center gap-2">
-      <button
-        class="hover:bg-muted rounded p-1.5 transition-colors duration-75 cursor-pointer"
-        onclick={resetEditMode}
-      >
-        <X class="size-5" />
-      </button>
-      <Separator orientation="vertical" class="h-4" />
-      <div
-        class="cursor-pointer hover:bg-destructive/20 transition-colors duration-75 rounded p-1.5"
-      >
-        <Trash01 class="size-5 text-destructive" />
+      <div class="flex items-center gap-2">
+        <button
+          class="hover:bg-muted rounded p-1.5 transition-colors duration-75 cursor-pointer"
+          onclick={resetEditMode}
+        >
+          <X class="size-5" />
+        </button>
+        <Separator orientation="vertical" class="h-4" />
+        <AlertDialogTrigger>
+          <button
+            class="cursor-pointer hover:bg-destructive/20 transition-colors duration-75 rounded p-1.5 disabled:opacity-45 disabled:cursor-not-allowed"
+            disabled={selectedProjects.length === 0}
+          >
+            <Trash01 class="size-5 text-destructive" />
+          </button>
+        </AlertDialogTrigger>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
+
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Tem certeza disso?</AlertDialogTitle>
+      <AlertDialogDescription>
+        Você está prestes a mover {selectedProjects.length} projeto(s) para a lixeira.
+        Isso significa que você não poderá acessá-lo até que o restaure. Você tem
+        certeza de que deseja continuar?
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter class="gap-4">
+      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+      <AlertDialogRemove onclick={destroyAll}>Remover</AlertDialogRemove>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>

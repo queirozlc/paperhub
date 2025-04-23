@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Membership, type: :model do
+RSpec.describe Membership do
   it "returns true if the user is an owner of the team" do
     user = create(:user_verified)
 
