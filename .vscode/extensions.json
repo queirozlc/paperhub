@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "shopify.ruby-lsp",
+    "elia.erb-formatter",
+    "esbenp.prettier-vscode",
+    "svelte.svelte-vscode",
+    "dbaeumer.vscode-eslint",
+    "rubocop.vscode-rubocop",
+    "bradlc.vscode-tailwindcss",
+  ]
+}
