@@ -1,12 +1,5 @@
 <script lang="ts">
-  import type { ProjectType } from '@/pages/Project/types'
   import { Clock } from '@voolt_technologies/untitledui-svelte'
-
-  type Props = {
-    projects: ProjectType[]
-  }
-
-  let { projects: _projects }: Props = $props()
 </script>
 
 <div class="flex items-center gap-2 text-muted-foreground px-4">
