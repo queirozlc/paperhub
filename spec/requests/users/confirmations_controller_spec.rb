@@ -1,5 +1,3 @@
-require 'rails_helper'
-
 RSpec.describe Users::ConfirmationsController, :inertia do
   describe '#show' do
     let(:user) { create(:user) }
