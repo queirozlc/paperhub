@@ -1,8 +1,5 @@
 class ProjectsController < ApplicationController
-  include ActionView::Helpers::DateHelper
-
-  before_action :set_project, only: %i[ show edit update destroy ]
-  inertia_share flash: -> { flash.to_hash }
+  before_action :set_project, only: %i[ show update destroy ]
 
   # GET /projects
   def index
@@ -11,7 +8,7 @@ class ProjectsController < ApplicationController
       projects: @projects.map do |project|
         serialize_project(project)
       end,
-      teams: current_user.teams
+      teams: current_user.teams.map { |team| team.as_json }
     }
   end
 
@@ -22,17 +19,9 @@ class ProjectsController < ApplicationController
     }
   end
 
-  # GET /projects/1/edit
-  def edit
-    render inertia: "Project/Edit", props: {
-      project: serialize_project(@project)
-    }
-  end
-
   # POST /projects
   def create
     @project = Project.new(project_params)
-
 
     if @project.save
       redirect_to authenticated_root_path, notice: "Project was successfully created."
