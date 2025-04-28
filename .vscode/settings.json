@@ -7,7 +7,7 @@
       "source.fixAll.ts": "always",
       "source.fixAll.eslint": "always",
       "source.sortImports": "always",
-      "source.removeUnusedImports": "always"
+      "source.removeUnusedImports": "always",
     }
   }
 }

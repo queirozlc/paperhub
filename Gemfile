@@ -67,6 +67,8 @@ group :development, :test do
   gem "bullet"
 
   gem "pry-rails"
+
+  gem "pry-stack_explorer", "~> 0.6.0"
 end
 
 group :test do

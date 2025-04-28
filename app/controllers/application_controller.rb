@@ -37,7 +37,7 @@ class ApplicationController < ActionController::Base
       return unless current_user
 
       current_user.as_json(
-        only: %i[id email name teams]
+        only: %i[id email name]
       )
     end
 end
