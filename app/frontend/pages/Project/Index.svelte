@@ -1,28 +1,27 @@
 <script module>
-  import empty from '@/assets/images/empty.png'
   import emptyDark from '@/assets/images/empty-dark.png'
+  import empty from '@/assets/images/empty.png'
 </script>
 
 <script lang="ts">
   import HomeLayout from '@/layouts/HomeLayout.svelte'
   import MostRecents from '@/lib/components/most-recents.svelte'
-  import Project from './Project.svelte'
   import Button from '@/lib/components/ui/button/button.svelte'
-  import { ChevronDown, File02 } from '@voolt_technologies/untitledui-svelte'
   import {
     DropdownMenu,
-    DropdownMenuTrigger,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuTrigger,
   } from '@/lib/components/ui/dropdown-menu'
-  import { Blocks, FileStack } from '@lucide/svelte'
   import { router } from '@inertiajs/svelte'
+  import { Blocks, FileStack } from '@lucide/svelte'
+  import { ChevronDown, File02 } from '@voolt_technologies/untitledui-svelte'
+  import Project from './Project.svelte'
   import type { ProjectType } from './types'
-  import type { ComponentProps } from 'svelte'
 
   type Props = {
     projects: ProjectType[]
-  } & ComponentProps<typeof HomeLayout>
+  }
 
   let { projects }: Props = $props()
 
@@ -34,7 +33,7 @@
 </script>
 
 <HomeLayout {projects} teams={[]}>
-  <MostRecents {projects} />
+  <MostRecents />
 
   <div class="flex items-center justify-between px-4">
     <h5 class="font-brand text-muted-foreground font-medium">Seus Projetos</h5>

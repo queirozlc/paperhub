@@ -1,5 +1,3 @@
-require 'rails_helper'
-
 RSpec.describe Users::OnboardingController, :inertia do
   context "when GET /onboarding with unverified user" do
     include_context "when user is logged in"

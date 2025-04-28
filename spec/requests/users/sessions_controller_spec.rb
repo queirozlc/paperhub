@@ -1,5 +1,3 @@
-require 'rails_helper'
-
 RSpec.describe Users::SessionsController, :inertia do
   describe 'GET /sign_in' do
     context 'when user is not logged in' do
