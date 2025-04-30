@@ -78,6 +78,7 @@
   <input
     type="file"
     name="profilePicture"
+    id="profilePicture"
     accept="image/*"
     class="absolute w-0 h-0 opacity-0 overflow-hidden"
     bind:this={fileInput}
