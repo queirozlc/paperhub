@@ -1,4 +1,5 @@
 export type TeamType = {
-  id: string
+  id: number
   name: string
+  cover: File | null
 }
