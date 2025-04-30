@@ -5,7 +5,7 @@ class User < ApplicationRecord
     :rememberable, :validatable, :trackable, :verifiable
   verify_fields :name
 
-  has_many :teams, dependent: :destroy, inverse_of: :owner
+  has_many :owned_teams, class_name: "Team", foreign_key: :owner_id, inverse_of: :owner, dependent: :destroy
   has_many :memberships, dependent: :destroy, inverse_of: :member
   has_many :teams, through: :memberships
   has_one_attached :avatar
@@ -30,5 +30,11 @@ class User < ApplicationRecord
     assign_attributes(active_team: team, name: name)
     self.memberships.build(team: team, role: :owner)
     save
+  end
+
+  def set_current_team(team)
+    ActsAsTenant.with_mutable_tenant do
+      update!(active_team: team)
+    end
   end
 end

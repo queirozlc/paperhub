@@ -8,7 +8,7 @@ class ProjectsController < ApplicationController
       projects: @projects.map do |project|
         serialize_project(project)
       end,
-      teams: current_user.teams.map do |team|
+      teams: current_user.teams.includes(:cover_attachment).map do |team|
         serialize_team(team)
       end
     }
@@ -74,6 +74,10 @@ class ProjectsController < ApplicationController
     end
 
     def serialize_team(team)
-      team.as_json.merge("cover" => team.cover_url)
+      team.as_json.merge("cover" => team_cover(team))
+    end
+
+    def team_cover(team)
+      url_for(team.cover) if team.cover.attached?
     end
 end

@@ -2,16 +2,20 @@
   import * as DropdownMenu from '@/lib/components/ui/dropdown-menu'
   import * as Sidebar from '@/lib/components/ui/sidebar'
   import * as Dialog from '@/lib/components/ui/dialog'
+  import * as Avatar from '@/lib/components/ui/avatar'
   import TeamForm from '@/pages/Team/Form.svelte'
   import type { TeamType } from '@/pages/Team/types'
-  import { router } from '@inertiajs/svelte'
+  import { page, router } from '@inertiajs/svelte'
   import { ChevronDown, Plus } from '@lucide/svelte'
   import { defaultAvatar } from '../utils'
   import { Check } from '@voolt_technologies/untitledui-svelte'
+  import type { UserType } from '@/pages/Users/types'
 
   let { teams }: { teams: TeamType[] } = $props()
 
-  let activeTeam = $state(teams[0])
+  const user = $page.props.user as UserType
+
+  let activeTeam = $state(teams.find((team) => team.id === user.active_team_id))
   let open = $state(false)
 
   function logout() {
@@ -30,15 +34,21 @@
         <DropdownMenu.Trigger>
           {#snippet child({ props })}
             <Sidebar.MenuButton {...props} class="w-fit px-1.5">
-              <div
-                class="text-sidebar-primary-foreground flex aspect-square size-5 items-center justify-center rounded-md"
+              <Avatar.Root
+                class="text-sidebar-primary-foreground flex aspect-square size-6 items-center justify-center rounded-md"
               >
-                <img
-                  alt="fallback active team cover"
-                  src={defaultAvatar(activeTeam.id).toDataUri()}
-                  class="size-5 rounded"
+                <Avatar.Image
+                  src={activeTeam.cover}
+                  class="aspect-square object-cover size-6 rounded"
                 />
-              </div>
+                <Avatar.Fallback>
+                  <img
+                    alt="fallback active team cover"
+                    src={defaultAvatar(activeTeam.id).toDataUri()}
+                    class="size-5 rounded"
+                  />
+                </Avatar.Fallback>
+              </Avatar.Root>
               <span class="truncate font-semibold font-brand"
                 >Time {activeTeam.name}</span
               >
@@ -62,15 +72,23 @@
               onSelect={() => (activeTeam = team)}
               class="gap-2 p-2"
             >
-              <div
+              <Avatar.Root
                 class="flex size-6 items-center justify-center rounded-sm border"
               >
-                <img
-                  alt="fallback team cover"
-                  src={defaultAvatar(team.id).toDataUri()}
-                  class="size-5 shrink-0 rounded-sm"
+                <Avatar.Image
+                  src={team.cover}
+                  alt="team cover"
+                  class="object-cover size-5 rounded-sm shrink-0"
                 />
-              </div>
+
+                <Avatar.Fallback>
+                  <img
+                    alt="fallback team cover"
+                    src={defaultAvatar(team.id).toDataUri()}
+                    class="size-5 shrink-0 rounded-sm"
+                  />
+                </Avatar.Fallback>
+              </Avatar.Root>
               <span
                 class="truncate grow font-medium font-brand text-sm text-muted-foreground"
                 >{team.name}</span
