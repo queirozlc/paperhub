@@ -8,7 +8,9 @@ class ProjectsController < ApplicationController
       projects: @projects.map do |project|
         serialize_project(project)
       end,
-      teams: current_user.teams.map { |team| team.as_json }
+      teams: current_user.teams.map do |team|
+        serialize_team(team)
+      end
     }
   end
 
@@ -69,5 +71,9 @@ class ProjectsController < ApplicationController
 
     def serialize_project(project)
       project.as_json
+    end
+
+    def serialize_team(team)
+      team.as_json.merge("cover" => team.cover_url)
     end
 end
