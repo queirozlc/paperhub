@@ -22,7 +22,8 @@ class User < ApplicationRecord
     end
   end
 
-  def new_personal_team(name)
+  def new_personal_team(attrs = {})
+    name = attrs[:name]
     return if active_team.present? || name.blank?
 
     team = teams.build(name: name, owner: self)
