@@ -6,4 +6,13 @@ class Team < ApplicationRecord
   has_one_attached :cover
 
   validates :name, presence: true
+
+
+  def cover_url
+    if cover.attached?
+      Rails.application.routes.url_helpers.rails_blob_path(cover, only_path: true)
+    else
+      nil
+    end
+  end
 end
