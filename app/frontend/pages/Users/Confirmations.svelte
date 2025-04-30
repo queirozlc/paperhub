@@ -13,6 +13,14 @@
   const isGmail = (email: string) => email.endsWith('@gmail.com')
 </script>
 
+<svelte:head>
+  <title>Confirmação de e-mail</title>
+  <meta
+    name="description"
+    content="Confirme seu e-mail para continuar com o cadastro."
+  />
+</svelte:head>
+
 <div class="bg-background-off grid min-h-screen">
   <section
     class="flex w-full justify-center px-8 py-16 md:mb-32 md:items-center"
