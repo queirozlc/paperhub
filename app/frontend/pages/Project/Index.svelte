@@ -18,12 +18,14 @@
   import { ChevronDown, File02 } from '@voolt_technologies/untitledui-svelte'
   import Project from './Project.svelte'
   import type { ProjectType } from './types'
+  import type { TeamType } from '../Team/types'
 
   type Props = {
     projects: ProjectType[]
+    teams: TeamType[]
   }
 
-  let { projects }: Props = $props()
+  let { projects, teams }: Props = $props()
 
   function newProject(params = { title: '', description: '' }) {
     router.post('/projects', {
@@ -32,7 +34,7 @@
   }
 </script>
 
-<HomeLayout {projects} teams={[]}>
+<HomeLayout {projects} {teams}>
   <MostRecents />
 
   <div class="flex items-center justify-between px-4">

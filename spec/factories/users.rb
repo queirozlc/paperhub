@@ -7,7 +7,7 @@ FactoryBot.define do
     name { "John Doe" }
 
     after (:create) do |user|
-      user.new_personal_team(user.name)
+      user.new_personal_team({ name: user.name })
     end
   end
 end

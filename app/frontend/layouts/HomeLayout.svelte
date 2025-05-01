@@ -1,11 +1,5 @@
 <script lang="ts" module>
-  import {
-    AudioWaveform,
-    Blocks,
-    Command,
-    MessageCircleQuestion,
-    Sparkles,
-  } from '@lucide/svelte'
+  import { Blocks, MessageCircleQuestion, Sparkles } from '@lucide/svelte'
 
   import {
     FilterLines,
@@ -16,23 +10,6 @@
   } from '@voolt_technologies/untitledui-svelte'
 
   const data = {
-    teams: [
-      {
-        name: 'Acme Inc',
-        logo: Command,
-        plan: 'Enterprise',
-      },
-      {
-        name: 'Acme Corp.',
-        logo: AudioWaveform,
-        plan: 'Startup',
-      },
-      {
-        name: 'Evil Corp.',
-        logo: Command,
-        plan: 'Free',
-      },
-    ],
     navMain: [
       {
         title: 'Pergunte ao Turing ✨',
@@ -105,7 +82,7 @@
     teams: TeamType[]
   } & ComponentProps<typeof Sidebar.Root>
 
-  let { ref = $bindable(null), children, ...restProps }: Props = $props()
+  let { teams, ref = $bindable(null), children, ...restProps }: Props = $props()
 </script>
 
 <svelte:head>
@@ -119,7 +96,7 @@
 <Sidebar.Provider>
   <Sidebar.Root bind:ref {...restProps}>
     <Sidebar.Header>
-      <TeamSwitcher teams={data.teams} />
+      <TeamSwitcher {teams} />
       <NavMain items={data.navMain} />
     </Sidebar.Header>
     <Sidebar.Content>

@@ -19,19 +19,19 @@ RSpec.describe User do
     let (:name) { "John" }
 
     it "creates a new personal team for the user" do
-      expect { user.new_personal_team(name) }.to change { user.teams.count }.by(1)
+      expect { user.new_personal_team(name:) }.to change { user.teams.count }.by(1)
     end
 
     it "does not create a new personal team if the user already has an active team" do
       user_with_team = create(:user_verified)
 
-      user_with_team.new_personal_team(name)
+      user_with_team.new_personal_team(name:)
 
-      expect { user_with_team.new_personal_team(name) }.not_to change { user_with_team.teams.count }
+      expect { user_with_team.new_personal_team(name:) }.not_to change { user_with_team.teams.count }
     end
 
     it "does not create a new personal team if the name is blank" do
-      expect { user.new_personal_team("") }.not_to change { user.teams.count }
+      expect { user.new_personal_team({ name: "" }) }.not_to change { user.teams.count }
     end
   end
 end

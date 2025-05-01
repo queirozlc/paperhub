@@ -9,7 +9,7 @@ RSpec.describe Users::SessionsController, :inertia do
     end
 
     context 'when user is logged in' do
-      include_context 'when user is logged in'
+      login_user
 
       it 'redirects to the root path' do
         get new_user_session_path

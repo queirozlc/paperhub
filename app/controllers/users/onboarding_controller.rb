@@ -7,7 +7,7 @@ class Users::OnboardingController < Users::BaseController
   end
 
   def update
-    if @user.new_personal_team(user_params[:name])
+    if @user.new_personal_team(user_params)
       redirect_to authenticated_root_path, notice: "User updated successfully."
     else
       redirect_to user_onboarding_path, inertia: { errors: @user.errors }
