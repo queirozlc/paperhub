@@ -57,7 +57,7 @@ class ProjectsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project
-      @project = Project.find(params[:id])
+      @project = Project.find_by_sqid!(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
@@ -70,7 +70,7 @@ class ProjectsController < ApplicationController
     end
 
     def serialize_project(project)
-      project.as_json
+      project.as_json(methods: :sqid)
     end
 
     def serialize_team(team)
