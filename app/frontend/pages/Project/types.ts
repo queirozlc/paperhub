@@ -1,4 +1,6 @@
-export interface ProjectType {
+import type { HashableModel } from '@/lib/utils'
+
+export interface ProjectType extends HashableModel {
   id: number
   title: string
   description: string
