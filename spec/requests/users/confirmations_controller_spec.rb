@@ -1,10 +1,12 @@
 RSpec.describe Users::ConfirmationsController, :inertia do
+  let(:user) { create(:user) }
+
+  before do
+    sign_in user, scope: :user
+  end
+
   describe '#show' do
-    let(:user) { create(:user) }
-
     context "when user is already logged in" do
-      include_context 'when user is logged in'
-
       it 'redirects to the root path' do
         get verify_email_url, params: { email: user.email }
 

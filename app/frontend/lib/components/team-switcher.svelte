@@ -25,6 +25,20 @@
   function cancel() {
     open = false
   }
+
+  function switchTeam(team: TeamType) {
+    router.patch(
+      `/users/teams/${user.id}`,
+      {
+        user: { active_team_id: team.id },
+      },
+      {
+        preserveState: false,
+        preserveUrl: false,
+        preserveScroll: false,
+      }
+    )
+  }
 </script>
 
 <Sidebar.Menu>
@@ -69,7 +83,7 @@
           >
           {#each teams as team, index (team.id)}
             <DropdownMenu.Item
-              onSelect={() => (activeTeam = team)}
+              onSelect={() => switchTeam(team)}
               class="gap-2 p-2"
             >
               <Avatar.Root
