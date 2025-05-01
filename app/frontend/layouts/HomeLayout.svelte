@@ -1,11 +1,5 @@
 <script lang="ts" module>
-  import {
-    AudioWaveform,
-    Blocks,
-    Command,
-    MessageCircleQuestion,
-    Sparkles,
-  } from '@lucide/svelte'
+  import { Blocks, MessageCircleQuestion, Sparkles } from '@lucide/svelte'
 
   import {
     FilterLines,
