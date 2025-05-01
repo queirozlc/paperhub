@@ -1,3 +1,5 @@
+import { notionistsNeutral } from '@dicebear/collection'
+import { createAvatar } from '@dicebear/core'
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
@@ -31,3 +33,16 @@ export function getOS() {
 
   return os
 }
+
+export const defaultAvatar = (key: number = Math.random()) =>
+  createAvatar(notionistsNeutral, {
+    seed: key.toString(),
+    lips: [
+      'variant03',
+      'variant08',
+      'variant05',
+      'variant06',
+      'variant26',
+      'variant28',
+    ],
+  })

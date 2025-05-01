@@ -5,6 +5,10 @@ Rails.application.routes.draw do
     patch "onboarding" => "users/onboarding#update", as: :user_onboarding_update
     resources :projects, except: %i[index new edit]
     delete "projects" => "projects#destroy_all", as: :destroy_all_projects
+    resources :teams, only: %i[create]
+    namespace :users do
+      resources :teams, only: %i[update], controller: "profile"
+    end
   end
 
   root to: redirect("/sign_in")

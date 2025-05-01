@@ -1,7 +1,11 @@
 RSpec.describe Users::OnboardingController, :inertia do
-  context "when GET /onboarding with unverified user" do
-    include_context "when user is logged in"
+  let(:user) { create(:user) }
 
+  before do
+    sign_in user, scope: :user
+  end
+
+  context "when GET /onboarding with unverified user" do
     it "renders the onboarding page" do
       get user_onboarding_path
 
@@ -10,8 +14,6 @@ RSpec.describe Users::OnboardingController, :inertia do
   end
 
   context "when PATCH /onboarding with unverified user" do
-    include_context "when user is logged in"
-
     it "updates the user and redirects to the root path" do
       patch user_onboarding_update_path, params: { user: { name: "New Name" } }
 
