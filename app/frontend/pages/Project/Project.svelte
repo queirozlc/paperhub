@@ -18,7 +18,7 @@
     DropdownMenuTrigger,
   } from '@/lib/components/ui/dropdown-menu'
   import { Separator } from '@/lib/components/ui/separator'
-  import { router } from '@inertiajs/svelte'
+  import { Link, router } from '@inertiajs/svelte'
   import { ListChecks } from '@lucide/svelte'
   import {
     DotsVertical,
@@ -136,7 +136,8 @@
 
 <div class="mt-2 space-y-1">
   {#each projects as project (project.id)}
-    <div
+    <Link
+      href={`/projects/${project.sqid}`}
       class="grid grid-cols-[1fr_auto_auto] items-center hover:bg-muted py-2 px-4 rounded cursor-pointer"
     >
       <div class="flex items-center gap-4">
@@ -208,7 +209,7 @@
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </Link>
   {/each}
   <!-- Align in center -->
 </div>
