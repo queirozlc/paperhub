@@ -10,7 +10,7 @@ RSpec.describe ProjectsController, :inertia do
       get authenticated_root_url
 
       expect_inertia.to render_component("Project/Index").and include_props(
-        projects: [ project.as_json ]
+        projects: [ project.as_json(methods: :sqid) ]
       )
     end
   end
@@ -19,7 +19,7 @@ RSpec.describe ProjectsController, :inertia do
     it "renders a successful response" do
       get project_url(project)
       expect_inertia.to render_component("Project/Show").and include_props(
-        project: project.as_json
+        project: project.as_json(methods: :sqid)
       )
     end
   end
