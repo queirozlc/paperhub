@@ -70,9 +70,5 @@ RSpec.configure do |config|
   config.include Rails.application.routes.url_helpers, type: :request
   config.include FactoryBot::Syntax::Methods
   config.include Devise::Test::IntegrationHelpers, type: :request
-end
-
-RSpec.shared_context 'when user is logged in' do
-  let(:user) { create(:user) }
-  before { sign_in user, scope: :user }
+  config.extend ControllerMacros, type: :request
 end
