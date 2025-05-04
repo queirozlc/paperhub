@@ -3,6 +3,9 @@
   import { Link } from '@inertiajs/svelte'
   import { SearchSm } from '@voolt_technologies/untitledui-svelte'
   import { getOS } from '../utils'
+  
+  import * as Command from "@/lib/components/ui/command/index.js";
+  import { Calculator, Calendar, CreditCard, Settings, Smile, User } from '@lucide/svelte'
 
   let {
     items,
@@ -20,6 +23,12 @@
   } = $props()
 
   const os = getOS()
+
+  let isSearchDialogOpen = $state(false);
+
+  function openSearchDialog() {
+    isSearchDialogOpen = true;
+  }
 </script>
 
 <Sidebar.Menu>
@@ -42,13 +51,53 @@
       {/snippet}
 
       {#snippet child({ props })}
-        <div {...props}>
+        <button {...props} onclick={openSearchDialog}>
           <SearchSm />
           <span class="grow">Pesquisar</span>
-        </div>
+        </button>
       {/snippet}
     </Sidebar.MenuButton>
   </Sidebar.MenuItem>
+
+  <!-- Search dialog -->
+  <Command.Dialog bind:open={isSearchDialogOpen}>
+    <Command.Input placeholder="Type a command or search..." />
+    <Command.List>
+      <Command.Empty>No results found.</Command.Empty>
+      <Command.Group heading="Suggestions">
+        <Command.Item>
+          <Calendar class="mr-2 size-4" />
+          <span>Calendar</span>
+        </Command.Item>
+        <Command.Item>
+          <Smile class="mr-2 size-4" />
+          <span>Search Emoji</span>
+        </Command.Item>
+        <Command.Item>
+          <Calculator class="mr-2 size-4" />
+          <span>Calculator</span>
+        </Command.Item>
+      </Command.Group>
+      <Command.Separator />
+      <Command.Group heading="Settings">
+        <Command.Item>
+          <User class="mr-2 size-4" />
+          <span>Profile</span>
+          <Command.Shortcut>⌘P</Command.Shortcut>
+        </Command.Item>
+        <Command.Item>
+          <CreditCard class="mr-2 size-4" />
+          <span>Billing</span>
+          <Command.Shortcut>⌘B</Command.Shortcut>
+        </Command.Item>
+        <Command.Item>
+          <Settings class="mr-2 size-4" />
+          <span>Settings</span>
+          <Command.Shortcut>⌘S</Command.Shortcut>
+        </Command.Item>
+      </Command.Group>
+    </Command.List>
+  </Command.Dialog>
 
   {#each items as item (item.title)}
     <Sidebar.MenuItem class="font-semibold">
