@@ -5,10 +5,12 @@
   import { getOS } from '../utils'
   
   import * as Command from "@/lib/components/ui/command/index.js";
-  import { Calculator, Calendar, CreditCard, Settings, Smile, User } from '@lucide/svelte'
+  import { File } from '@lucide/svelte'
+  import type { ProjectType } from '@/pages/Project/types'
+  import type { TeamType } from '@/pages/Team/types'
 
   let {
-    items,
+    items, documents, teams
   }: {
     items: {
       title: string
@@ -19,15 +21,33 @@
       icon: any
       isActive?: boolean
       badge?: number
-    }[]
+    }[],
+    documents: ProjectType[],
+    teams: TeamType[],
   } = $props()
 
   const os = getOS()
 
   let isSearchDialogOpen = $state(false);
+  let filteredDocs = $state(documents);
+  let searchTerm = $state('');
 
   function openSearchDialog() {
     isSearchDialogOpen = true;
+  }
+
+  function handleInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    searchTerm = input.value;
+
+    if (!searchTerm) {
+      filteredDocs = documents;
+      return;
+    }
+
+    filteredDocs = documents.filter(doc =>
+      (doc.title || 'Sem título').toLowerCase().includes(searchTerm.toLowerCase())
+    );
   }
 </script>
 
@@ -39,12 +59,9 @@
       }}
     >
       {#snippet tooltipContent()}
-        <span class="text-xs">Pesquise por projetos, tarefas e muito mais.</span
-        >
+        <span class="text-xs">Pesquise por projetos, tarefas e muito mais.</span>
         {#if os === 'macOS'}
-          <kbd
-            class="bg-tooltip text-tooltip-foreground pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border border-tooltip px-1.5 mt-1 font-mono text-[10px] font-medium opacity-100"
-          >
+          <kbd class="bg-tooltip text-tooltip-foreground pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border border-tooltip px-1.5 mt-1 font-mono text-[10px] font-medium opacity-100">
             <span class="text-xs">⌘</span>K
           </kbd>
         {/if}
@@ -60,41 +77,33 @@
   </Sidebar.MenuItem>
 
   <!-- Search dialog -->
-  <Command.Dialog bind:open={isSearchDialogOpen}>
-    <Command.Input placeholder="Type a command or search..." />
+  <Command.Dialog bind:open={isSearchDialogOpen} ><!--shouldFilter={false}-->
+    <Command.Input placeholder="Pesquise um documento ou seu conteúdo..." oninput={handleInput} />
     <Command.List>
-      <Command.Empty>No results found.</Command.Empty>
-      <Command.Group heading="Suggestions">
+      <Command.Empty>Nenhum resultado encontrado.</Command.Empty>
+      <Command.Group heading="Deste time">
+        {#each filteredDocs as doc (doc.id)}
+          <Command.Item>
+            <File class="size-5 text-muted-foreground" />
+            <span>{ doc.title || "Sem título" }</span>
+          </Command.Item>
+        {/each}
+      </Command.Group>
+      <Command.Separator />
+      <Command.Group heading="De outros times">
         <Command.Item>
-          <Calendar class="mr-2 size-4" />
-          <span>Calendar</span>
-        </Command.Item>
-        <Command.Item>
-          <Smile class="mr-2 size-4" />
-          <span>Search Emoji</span>
-        </Command.Item>
-        <Command.Item>
-          <Calculator class="mr-2 size-4" />
-          <span>Calculator</span>
+          <File class="size-5 text-muted-foreground" />
+          <span>TODO</span>
         </Command.Item>
       </Command.Group>
       <Command.Separator />
-      <Command.Group heading="Settings">
-        <Command.Item>
-          <User class="mr-2 size-4" />
-          <span>Profile</span>
-          <Command.Shortcut>⌘P</Command.Shortcut>
-        </Command.Item>
-        <Command.Item>
-          <CreditCard class="mr-2 size-4" />
-          <span>Billing</span>
-          <Command.Shortcut>⌘B</Command.Shortcut>
-        </Command.Item>
-        <Command.Item>
-          <Settings class="mr-2 size-4" />
-          <span>Settings</span>
-          <Command.Shortcut>⌘S</Command.Shortcut>
-        </Command.Item>
+      <Command.Group heading="Outras opções">
+        {#each items as item (item.title)}
+          <Command.Item>
+            <item.icon class="[&>path]:stroke-[2.5]" />
+            <span class="grow">{item.title}</span>
+          </Command.Item>
+        {/each}
       </Command.Group>
     </Command.List>
   </Command.Dialog>
@@ -112,11 +121,8 @@
             <span class="grow">{item.title}</span>
 
             {#if item.badge}
-              <div
-                class="bg-primary rounded-full flex items-center justify-center size-5 p-0.5"
-              >
-                <span class="text-xs text-primary-foreground">{item.badge}</span
-                >
+              <div class="bg-primary rounded-full flex items-center justify-center size-5 p-0.5">
+                <span class="text-xs text-primary-foreground">{item.badge}</span>
               </div>
             {/if}
           </Link>
