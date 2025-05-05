@@ -68,15 +68,21 @@ class Sqids
           define_method(attribute) do
             return nil unless persisted?
 
-            config = self.class.sqid_configurations[attribute.to_sym]
+            # Use instance variable to memoize sqid instances per attribute
+            sqids_variable = "@_sqids_instance_for_#{attribute}"
 
-            sqids_instance = Sqids.new(
-              alphabet: config[:alphabet],
-              blocklist: config[:blocklist],
-              min_length: config[:min_length]
-            )
+            unless instance_variable_defined?(sqids_variable)
+              config = self.class.sqid_configurations[attribute.to_sym]
 
-            sqids_instance.encode([ id ])
+              instance_variable_set(sqids_variable, Sqids.new(
+                alphabet: config[:alphabet],
+                blocklist: config[:blocklist],
+                min_length: config[:min_length]
+              ))
+            end
+
+            # Use the memoized instance
+            instance_variable_get(sqids_variable).encode([ id ])
           end
 
           # Define a URL-friendly alias to the ID
