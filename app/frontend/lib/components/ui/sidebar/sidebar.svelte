@@ -11,6 +11,7 @@
     side = 'left',
     variant = 'sidebar',
     collapsible = 'offcanvas',
+    transparent = false,
     class: className,
     children,
     ...restProps
@@ -18,6 +19,7 @@
     side?: 'left' | 'right'
     variant?: 'sidebar' | 'floating' | 'inset'
     collapsible?: 'offcanvas' | 'icon' | 'none'
+    transparent?: boolean
   } = $props()
 
   const sidebar = useSidebar()
