@@ -220,7 +220,7 @@
 >
   {#if editMode}
     <div
-      class="flex absolute bottom-4 items-center border border-border gap-4 bg-background rounded-md px-4 py-2 shadow-[1px_1px_4px_1px_rgba(0,0,0,0.1)] left-1/2 -translate-x-1/2 -translate-y-1/2"
+      class="flex absolute bottom-4 items-center border border-border gap-4 bg-background/70 rounded-md px-4 py-2 shadow-[1px_1px_4px_1px_rgba(0,0,0,0.1)] left-1/2 -translate-x-1/2 -translate-y-1/2"
     >
       <span class="text-sm font-brand font-medium text-accent-foreground">
         {selectedProjects.length} projeto(s) selecionados
