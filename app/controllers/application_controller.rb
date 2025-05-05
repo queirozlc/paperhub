@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   inertia_share flash: -> { flash.to_hash }
   inertia_share if: :user_signed_in? do
     {
-      user: serialized_user
+      user: -> { serialized_user }
     }
   end
 

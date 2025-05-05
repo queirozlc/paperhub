@@ -1,5 +1,6 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: %i[ show update destroy ]
+  before_action :set_project_from_hash, only: %i[ show ]
+  before_action :set_project, only: %i[ update destroy ]
 
   # GET /projects
   def index
@@ -8,16 +9,16 @@ class ProjectsController < ApplicationController
       projects: @projects.map do |project|
         serialize_project(project)
       end,
-      teams: current_user.teams.includes(:cover_attachment).map do |team|
+      teams: -> { current_user.teams.includes(:cover_attachment).map do |team|
         serialize_team(team)
-      end
+      end }
     }
   end
 
   # GET /projects/1
   def show
     render inertia: "Project/Show", props: {
-      project: serialize_project(@project)
+      project: -> { serialize_project(@project) }
     }
   end
 
@@ -57,6 +58,10 @@ class ProjectsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project
+      @project = Project.find(params[:id])
+    end
+
+    def set_project_from_hash
       @project = Project.find_by_sqid!(params[:id])
     end
 
