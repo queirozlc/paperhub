@@ -17,7 +17,7 @@
     onclick?: (e: MouseEvent) => void
   } = $props()
 
-  let sidebar = $derived.by(() => {
+  const sidebar = $derived.by(() => {
     const registry = getSidebarRegistry()
     return registry.get(htmlFor)
   })

@@ -10,7 +10,6 @@ export class SidebarRegistry {
   register(state: SidebarState, key: string = SIDEBAR_COOKIE_NAME) {
     if (this.registry.has(key)) {
       console.warn(`Sidebar with name "${key}" is already registered.`)
-      return
     }
 
     this.registry.set(key, state)
@@ -23,6 +22,14 @@ export class SidebarRegistry {
       return
     }
     return state
+  }
+
+  unregister(key: string = SIDEBAR_COOKIE_NAME) {
+    if (!this.registry.has(key)) {
+      console.warn(`Sidebar with name "${key}" is not registered.`)
+      return
+    }
+    this.registry.delete(key)
   }
 }
 

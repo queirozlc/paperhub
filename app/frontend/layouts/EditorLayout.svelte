@@ -25,7 +25,11 @@
 </svelte:head>
 
 <div class="overflow-hidden flex max-h-dvh w-full">
-  <Sidebar.Provider name="summary" class="w-fit overflow-hidden max-h-dvh">
+  <Sidebar.Provider
+    open={false}
+    name="summary"
+    class="w-fit overflow-hidden max-h-dvh"
+  >
     <TableOfContents />
   </Sidebar.Provider>
 
@@ -41,7 +45,12 @@
     </div>
   </Sidebar.Inset>
 
-  <Sidebar.Provider name="turing" class="w-fit overflow-hidden max-h-dvh">
+  <Sidebar.Provider
+    name="turing"
+    open={true}
+    style="--sidebar-width: 18rem;"
+    class="w-fit overflow-hidden max-h-dvh"
+  >
     <TuringSidebar />
   </Sidebar.Provider>
 </div>

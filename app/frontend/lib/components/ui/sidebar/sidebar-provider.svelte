@@ -11,6 +11,7 @@
   } from './constants'
   import { setSidebar } from './context.svelte'
   import { getSidebarRegistry } from './registry'
+  import { onDestroy } from 'svelte'
 
   let {
     ref = $bindable(null),
@@ -50,6 +51,8 @@
   })
 
   registry.register(sidebar, name)
+
+  onDestroy(() => registry.unregister(name))
 </script>
 
 <svelte:window onkeydown={sidebar.handleShortcutKeydown} />
