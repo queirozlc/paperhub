@@ -1,10 +1,10 @@
 <script lang="ts">
+  import EditorSidebarHeader from '@/lib/components/editor-sidebar-header.svelte'
   import TableOfContents from '@/lib/components/table-of-contents.svelte'
   import TuringSidebar from '@/lib/components/turing-sidebar.svelte'
+  import * as Sidebar from '@/lib/components/ui/sidebar'
   import type { ProjectType } from '@/pages/Project/types'
   import { type Snippet } from 'svelte'
-  import * as Sidebar from '@/lib/components/ui/sidebar'
-  import EditorSidebarHeader from '@/lib/components/editor-sidebar-header.svelte'
 
   type Props = {
     project: ProjectType
@@ -25,7 +25,10 @@
 </svelte:head>
 
 <div class="overflow-hidden flex max-h-dvh w-full">
-  <TableOfContents bind:projectTitle {project} {children} />
+  <Sidebar.Provider name="summary" class="w-fit overflow-hidden max-h-dvh">
+    <TableOfContents />
+  </Sidebar.Provider>
+
   <Sidebar.Inset class="w-full">
     <EditorSidebarHeader bind:projectTitleInput bind:projectTitle {project} />
 
@@ -38,5 +41,7 @@
     </div>
   </Sidebar.Inset>
 
-  <TuringSidebar />
+  <Sidebar.Provider name="turing" class="w-fit overflow-hidden max-h-dvh">
+    <TuringSidebar />
+  </Sidebar.Provider>
 </div>

@@ -5,7 +5,11 @@
 
   let { project } = $props<{ project: ProjectType }>()
 
-  const handleSubmit = ({ form }: { form: InertiaFormProps<ProjectFormType> }) => {
+  const handleSubmit = ({
+    form,
+  }: {
+    form: InertiaFormProps<ProjectFormType>
+  }) => {
     form.transform((data) => ({ project: data }))
     form.patch(`/projects/${project.id}`)
   }
@@ -18,11 +22,7 @@
 <div class="mx-auto md:w-2/3 w-full px-8 pt-8">
   <h1 class="font-bold text-4xl">Editing project</h1>
 
-  <Form
-    {project}
-    submitText="Update Project"
-    onSubmit={handleSubmit}
-  />
+  <Form {project} submitText="Update Project" onSubmit={handleSubmit} />
 
   <Link
     href={`/projects/${project.id}`}

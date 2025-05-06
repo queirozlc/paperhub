@@ -1,20 +1,20 @@
 <script lang="ts">
-  import {
-    DotsHorizontal,
-    Share01,
-  } from '@voolt_technologies/untitledui-svelte'
-  import * as Tabs from '@/lib/components/ui/tabs'
-  import * as Tooltip from '@/lib/components/ui/tooltip'
-  import { defaultAvatar } from '@/lib/utils'
   import * as Avatar from '@/lib/components/ui/avatar'
   import Button from '@/lib/components/ui/button/button.svelte'
   import { Icon } from '@/lib/components/ui/icon'
   import { Separator } from '@/lib/components/ui/separator'
+  import * as Tabs from '@/lib/components/ui/tabs'
+  import * as Tooltip from '@/lib/components/ui/tooltip'
+  import { defaultAvatar } from '@/lib/utils'
   import type { UserType } from '@/pages/Users/types'
+  import {
+    DotsHorizontal,
+    Share01,
+  } from '@voolt_technologies/untitledui-svelte'
 
-  import { page, router } from '@inertiajs/svelte'
   import * as Sidebar from '@/lib/components/ui/sidebar'
   import type { ProjectType } from '@/pages/Project/types'
+  import { page, router } from '@inertiajs/svelte'
 
   const user = $page.props.user as UserType
 
@@ -70,7 +70,7 @@
 >
   <div class="flex items-center gap-4">
     <div class="flex items-center gap-2">
-      <Sidebar.Trigger />
+      <Sidebar.Trigger for="summary" />
       <Separator orientation="vertical" class="mr-2 h-4" />
     </div>
 
@@ -123,40 +123,46 @@
       <span class="font-medium">Compartilhar</span>
     </Button>
 
-    <Separator orientation="vertical" class="mr-2 h-4" />
+    <div class="flex items-center gap-2">
+      <Separator orientation="vertical" class="mr-2 h-4" />
+      <div class="flex items-center gap-1">
+        <div class="size-2 rounded-full bg-green-500"></div>
+        <span class="font-medium text-muted-foreground text-xs font-brand"
+          >Online</span
+        >
+      </div>
 
-    <div class="flex items-center gap-1">
-      <div class="size-2 rounded-full bg-green-500"></div>
-      <span class="font-medium text-muted-foreground text-xs font-brand"
-        >Online</span
-      >
+      <Tooltip.Provider>
+        <Tooltip.Root delayDuration={100}>
+          <div class="flex -space-x-4 rtl:space-x-reverse">
+            <Tooltip.Trigger>
+              <Avatar.Root class="size-7">
+                <Avatar.Image
+                  src={user.avatar}
+                  alt={`${user.email}'s avatar`}
+                />
+
+                <Avatar.Fallback>
+                  <img
+                    src={defaultAvatar(user.id).toDataUri()}
+                    alt="Default fallback avatar"
+                  />
+                </Avatar.Fallback>
+              </Avatar.Root>
+            </Tooltip.Trigger>
+          </div>
+
+          <Tooltip.Content>
+            <span class="pointer-events-none">{user.name}</span>
+          </Tooltip.Content>
+        </Tooltip.Root>
+      </Tooltip.Provider>
     </div>
 
-    <Tooltip.Provider>
-      <Tooltip.Root delayDuration={100}>
-        <div class="flex -space-x-4 rtl:space-x-reverse">
-          <Tooltip.Trigger>
-            <Avatar.Root class="size-7">
-              <Avatar.Image src={user.avatar} alt={`${user.email}'s avatar`} />
+    <div class="flex items-center">
+      <Separator orientation="vertical" class="mr-2 h-4" />
 
-              <Avatar.Fallback>
-                <img
-                  src={defaultAvatar(user.id).toDataUri()}
-                  alt="Default fallback avatar"
-                />
-              </Avatar.Fallback>
-            </Avatar.Root>
-          </Tooltip.Trigger>
-        </div>
-
-        <Tooltip.Content>
-          <span class="pointer-events-none">{user.name}</span>
-        </Tooltip.Content>
-      </Tooltip.Root>
-    </Tooltip.Provider>
-
-    <Separator orientation="vertical" class="mr-2 h-4" />
-
-    <Sidebar.Trigger class="-mr-1 ml-auto rotate-180" />
+      <Sidebar.Trigger class="-mr-1 ml-auto rotate-180" for="turing" />
+    </div>
   </div>
 </header>

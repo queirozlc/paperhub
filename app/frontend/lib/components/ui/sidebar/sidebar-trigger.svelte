@@ -3,18 +3,24 @@
   import { cn } from '@/lib/utils'
   import { PanelLeft } from '@lucide/svelte'
   import type { ComponentProps } from 'svelte'
-  import { useSidebar } from './context.svelte'
+  import { getSidebarRegistry } from './registry'
+  import { SIDEBAR_COOKIE_NAME } from './constants'
 
   let {
     ref = $bindable(null),
     class: className,
     onclick,
+    for: htmlFor = SIDEBAR_COOKIE_NAME,
     ...restProps
   }: ComponentProps<typeof Button> & {
+    for?: string
     onclick?: (e: MouseEvent) => void
   } = $props()
 
-  const sidebar = useSidebar()
+  let sidebar = $derived.by(() => {
+    const registry = getSidebarRegistry()
+    return registry.get(htmlFor)
+  })
 </script>
 
 <Button

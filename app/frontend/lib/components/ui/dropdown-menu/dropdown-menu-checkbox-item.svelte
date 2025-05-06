@@ -2,8 +2,8 @@
   import { cn } from '@/lib/utils'
   import { Check, Minus } from '@lucide/svelte'
   import {
-      DropdownMenu as DropdownMenuPrimitive,
-      type WithoutChildrenOrChild,
+    DropdownMenu as DropdownMenuPrimitive,
+    type WithoutChildrenOrChild,
   } from 'bits-ui'
   import type { Snippet } from 'svelte'
 

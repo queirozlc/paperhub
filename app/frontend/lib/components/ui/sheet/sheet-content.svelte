@@ -25,8 +25,8 @@
   import { cn } from '@/lib/utils'
   import { X } from '@lucide/svelte'
   import {
-      Dialog as SheetPrimitive,
-      type WithoutChildrenOrChild,
+    Dialog as SheetPrimitive,
+    type WithoutChildrenOrChild,
   } from 'bits-ui'
   import type { Snippet } from 'svelte'
   import SheetOverlay from './sheet-overlay.svelte'
