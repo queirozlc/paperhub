@@ -37,17 +37,14 @@ RSpec.describe "Sqids::Rails::Model", type: :model do
   let!(:post) { DynamicPost.create!(dynamic_user: user, title: "Test Post") }
 
   describe "dynamic sqid generation" do
-    it "generates a non-nil sqid" do
-      expect(user.sqid).not_to be_nil
-    end
+    it { expect(user.sqid).not_to be_nil }
 
-    it "generates a non-nil long_sqid" do
-      expect(user.long_sqid).not_to be_nil
-    end
+    it { expect(user.long_sqid).not_to be_nil }
 
-    it "generates a long_sqid with minimum length of 24" do
-      expect(user.long_sqid.length).to be >= 24
-    end
+    it { expect(user.long_sqid.length).to be >= 24 }
+
+    it { expect(user.to_param).to eq(user.sqid) }
+
 
     it "encodes sqid with default settings" do
       sqids = Sqids.new(min_length: Sqids::Rails.min_length)
@@ -73,10 +70,6 @@ RSpec.describe "Sqids::Rails::Model", type: :model do
       reloaded_user = DynamicUser.find(user.id)
       expect(reloaded_user.sqid).to eq(user.sqid)
     end
-
-    it "overrides to_param to return sqid" do
-      expect(user.to_param).to eq(user.sqid)
-    end
   end
 
   describe "finder methods" do
@@ -99,12 +92,6 @@ RSpec.describe "Sqids::Rails::Model", type: :model do
     it "finds post through association using sqid" do
       found_post = user.dynamic_posts.find_by_sqid(post.sqid)
       expect(found_post).to eq(post)
-    end
-  end
-
-  describe "URL helpers" do
-    it "returns sqid in to_param" do
-      expect(user.to_param).to eq(user.sqid)
     end
   end
 
