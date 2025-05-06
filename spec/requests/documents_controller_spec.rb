@@ -1,4 +1,4 @@
-RSpec.describe DocumentController, :inertia do
+RSpec.describe DocumentsController, :inertia do
   let(:document) { create(:blank_document) }
 
   before do

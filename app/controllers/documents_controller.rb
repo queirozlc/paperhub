@@ -1,6 +1,5 @@
 class DocumentsController < ApplicationController
-  before_action :set_document_from_hash, only: %i[ show ]
-  before_action :set_document, only: %i[ update destroy ]
+  before_action :set_document_from_hash, only: %i[ show update destroy ]
 
   # GET /documents
   def index
@@ -51,17 +50,13 @@ class DocumentsController < ApplicationController
 
   # DELETE /documents
   def destroy_all
-    document.where(id: document_id_params).destroy_all
+    Document.where(id: document_id_params).destroy_all
     redirect_to authenticated_root_url, notice: "documents were successfully destroyed."
   end
 
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_document
-      @document = Document.find(params[:id])
-    end
-
     def set_document_from_hash
       @document = Document.find_by_sqid!(params[:id])
     end
