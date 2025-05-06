@@ -74,8 +74,8 @@
     openBulkDelete = false
   }
 
-  function removeDocument(id: number) {
-    router.delete(`/documents/${id}`, {
+  function removeDocument(hashId: string) {
+    router.delete(`/documents/${hashId}`, {
       preserveState: true,
       preserveScroll: true,
     })
@@ -203,7 +203,7 @@
           </AlertDialogHeader>
           <AlertDialogFooter class="gap-4">
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogRemove onclick={() => removeDocument(document.id)}
+            <AlertDialogRemove onclick={() => removeDocument(document.sqid)}
               >Remover</AlertDialogRemove
             >
           </AlertDialogFooter>
