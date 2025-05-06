@@ -1,25 +1,25 @@
 <script lang="ts">
-  import type { ProjectType } from '@/pages/Project/types'
+  import type { DocumentType } from '@/pages/Document/types'
   import { ListChecks } from '@lucide/svelte'
   import { Checkbox } from '@/lib/components/ui/checkbox'
   import { Separator } from '@/lib/components/ui/separator'
 
   type Props = {
     editMode: boolean
-    selectedProjects: number[]
-    projects: ProjectType[]
+    selectedDocuments: number[]
+    documents: DocumentType[]
   }
 
-  let { editMode, projects, selectedProjects }: Props = $props()
+  let { editMode, documents, selectedDocuments }: Props = $props()
 
   function toggleCheck(isChecked: boolean) {
     if (isChecked) {
-      selectedProjects = projects.map((project) => project.id)
+      selectedDocuments = documents.map((doc) => doc.id)
     } else {
-      selectedProjects = []
+      selectedDocuments = []
     }
 
-    return selectedProjects.length === projects.length
+    return selectedDocuments.length === documents.length
   }
 </script>
 
@@ -30,7 +30,7 @@
       <Checkbox
         class="size-3 flex items-center rounded justify-center [&>span>svg]:size-3"
         bind:checked={
-          () => selectedProjects.length === projects.length,
+          () => selectedDocuments.length === documents.length,
           (isChecked) => toggleCheck(isChecked)
         }
       />

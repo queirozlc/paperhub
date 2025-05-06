@@ -11,6 +11,7 @@
     side = 'left',
     variant = 'sidebar',
     collapsible = 'offcanvas',
+    transparent = false,
     class: className,
     children,
     ...restProps
@@ -18,6 +19,7 @@
     side?: 'left' | 'right'
     variant?: 'sidebar' | 'floating' | 'inset'
     collapsible?: 'offcanvas' | 'icon' | 'none'
+    transparent?: boolean
   } = $props()
 
   const sidebar = useSidebar()
@@ -87,7 +89,12 @@
     >
       <div
         data-sidebar="sidebar"
-        class="bg-sidebar group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow"
+        class={cn(
+          'bg-sidebar group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow',
+          {
+            'bg-transparent': transparent,
+          }
+        )}
       >
         {@render children?.()}
       </div>

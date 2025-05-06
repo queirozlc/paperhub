@@ -20,7 +20,7 @@ export type SidebarStateProps = {
   setOpen: (open: boolean) => void
 }
 
-class SidebarState {
+export class SidebarState {
   readonly props: SidebarStateProps
   open = $derived.by(() => this.props.open())
   openMobile = $state(false)
