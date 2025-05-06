@@ -28,13 +28,13 @@
   } from '@voolt_technologies/untitledui-svelte'
   import { formatDistanceToNowStrict } from 'date-fns'
   import { ptBR } from 'date-fns/locale'
-  import type { ProjectType } from './types'
+  import type { DocumentType } from './types'
 
   type Props = {
-    projects: ProjectType[]
+    documents: DocumentType[]
   }
 
-  let { projects }: Props = $props()
+  let { documents }: Props = $props()
 
   const daysAgo = (date: Date) =>
     formatDistanceToNowStrict(date, {
@@ -43,48 +43,48 @@
     })
 
   let editMode = $state(false)
-  let selectedProjects: number[] = $state([])
+  let selectedDocuments: number[] = $state([])
   let openBulkDelete = $state(false)
 
   function toggleCheck(isChecked: boolean) {
     if (isChecked) {
-      selectedProjects = projects.map((project) => project.id)
+      selectedDocuments = documents.map((doc) => doc.id)
     } else {
-      selectedProjects = []
+      selectedDocuments = []
     }
 
-    return selectedProjects.length === projects.length
+    return selectedDocuments.length === documents.length
   }
 
   function toggleSelect(isChecked: boolean, id: number) {
     if (isChecked) {
-      selectedProjects.push(id)
+      selectedDocuments.push(id)
     } else {
-      selectedProjects = selectedProjects.filter(
-        (projectId) => projectId !== id
+      selectedDocuments = selectedDocuments.filter(
+        (documentId) => documentId !== id
       )
     }
 
-    return selectedProjects.includes(id)
+    return selectedDocuments.includes(id)
   }
 
   function resetEditMode() {
     editMode = false
-    selectedProjects = []
+    selectedDocuments = []
     openBulkDelete = false
   }
 
-  function removeProject(id: number) {
-    router.delete(`/projects/${id}`, {
+  function removeDocument(id: number) {
+    router.delete(`/documents/${id}`, {
       preserveState: true,
       preserveScroll: true,
     })
   }
 
   function destroyAll() {
-    router.delete('/projects', {
+    router.delete('/documents', {
       data: {
-        ids: selectedProjects,
+        ids: selectedDocuments,
       },
     })
 
@@ -106,7 +106,7 @@
       <Checkbox
         class="size-3 flex items-center rounded justify-center [&>span>svg]:size-3"
         bind:checked={
-          () => selectedProjects.length === projects.length,
+          () => selectedDocuments.length === documents.length,
           (isChecked) => toggleCheck(isChecked)
         }
       />
@@ -135,28 +135,28 @@
 </div>
 
 <div class="mt-2 space-y-1">
-  {#each projects as project (project.id)}
+  {#each documents as document (document.id)}
     <Link
-      href={`/projects/${project.sqid}`}
+      href={`/documents/${document.sqid}`}
       class="grid grid-cols-[1fr_auto_auto] items-center hover:bg-muted py-2 px-4 rounded cursor-pointer"
     >
       <div class="flex items-center gap-4">
         {#if editMode}
           <Checkbox
             bind:checked={
-              () => selectedProjects.includes(project.id),
-              (isChecked) => toggleSelect(isChecked, project.id)
+              () => selectedDocuments.includes(document.id),
+              (isChecked) => toggleSelect(isChecked, document.id)
             }
           />
         {/if}
         <File class="size-5 text-muted-foreground" />
         <div class="font-brand flex flex-col font-semibold max-w-60">
           <span class="text-accent-foreground text-sm">
-            {project.title || 'Sem título'}
+            {document.title || 'Sem título'}
           </span>
 
           <span class="text-muted-foreground text-xs font-medium truncate">
-            {project.description || 'Lorem ipsum solar sit amet...'}
+            {document.description || 'Lorem ipsum solar sit amet...'}
           </span>
         </div>
       </div>
@@ -165,10 +165,10 @@
         class="grid grid-cols-[100px_100px_3.5rem] text-sm font-brand font-medium gap-4 pr-2 text-right"
       >
         <span class="text-accent-foreground tabular-nums">
-          {daysAgo(new Date(project.created_at))}
+          {daysAgo(new Date(document.created_at))}
         </span>
         <span class="text-accent-foreground">
-          {daysAgo(new Date(project.updated_at))}
+          {daysAgo(new Date(document.updated_at))}
         </span>
       </div>
 
@@ -195,15 +195,15 @@
           <AlertDialogHeader>
             <AlertDialogTitle>Tem certeza disso?</AlertDialogTitle>
             <AlertDialogDescription>
-              Você está prestes a mover o projeto <strong
-                >{project.title}</strong
+              Você está prestes a mover o documento <strong
+                >{document.title}</strong
               > para a lixeira. Isso significa que você não poderá acessá-lo até
               que o restaure. Você tem certeza de que deseja continuar?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter class="gap-4">
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogRemove onclick={() => removeProject(project.id)}
+            <AlertDialogRemove onclick={() => removeDocument(document.id)}
               >Remover</AlertDialogRemove
             >
           </AlertDialogFooter>
@@ -223,7 +223,7 @@
       class="flex absolute bottom-4 items-center border border-border gap-4 bg-background/70 rounded-md px-4 py-2 shadow-[1px_1px_4px_1px_rgba(0,0,0,0.1)] left-1/2 -translate-x-1/2 -translate-y-1/2"
     >
       <span class="text-sm font-brand font-medium text-accent-foreground">
-        {selectedProjects.length} projeto(s) selecionados
+        {selectedDocuments.length} documento(s) selecionados
       </span>
 
       <div class="flex items-center gap-2">
@@ -237,7 +237,7 @@
         <AlertDialogTrigger>
           <button
             class="cursor-pointer hover:bg-destructive/20 transition-colors duration-75 rounded p-1.5 disabled:opacity-45 disabled:cursor-not-allowed"
-            disabled={selectedProjects.length === 0}
+            disabled={selectedDocuments.length === 0}
           >
             <Trash01 class="size-5 text-destructive" />
           </button>
@@ -250,9 +250,9 @@
     <AlertDialogHeader>
       <AlertDialogTitle>Tem certeza disso?</AlertDialogTitle>
       <AlertDialogDescription>
-        Você está prestes a mover {selectedProjects.length} projeto(s) para a lixeira.
-        Isso significa que você não poderá acessá-lo até que o restaure. Você tem
-        certeza de que deseja continuar?
+        Você está prestes a mover {selectedDocuments.length} documento(s) para a
+        lixeira. Isso significa que você não poderá acessá-lo até que o restaure.
+        Você tem certeza de que deseja continuar?
       </AlertDialogDescription>
     </AlertDialogHeader>
     <AlertDialogFooter class="gap-4">

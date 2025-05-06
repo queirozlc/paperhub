@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :blank_project, class: 'Project' do
+  factory :blank_document, class: 'Document' do
     team { association :personal_team }
     title { "" }
     description { "" }

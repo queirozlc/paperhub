@@ -3,24 +3,24 @@
   import TableOfContents from '@/lib/components/table-of-contents.svelte'
   import TuringSidebar from '@/lib/components/turing-sidebar.svelte'
   import * as Sidebar from '@/lib/components/ui/sidebar'
-  import type { ProjectType } from '@/pages/Project/types'
+  import type { DocumentType } from '@/pages/Document/types'
   import { type Snippet } from 'svelte'
 
   type Props = {
-    project: ProjectType
+    document: DocumentType
     children: Snippet
   }
 
-  let { children, project }: Props = $props()
+  let { children, document }: Props = $props()
 
-  let projectTitle = $state(project.title || 'Sem título')
+  let documentTitle = $state(document.title || 'Sem título')
 
-  let projectTitleInput = $state(null)
+  let documentTitleInput = $state(null)
 </script>
 
 <svelte:head>
   <title>
-    {projectTitle}
+    {documentTitle}
   </title>
 </svelte:head>
 
@@ -34,7 +34,11 @@
   </Sidebar.Provider>
 
   <Sidebar.Inset class="w-full">
-    <EditorSidebarHeader bind:projectTitleInput bind:projectTitle {project} />
+    <EditorSidebarHeader
+      bind:documentTitleInput
+      bind:documentTitle
+      {document}
+    />
 
     <div class="flex overflow-hidden">
       <div

@@ -11,33 +11,33 @@
   } from '@voolt_technologies/untitledui-svelte'
 
   import * as Sidebar from '@/lib/components/ui/sidebar'
-  import type { ProjectType } from '@/pages/Project/types'
+  import type { DocumentType } from '@/pages/Document/types'
   import { page, router } from '@inertiajs/svelte'
   import AvatarStack from './avatar-stack.svelte'
 
   const user = $page.props.user as UserType
 
   type Props = {
-    projectTitleInput: HTMLHeadingElement
-    projectTitle: string
-    project: ProjectType
+    documentTitleInput: HTMLHeadingElement
+    documentTitle: string
+    document: DocumentType
   }
 
   let {
-    projectTitleInput = $bindable(null),
-    projectTitle = $bindable(''),
-    project,
+    documentTitleInput = $bindable(null),
+    documentTitle = $bindable(''),
+    document,
   }: Props = $props()
 
   function updateTitle(target: HTMLHeadingElement) {
     if (!target.textContent) {
-      projectTitle = project.title || 'Sem título'
+      documentTitle = document.title || 'Sem título'
       return
     }
 
-    if (projectTitle !== project.title) {
-      router.patch(`/projects/${project.id}`, {
-        project: { title: projectTitle },
+    if (documentTitle !== document.title) {
+      router.patch(`/documents/${document.id}`, {
+        document: { title: documentTitle },
       })
     }
   }
@@ -54,12 +54,12 @@
       event.preventDefault()
       updateTitle(target)
       // unfocus input
-      projectTitleInput.blur()
+      documentTitleInput.blur()
     }
 
     if (event.key === 'Escape') {
       event.preventDefault()
-      projectTitleInput.blur()
+      documentTitleInput.blur()
     }
   }
 </script>
@@ -75,14 +75,14 @@
 
     <div class="flex items-center gap-4">
       <h5
-        bind:this={projectTitleInput}
+        bind:this={documentTitleInput}
         contenteditable="true"
-        bind:innerText={projectTitle}
+        bind:innerText={documentTitle}
         onfocusout={handleTitleFocusOut}
         onkeydown={handleTitleKeydown}
         class="font-brand tracking-tight text-accent-foreground max-w-md text-nowrap truncate overflow-x-auto no-scrollbar"
       >
-        {project.title || 'Sem título'}
+        {document.title || 'Sem título'}
       </h5>
       <Tabs.Root value="editor">
         <Tabs.List class="gap-1">

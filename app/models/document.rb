@@ -1,4 +1,4 @@
-class Project < ApplicationRecord
+class Document < ApplicationRecord
   include Sqids::Rails::Model
 
   acts_as_tenant :team
