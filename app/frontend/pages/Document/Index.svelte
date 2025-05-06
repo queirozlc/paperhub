@@ -16,33 +16,35 @@
   import { router } from '@inertiajs/svelte'
   import { Blocks, FileStack } from '@lucide/svelte'
   import { ChevronDown, File02 } from '@voolt_technologies/untitledui-svelte'
-  import Project from './Project.svelte'
-  import type { ProjectType } from './types'
+  import Document from './Document.svelte'
+  import type { DocumentType } from './types'
   import type { TeamType } from '../Team/types'
 
   type Props = {
-    projects: ProjectType[]
+    documents: DocumentType[]
     teams: TeamType[]
   }
 
-  let { projects, teams }: Props = $props()
+  let { documents, teams }: Props = $props()
 
-  function newProject(params = { title: '', description: '' }) {
-    router.post('/projects', {
-      project: params,
+  function newDocument(params = { title: '', description: '' }) {
+    router.post('/documents', {
+      document: params,
     })
   }
 </script>
 
-<HomeLayout {projects} {teams}>
+<HomeLayout {documents} {teams}>
   <MostRecents />
 
   <div class="flex items-center justify-between px-4">
-    <h5 class="font-brand text-muted-foreground font-medium">Seus Projetos</h5>
+    <h5 class="font-brand text-muted-foreground font-medium">
+      Seus Documentos
+    </h5>
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Button size="sm" class="shadow-none gap-1" variant="outline">
-          Criar Projeto
+          Criar Documento
           <ChevronDown class="size-4" />
         </Button>
       </DropdownMenuTrigger>
@@ -50,14 +52,14 @@
       <DropdownMenuContent class="w-56 space-y-1.5">
         <DropdownMenuItem
           class="border border-input"
-          onclick={() => newProject()}
+          onclick={() => newDocument()}
         >
           <div class="flex items-center justify-between w-full px-1">
             <div class="text-sm font-brand flex flex-col">
               <span class="font-medium text-accent-foreground">Nova página</span
               >
               <span class="text-xs text-muted-foreground max-w-[90%]"
-                >Crie um novo projeto em branco</span
+                >Crie um novo documento em branco</span
               >
             </div>
 
@@ -72,7 +74,7 @@
                 Usar modelo
               </span>
               <span class="text-xs text-muted-foreground max-w-[90%]"
-                >Crie um novo projeto a partir de um modelo</span
+                >Crie um novo documento a partir de um modelo</span
               >
             </div>
 
@@ -83,28 +85,28 @@
     </DropdownMenu>
   </div>
 
-  {#if projects.length}
-    <Project {projects} />
+  {#if documents.length}
+    <Document {documents} />
   {:else}
     <div class="h-full w-full flex items-center justify-center">
       <div class="flex flex-col items-center gap-2">
-        <img src={empty} alt="Sem projetos" class="dark:hidden w-60" />
+        <img src={empty} alt="Sem documentos" class="dark:hidden w-60" />
         <img
           src={emptyDark}
-          alt="Sem projetos"
+          alt="Sem documentos"
           class="w-60 hidden dark:block"
         />
         <p class="text-sm text-muted-foreground">
-          Você não tem nenhum projeto ainda.
+          Você não tem nenhum documento ainda.
         </p>
         <Button
           variant="outline"
           size="sm"
           class="gap-1"
-          onclick={() => newProject()}
+          onclick={() => newDocument()}
         >
           <FileStack class="size-4" />
-          Criar novo Projeto
+          Criar novo Documento
         </Button>
       </div>
     </div>

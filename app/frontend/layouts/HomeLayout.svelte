@@ -16,7 +16,7 @@
         url: '#',
         icon: Sparkles,
         tooltip:
-          'Faça perguntas sobre seus projetos e receba respostas instantâneas',
+          'Faça perguntas sobre seus documentos e receba respostas instantâneas',
       },
       {
         title: 'Página inicial',
@@ -75,10 +75,10 @@
   import { Send } from '@lucide/svelte'
   import type { ComponentProps } from 'svelte'
   import type { TeamType } from '@/pages/Team/types'
-  import type { ProjectType } from '@/pages/Project/types'
+  import type { DocumentType } from '@/pages/Document/types'
 
   type Props = {
-    projects: ProjectType[]
+    documents: DocumentType[]
     teams: TeamType[]
   } & ComponentProps<typeof Sidebar.Root>
 
@@ -86,10 +86,10 @@
 </script>
 
 <svelte:head>
-  <title>Home | Seus Projetos</title>
+  <title>Home | Seus Documentos</title>
   <meta
     name="description"
-    content="Seus Projetos - Dashboard de gerenciamento de projetos"
+    content="Seus Documentos - Dashboard de gerenciamento de documentos"
   />
 </svelte:head>
 
@@ -124,9 +124,9 @@
         </Button>
       </div>
       <div>
-        <Tabs value="projects">
+        <Tabs value="documents">
           <TabsList>
-            <TabsTrigger value="projects">Projetos</TabsTrigger>
+            <TabsTrigger value="documents">Documentos</TabsTrigger>
             <TabsTrigger value="folders">Pastas</TabsTrigger>
           </TabsList>
         </Tabs>
