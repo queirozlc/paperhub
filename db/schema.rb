@@ -42,6 +42,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_13_135826) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "documents", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.string "title"
+    t.string "description"
+    t.integer "visibility", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_documents_on_team_id"
+    t.check_constraint "visibility = ANY (ARRAY[0, 1, 2])", name: "check_visibility"
+  end
+
   create_table "memberships", primary_key: ["member_id", "team_id"], force: :cascade do |t|
     t.bigint "member_id", null: false
     t.bigint "team_id", null: false
@@ -50,17 +61,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_13_135826) do
     t.datetime "updated_at", null: false
     t.index ["member_id"], name: "index_memberships_on_member_id"
     t.index ["team_id"], name: "index_memberships_on_team_id"
-  end
-
-  create_table "projects", force: :cascade do |t|
-    t.bigint "team_id", null: false
-    t.string "title"
-    t.string "description"
-    t.integer "visibility", default: 0, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["team_id"], name: "index_projects_on_team_id"
-    t.check_constraint "visibility = ANY (ARRAY[0, 1, 2])", name: "check_visibility"
   end
 
   create_table "teams", force: :cascade do |t|
@@ -90,9 +90,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_13_135826) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "documents", "teams"
   add_foreign_key "memberships", "teams"
   add_foreign_key "memberships", "users", column: "member_id"
-  add_foreign_key "projects", "teams"
   add_foreign_key "teams", "users", column: "owner_id"
   add_foreign_key "users", "teams", column: "active_team_id"
 end

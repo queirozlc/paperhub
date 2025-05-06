@@ -1,10 +1,10 @@
 Rails.application.routes.draw do
   authenticated :user do
-    root to: "projects#index", as: :authenticated_root
+    root to: "documents#index", as: :authenticated_root
     get "onboarding" => "users/onboarding#edit", as: :user_onboarding
     patch "onboarding" => "users/onboarding#update", as: :user_onboarding_update
-    resources :projects, except: %i[index new edit]
-    delete "projects" => "projects#destroy_all", as: :destroy_all_projects
+    resources :documents, except: %i[index new edit]
+    delete "documents" => "documents#destroy_all", as: :destroy_all_documents
     resources :teams, only: %i[create]
     namespace :users do
       resources :teams, only: %i[update], controller: "profile"
