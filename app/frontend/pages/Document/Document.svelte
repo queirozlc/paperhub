@@ -211,7 +211,6 @@
       </AlertDialog>
     </Link>
   {/each}
-  <!-- Align in center -->
 </div>
 
 <AlertDialog

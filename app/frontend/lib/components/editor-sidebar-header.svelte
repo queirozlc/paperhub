@@ -36,7 +36,7 @@
     }
 
     if (documentTitle !== document.title) {
-      router.patch(`/documents/${document.id}`, {
+      router.patch(`/documents/${document.sqid}`, {
         document: { title: documentTitle },
       })
     }
