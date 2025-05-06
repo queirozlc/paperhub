@@ -32,8 +32,6 @@
       document: params,
     })
   }
-
-  $effect(() => console.log({ documents }))
 </script>
 
 <HomeLayout {documents} {teams}>
