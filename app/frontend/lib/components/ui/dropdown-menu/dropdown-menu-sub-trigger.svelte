@@ -2,8 +2,8 @@
   import { cn } from '@/lib/utils'
   import { ChevronRight } from '@lucide/svelte'
   import {
-      DropdownMenu as DropdownMenuPrimitive,
-      type WithoutChild,
+    DropdownMenu as DropdownMenuPrimitive,
+    type WithoutChild,
   } from 'bits-ui'
 
   let {

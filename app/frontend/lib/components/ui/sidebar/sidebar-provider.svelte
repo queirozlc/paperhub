@@ -10,6 +10,7 @@
     SIDEBAR_WIDTH_ICON,
   } from './constants'
   import { setSidebar } from './context.svelte'
+  import { getSidebarRegistry } from './registry'
 
   let {
     ref = $bindable(null),
@@ -25,6 +26,8 @@
     onOpenChange?: (open: boolean) => void
     name?: string
   } = $props()
+
+  const registry = getSidebarRegistry()
 
   let open = $derived.by(() => {
     return document.cookie
@@ -45,6 +48,8 @@
       document.cookie = `${name}:state=${open}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
     },
   })
+
+  registry.register(sidebar, name)
 </script>
 
 <svelte:window onkeydown={sidebar.handleShortcutKeydown} />
