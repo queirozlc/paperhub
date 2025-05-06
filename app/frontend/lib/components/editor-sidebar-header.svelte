@@ -1,11 +1,9 @@
 <script lang="ts">
-  import * as Avatar from '@/lib/components/ui/avatar'
   import Button from '@/lib/components/ui/button/button.svelte'
   import { Icon } from '@/lib/components/ui/icon'
   import { Separator } from '@/lib/components/ui/separator'
   import * as Tabs from '@/lib/components/ui/tabs'
   import * as Tooltip from '@/lib/components/ui/tooltip'
-  import { defaultAvatar } from '@/lib/utils'
   import type { UserType } from '@/pages/Users/types'
   import {
     DotsHorizontal,
@@ -15,6 +13,7 @@
   import * as Sidebar from '@/lib/components/ui/sidebar'
   import type { ProjectType } from '@/pages/Project/types'
   import { page, router } from '@inertiajs/svelte'
+  import AvatarStack from './avatar-stack.svelte'
 
   const user = $page.props.user as UserType
 
@@ -87,11 +86,11 @@
       </h5>
       <Tabs.Root value="editor">
         <Tabs.List class="gap-1">
-          <Tabs.Trigger value="editor" class="px-2">
+          <Tabs.Trigger value="editor" class="px-2" preserveState>
             <Icon name="file" class="size-5" />
           </Tabs.Trigger>
 
-          <Tabs.Trigger value="git" class="px-2">
+          <Tabs.Trigger value="git" class="px-2" preserveState>
             <Icon name="source-control" class="size-5" />
           </Tabs.Trigger>
         </Tabs.List>
@@ -134,23 +133,7 @@
 
       <Tooltip.Provider>
         <Tooltip.Root delayDuration={100}>
-          <div class="flex -space-x-4 rtl:space-x-reverse">
-            <Tooltip.Trigger>
-              <Avatar.Root class="size-7">
-                <Avatar.Image
-                  src={user.avatar}
-                  alt={`${user.email}'s avatar`}
-                />
-
-                <Avatar.Fallback>
-                  <img
-                    src={defaultAvatar(user.id).toDataUri()}
-                    alt="Default fallback avatar"
-                  />
-                </Avatar.Fallback>
-              </Avatar.Root>
-            </Tooltip.Trigger>
-          </div>
+          <AvatarStack />
 
           <Tooltip.Content>
             <span class="pointer-events-none">{user.name}</span>

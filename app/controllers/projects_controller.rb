@@ -6,9 +6,10 @@ class ProjectsController < ApplicationController
   def index
     @projects = Project.all
     render inertia: "Project/Index", props: {
-      projects: @projects.map do |project|
-        serialize_project(project)
-      end,
+      projects: -> { @projects.map do |project|
+          serialize_project(project)
+        end
+      },
       teams: -> { current_user.teams.includes(:cover_attachment).map do |team|
         serialize_team(team)
       end }
