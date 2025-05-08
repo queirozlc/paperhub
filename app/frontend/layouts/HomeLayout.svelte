@@ -97,7 +97,7 @@
   <Sidebar.Root bind:ref {...restProps}>
     <Sidebar.Header>
       <TeamSwitcher {teams} />
-      <NavMain items={data.navMain} documents={documents} teams={teams} />
+      <NavMain items={data.navMain} documents={documents} />
     </Sidebar.Header>
     <Sidebar.Content>
       <NavFolders folders={data.folders} />

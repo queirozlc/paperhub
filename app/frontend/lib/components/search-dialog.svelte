@@ -2,20 +2,15 @@
   import * as Command from "@/lib/components/ui/command/index.js";
   import { File } from '@lucide/svelte'
   import type { DocumentType } from '@/pages/Document/types'
-  import type { TeamType } from '@/pages/Team/types'
   import type { Item } from "./nav-main.svelte"
 
   let {
-    open, items, documents, teams
+    open, items, documents
   }: {
     open: boolean,
     items: Item[],
     documents: DocumentType[],
-    teams: TeamType[],
   } = $props()
-
-  console.log('times:');
-  console.log(teams);
 
   let filteredDocs = $state(documents);
   let searchTerm = $state('');
@@ -54,15 +49,17 @@
       {/each}
     </Command.Group>
     <Command.Separator />
+    <!--
     {#if teams.length > 1}
-    <Command.Group heading="De outros times">
-      <Command.Item>
-        <File class="size-5 text-muted-foreground" />
-        <span>TODO</span>
-      </Command.Item>
-    </Command.Group>
-    <Command.Separator />
+      <Command.Group heading="De outros times">
+        <Command.Item>
+          <File class="size-5 text-muted-foreground" />
+          <span>TODO</span>
+        </Command.Item>
+      </Command.Group>
+      <Command.Separator />
     {/if}
+    -->
     <Command.Group heading="Outras opções">
       {#each items as item (item.title)}
         <Command.Item>
