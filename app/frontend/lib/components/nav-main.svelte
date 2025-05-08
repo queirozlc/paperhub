@@ -20,11 +20,10 @@
   }
 
   let {
-    items, documents, teams
+    items, documents
   }: {
     items: Item[],
     documents: DocumentType[],
-    teams: TeamType[],
   } = $props()
 
   const os = getOS()
@@ -65,7 +64,6 @@
     open={isSearchDialogOpen}
     items={items}
     documents={documents}
-    teams={teams}
   />
 
   {#each items as item (item.title)}
