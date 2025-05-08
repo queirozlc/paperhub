@@ -6,7 +6,7 @@
   
   import * as Command from "@/lib/components/ui/command/index.js";
   import { File } from '@lucide/svelte'
-  import type { ProjectType } from '@/pages/Project/types'
+  import type { DocumentType } from '@/pages/Document/types'
   import type { TeamType } from '@/pages/Team/types'
 
   let {
@@ -22,11 +22,13 @@
       isActive?: boolean
       badge?: number
     }[],
-    documents: ProjectType[],
+    documents: DocumentType[],
     teams: TeamType[],
   } = $props()
 
   const os = getOS()
+
+  console.log(documents);
 
   let isSearchDialogOpen = $state(false);
   let filteredDocs = $state(documents);
@@ -36,18 +38,22 @@
     isSearchDialogOpen = true;
   }
 
+  // TODO: Se inicialmente o Command.Dialog exibir TODOS os documentos,
+  // pode ser interessante, ao buscar por titulo, filtrá-los via JavScript
+  // ao invés de buscá-los via banco.
+  // Outras buscas (como por conteúdo) precisarão ser via banco mesmo.
   function handleInput(event: Event) {
     const input = event.target as HTMLInputElement;
-    searchTerm = input.value;
+    searchTerm = input.value.trim();
 
     if (!searchTerm) {
       filteredDocs = documents;
       return;
     }
 
-    filteredDocs = documents.filter(doc =>
-      (doc.title || 'Sem título').toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    fetch(`/documents?search=${searchTerm}`, { method: 'GET' })
+      .then(res => res.json())
+      .then(res => filteredDocs = res);
   }
 </script>
 
@@ -77,7 +83,7 @@
   </Sidebar.MenuItem>
 
   <!-- Search dialog -->
-  <Command.Dialog bind:open={isSearchDialogOpen} ><!--shouldFilter={false}-->
+  <Command.Dialog bind:open={isSearchDialogOpen} shouldFilter={false}>
     <Command.Input placeholder="Pesquise um documento ou seu conteúdo..." oninput={handleInput} />
     <Command.List>
       <Command.Empty>Nenhum resultado encontrado.</Command.Empty>
