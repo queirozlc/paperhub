@@ -6,7 +6,6 @@
   import SearchDialog from './search-dialog.svelte';
   
   import type { DocumentType } from '@/pages/Document/types'
-  import type { TeamType } from '@/pages/Team/types'
 
   export type Item = {
     title: string
@@ -61,7 +60,7 @@
   </Sidebar.MenuItem>
 
   <SearchDialog
-    open={isSearchDialogOpen}
+    bind:open={isSearchDialogOpen}
     items={items}
     documents={documents}
   />
