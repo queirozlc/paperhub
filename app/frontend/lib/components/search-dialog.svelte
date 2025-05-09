@@ -42,7 +42,6 @@
 </script>
   
 <!-- Search dialog -->
-<!-- TODO: Avaliar uso do `shouldFilter={false}` -->
 <Command.Dialog bind:open shouldFilter={false}>
   <Command.Input placeholder="Pesquise um documento ou seu conteúdo..." oninput={handleInput} />
   <Command.List>
