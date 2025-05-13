@@ -168,7 +168,7 @@ GEM
       launchy (>= 2.2, < 4)
     lint_roller (1.1.0)
     logger (1.7.0)
-    loofah (2.24.0)
+    loofah (2.24.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
     mail (2.8.1)
@@ -231,7 +231,7 @@ GEM
     pry-stack_explorer (0.6.1)
       binding_of_caller (~> 1.0)
       pry (~> 0.13)
-    psych (5.2.3)
+    psych (5.2.6)
       date
       stringio
     public_suffix (6.0.1)
@@ -345,7 +345,7 @@ GEM
       rubocop-rspec (~> 3.5)
     ruby-progressbar (1.13.0)
     securerandom (0.4.1)
-    solid_cable (3.0.7)
+    solid_cable (3.0.8)
       actioncable (>= 7.2)
       activejob (>= 7.2)
       activerecord (>= 7.2)
