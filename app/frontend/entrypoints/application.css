@@ -173,3 +173,14 @@
     display: none;
   }
 }
+
+@layer components {
+  .ProseMirror .is-empty::before {
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+
+    @apply text-muted-foreground;
+  }
+}

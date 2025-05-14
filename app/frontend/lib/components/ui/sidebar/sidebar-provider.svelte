@@ -10,7 +10,7 @@
     SIDEBAR_WIDTH_ICON,
   } from './constants'
   import { setSidebar } from './context.svelte'
-  import { getSidebarRegistry } from './registry'
+  import { getSidebarRegistry } from './registry.svelte'
   import { onDestroy } from 'svelte'
 
   let {

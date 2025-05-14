@@ -27,7 +27,7 @@ class DocumentsController < ApplicationController
     @document = Document.new(document_params)
 
     if @document.save
-      redirect_to authenticated_root_path, notice: "document was successfully created."
+      redirect_to document_path(@document), notice: "document was successfully created."
     else
       redirect_to new_document_url, inertia: { errors: @document.errors }
     end
