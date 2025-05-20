@@ -1,6 +1,8 @@
 <script lang="ts">
   import EditorLayout from '@/layouts/EditorLayout.svelte'
   import EditorFloatingMenu from '@/lib/components/editor-floating-menu.svelte'
+  import SlashCommands from '@/lib/extensions/slash-commands/commands.svelte'
+  import suggestion from '@/lib/extensions/slash-commands/suggestion.svelte'
   import Placeholder from '@tiptap/extension-placeholder'
   import StarterKit from '@tiptap/starter-kit'
   import { onMount } from 'svelte'
@@ -13,8 +15,6 @@
   } from 'svelte-tiptap'
   import type { Readable } from 'svelte/store'
   import type { DocumentType } from './types'
-  import suggestion from '@/lib/extensions/slash-commands/suggestion.svelte'
-  import SlashCommands from '@/lib/extensions/slash-commands/commands'
 
   let { document }: { document: DocumentType } = $props()
 
@@ -24,8 +24,12 @@
 
   onMount(() => {
     editor = createEditor({
+      autofocus: true,
       editorProps: {
         attributes: {
+          autocomplete: 'off',
+          autocorrect: 'off',
+          autocapitalize: 'off',
           class: 'prose dark:prose-invert focus:outline-none',
         },
       },
@@ -39,7 +43,12 @@
             if (node.type.name === 'heading') {
               return docPladeholder
             }
-            return "Digite '/' para ver os comandos disponíveis"
+
+            if (node.type.name === 'paragraph') {
+              return "Digite '/' para ver os comandos disponíveis"
+            }
+
+            return 'Comece escrevendo algo 🚀'
           },
         }),
         SlashCommands.configure({

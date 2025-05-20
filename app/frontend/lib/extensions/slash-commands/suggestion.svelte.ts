@@ -11,27 +11,19 @@ export type Command = {
 
 export type Items = (props: { query: string }) => Command[]
 
+export type MenuProps = {
+  editor: Editor
+  range: Range
+  items: Command[]
+  clientRect?: () => DOMRect
+}
+
 type SlashMenuLifecycle = {
-  onStart: (props: {
-    editor: Editor
-    range: Range
-    items: Command[]
-    clientRect: () => DOMRect
-  }) => void
+  onStart: (props: MenuProps) => void
 
-  onUpdate: (props: {
-    editor: Editor
-    range: Range
-    items: Command[]
-    clientRect: () => DOMRect
-  }) => void
+  onUpdate: (props: MenuProps) => void
 
-  onKeyDown: (props: {
-    event: KeyboardEvent
-    editor: Editor
-    range: Range
-    items: Command[]
-  }) => boolean
+  onKeyDown: (props: { event: KeyboardEvent }) => boolean
 
   onExit: () => void
 }
@@ -89,18 +81,17 @@ export default {
       },
     ]
       .filter((item) => {
-        return item.title.toLowerCase().includes(query.toLowerCase())
+        return item.title
+          .trim()
+          .toLowerCase()
+          .includes(query.trim().toLowerCase())
       })
       .slice(0, 5)
   },
 
   render: () => {
     let component: ReturnType<typeof mount>, popup: ReturnType<typeof tippy>
-    const props: {
-      editor: Editor
-      range: Range
-      items: Command[]
-    } = $state({
+    const props: MenuProps = $state({
       editor: null,
       range: null,
       items: [],
