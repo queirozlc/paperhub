@@ -1,20 +1,14 @@
 <script lang="ts">
   import * as Sidebar from '@/lib/components/ui/sidebar'
   import type { ComponentProps } from 'svelte'
+  import type { NavItem } from '../models/nav-item'
 
   let {
     ref = $bindable(null),
     items,
     ...restProps
   }: ComponentProps<typeof Sidebar.Group> & {
-    items: {
-      title: string
-      url: string
-      // This should be `Component` after @lucide/svelte updates types
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      icon: any
-      badge?: string
-    }[]
+    items: NavItem[]
   } = $props()
 </script>
 
