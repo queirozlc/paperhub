@@ -41,7 +41,7 @@
         {
           document: { title: documentTitle },
         },
-        { fresh: true }
+        { preserveState: false }
       )
     }
   }
