@@ -40,10 +40,8 @@
       {document}
     />
 
-    <div class="flex overflow-hidden">
-      <div
-        class="flex flex-1 flex-col gap-4 p-4 overflow-scroll scrollbar-hidden"
-      >
+    <div class="flex overflow-y-scroll py-4">
+      <div class="flex flex-1 flex-col gap-4 scrollbar-hidden">
         {@render children()}
       </div>
     </div>
