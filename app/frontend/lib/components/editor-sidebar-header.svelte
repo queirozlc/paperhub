@@ -36,9 +36,13 @@
     }
 
     if (documentTitle !== document.title) {
-      router.patch(`/documents/${document.sqid}`, {
-        document: { title: documentTitle },
-      })
+      router.patch(
+        `/documents/${document.sqid}`,
+        {
+          document: { title: documentTitle },
+        },
+        { preserveState: false }
+      )
     }
   }
 
@@ -65,7 +69,7 @@
 </script>
 
 <header
-  class="flex h-14 border-sidebar-border border-b items-center px-4 justify-between"
+  class="flex min-h-14 border-sidebar-border border-b items-center px-4 justify-between"
 >
   <div class="flex items-center gap-4">
     <div class="flex items-center gap-2">

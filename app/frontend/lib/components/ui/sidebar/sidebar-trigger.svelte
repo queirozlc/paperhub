@@ -3,7 +3,7 @@
   import { cn } from '@/lib/utils'
   import { PanelLeft } from '@lucide/svelte'
   import type { ComponentProps } from 'svelte'
-  import { getSidebarRegistry } from './registry'
+  import { getSidebarRegistry } from './registry.svelte'
   import { SIDEBAR_COOKIE_NAME } from './constants'
 
   let {

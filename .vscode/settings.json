@@ -1,9 +1,10 @@
 {
   "[svelte]": {
-    "editor.defaultFormatter": "svelte.svelte-vscode",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": "always"
+      "source.fixAll.eslint": "always",
+      "source.removeUnusedImports": "always",
+      "source.addMissingImports": "always",
     }
   }
 }
-
