@@ -17,12 +17,12 @@
   }
 
   /* Blockquote Placeholder */
-  blockquote .is-empty:not(.is-editor-empty):first-child:last-child::before {
-    content: 'Digite uma citação';
+  blockquote.is-editor-empty::before {
+    content: none !important;
   }
 
-  blockquote + figcaption.is-empty:not(.is-editor-empty)::before {
-    content: 'Autor';
+  blockquote .has-focus.is-empty:first-child:last-child::before {
+    content: 'Digite uma citação';
   }
 
   [data-placeholder][data-suggestion]::before,

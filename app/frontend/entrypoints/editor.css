@@ -22,6 +22,18 @@
   }
 }
 
+.tiptap {
+  :first-child {
+    margin-top: 0;
+  }
+
+  blockquote {
+    border-left: 3px solid var(--color-muted-foreground);
+    margin: 1.5rem 0;
+    padding-left: 1rem;
+  }
+}
+
 @import './editor/typography.css';
 @import './editor/placeholder.css';
 @import './editor/lists.css';

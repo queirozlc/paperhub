@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { DocumentType } from '@/pages/Document/types'
+  import type { DocumentType } from '$pages/Document/types'
   import { ListChecks } from '@lucide/svelte'
-  import { Checkbox } from '@/lib/components/ui/checkbox'
-  import { Separator } from '@/lib/components/ui/separator'
+  import { Checkbox } from '$lib/components/ui/checkbox'
+  import { Separator } from '$lib/components/ui/separator'
 
   type Props = {
     editMode: boolean
