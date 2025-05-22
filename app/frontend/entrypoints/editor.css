@@ -1,0 +1,27 @@
+[data-theme='slash-command'] {
+  width: 1000vw;
+}
+
+.ProseMirror {
+  @apply caret-foreground z-0 outline-0;
+
+  .selection {
+    @apply inline;
+  }
+
+  &.resize-cursor {
+    @apply cursor-col-resize;
+  }
+
+  .ProseMirror-gapcursor {
+    @apply relative mx-auto w-full max-w-2xl;
+
+    &:after {
+      @apply -top-[1.5em] right-0 left-0 mx-auto w-full max-w-2xl border-t-black/40 dark:border-t-white/40;
+    }
+  }
+}
+
+@import './editor/typography.css';
+@import './editor/placeholder.css';
+@import './editor/lists.css';
