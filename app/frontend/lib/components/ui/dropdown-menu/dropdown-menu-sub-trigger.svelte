@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cn } from '@/lib/utils'
+  import { cn } from '$lib/utils'
   import { ChevronRight } from '@lucide/svelte'
   import {
     DropdownMenu as DropdownMenuPrimitive,

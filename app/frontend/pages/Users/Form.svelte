@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { Button } from '@/lib/components/ui/button'
-  import { Input } from '@/lib/components/ui/input'
-  import { Label } from '@/lib/components/ui/label'
-  import { cn } from '@/lib/utils'
+  import { Button } from '$lib/components/ui/button'
+  import { Input } from '$lib/components/ui/input'
+  import { Label } from '$lib/components/ui/label'
+  import { cn } from '$lib/utils'
   import { useForm } from '@inertiajs/svelte'
   import { LoaderIcon, Mail } from '@lucide/svelte'
-  import logo from '@/assets/images/logo.png'
-  import logoDark from '@/assets/images/logo-dark.png'
+  import logo from '$assets/images/logo.png'
+  import logoDark from '$assets/images/logo-dark.png'
 
   const form = useForm<{ email: '' }>({
     email: '',

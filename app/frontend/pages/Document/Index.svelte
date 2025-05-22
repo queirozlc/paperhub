@@ -1,24 +1,24 @@
 <script module>
-  import emptyDark from '@/assets/images/empty-dark.png'
-  import empty from '@/assets/images/empty.png'
+  import emptyDark from '$assets/images/empty-dark.png'
+  import empty from '$assets/images/empty.png'
 </script>
 
 <script lang="ts">
-  import HomeLayout from '@/layouts/HomeLayout.svelte'
-  import MostRecents from '@/lib/components/most-recents.svelte'
-  import Button from '@/lib/components/ui/button/button.svelte'
+  import MostRecents from '$lib/components/most-recents.svelte'
+  import Button from '$lib/components/ui/button/button.svelte'
   import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-  } from '@/lib/components/ui/dropdown-menu'
+  } from '$lib/components/ui/dropdown-menu'
   import { router } from '@inertiajs/svelte'
   import { Blocks, FileStack } from '@lucide/svelte'
   import { ChevronDown, File02 } from '@voolt_technologies/untitledui-svelte'
   import Document from './Document.svelte'
   import type { DocumentType } from './types'
   import type { TeamType } from '../Team/types'
+    import HomeLayout from '$layouts/HomeLayout.svelte'
 
   type Props = {
     documents: DocumentType[]
@@ -34,7 +34,7 @@
   }
 </script>
 
-<HomeLayout {documents} {teams}>
+<HomeLayout {teams}>
   <MostRecents />
 
   <div class="flex items-center justify-between px-4">

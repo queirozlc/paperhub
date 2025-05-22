@@ -1,5 +1,5 @@
 <script lang="ts">
-  import * as Sidebar from '@/lib/components/ui/sidebar'
+  import * as Sidebar from '$lib/components/ui/sidebar'
   import {
     Edit03,
     Image01,

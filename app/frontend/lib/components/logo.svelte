@@ -1,7 +1,8 @@
 <script lang="ts">
-  import logo from '@/assets/images/logo.png'
-  import logoDark from '@/assets/images/logo-dark.png'
-  import { cn } from '@/lib/utils'
+  import logo from '$assets/images/logo.png'
+  import logoDark from '$assets/images/logo-dark.png'
+  import { cn } from '$lib/utils'
+
   import type { HTMLImgAttributes } from 'svelte/elements'
 
   let { class: className, ...rest }: HTMLImgAttributes = $props()

@@ -1,17 +1,17 @@
 <script lang="ts">
-  import Button from '@/lib/components/ui/button/button.svelte'
-  import { Icon } from '@/lib/components/ui/icon'
-  import { Separator } from '@/lib/components/ui/separator'
-  import * as Tabs from '@/lib/components/ui/tabs'
-  import * as Tooltip from '@/lib/components/ui/tooltip'
-  import type { UserType } from '@/pages/Users/types'
+  import Button from '$lib/components/ui/button/button.svelte'
+  import { Icon } from '$lib/components/ui/icon'
+  import { Separator } from '$lib/components/ui/separator'
+  import * as Tabs from '$lib/components/ui/tabs'
+  import * as Tooltip from '$lib/components/ui/tooltip'
+  import type { UserType } from '$pages/Users/types'
   import {
     DotsHorizontal,
     Share01,
   } from '@voolt_technologies/untitledui-svelte'
 
-  import * as Sidebar from '@/lib/components/ui/sidebar'
-  import type { DocumentType } from '@/pages/Document/types'
+  import * as Sidebar from '$lib/components/ui/sidebar'
+  import type { DocumentType } from '$pages/Document/types'
   import { page, router } from '@inertiajs/svelte'
   import AvatarStack from './avatar-stack.svelte'
 

@@ -30,8 +30,8 @@
 </script>
 
 <script lang="ts">
-  import * as Tooltip from '@/lib/components/ui/tooltip'
-  import { cn } from '@/lib/utils'
+  import * as Tooltip from '$lib/components/ui/tooltip'
+  import { cn } from '$lib/utils'
   import {
     mergeProps,
     type WithElementRef,

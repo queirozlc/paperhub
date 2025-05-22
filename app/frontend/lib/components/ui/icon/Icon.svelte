@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cn } from '@/lib/utils'
+  import { cn } from '$lib/utils'
   import type { SVGAttributes } from 'svelte/elements'
   import { ICONS, type IconName } from './registry'
 

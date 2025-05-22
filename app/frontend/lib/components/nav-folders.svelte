@@ -1,6 +1,6 @@
 <script lang="ts">
-  import * as DropdownMenu from '@/lib/components/ui/dropdown-menu'
-  import * as Sidebar from '@/lib/components/ui/sidebar'
+  import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
+  import * as Sidebar from '$lib/components/ui/sidebar'
   import { ArrowUpRight, Ellipsis, Link, StarOff, Trash2 } from '@lucide/svelte'
   import { Folder, Plus } from '@voolt_technologies/untitledui-svelte'
 

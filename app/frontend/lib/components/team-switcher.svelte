@@ -1,15 +1,15 @@
 <script lang="ts">
-  import * as DropdownMenu from '@/lib/components/ui/dropdown-menu'
-  import * as Sidebar from '@/lib/components/ui/sidebar'
-  import * as Dialog from '@/lib/components/ui/dialog'
-  import * as Avatar from '@/lib/components/ui/avatar'
-  import TeamForm from '@/pages/Team/Form.svelte'
-  import type { TeamType } from '@/pages/Team/types'
+  import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
+  import * as Sidebar from '$lib/components/ui/sidebar'
+  import * as Dialog from '$lib/components/ui/dialog'
+  import * as Avatar from '$lib/components/ui/avatar'
+  import TeamForm from '$pages/Team/Form.svelte'
+  import type { TeamType } from '$pages/Team/types'
   import { page, router } from '@inertiajs/svelte'
   import { ChevronDown, Plus } from '@lucide/svelte'
   import { defaultAvatar } from '../utils'
   import { Check } from '@voolt_technologies/untitledui-svelte'
-  import type { UserType } from '@/pages/Users/types'
+  import type { UserType } from '$pages/Users/types'
 
   let { teams }: { teams: TeamType[] } = $props()
 
