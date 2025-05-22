@@ -23,7 +23,7 @@
           autocomplete: 'off',
           autocorrect: 'off',
           autocapitalize: 'off',
-          class: 'prose dark:prose-invert focus:outline-none',
+          class: 'min-h-full',
         },
       },
       content: ``,
@@ -33,13 +33,42 @@
 </script>
 
 <EditorLayout {document}>
-  <div class="flex flex-col min-h-[calc(100svh-theme(spacing.4))]">
+  <div class="flex flex-col min-h-[calc(100svh-theme(spacing.4))] pb-5">
     <div
-      class="border border-border px-20 py-16 size-full max-w-screen-md mx-auto"
+      class="border border-border px-20 py-16 relative size-full max-w-screen-md mx-auto"
     >
-      <EditorContent editor={$editor} />
+      <EditorContent editor={$editor} class="flex-1" />
       {#if $editor}
-        <BubbleMenu editor={$editor} />
+        <BubbleMenu
+          tippyOptions={{
+            popperOptions: {
+              placement: 'top-start',
+              modifiers: [
+                {
+                  name: 'preventOverflow',
+                  options: {
+                    boundary: 'viewport',
+                    padding: 8,
+                  },
+                },
+                {
+                  name: 'flip',
+                  options: {
+                    fallbackPlacements: [
+                      'bottom-start',
+                      'top-end',
+                      'bottom-end',
+                    ],
+                  },
+                },
+              ],
+            },
+            offset: [0, 8],
+            maxWidth: 'calc(100vw - 16px)',
+          }}
+          pluginKey="bubbleMenu"
+          editor={$editor}
+        ></BubbleMenu>
       {/if}
     </div>
   </div>

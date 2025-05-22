@@ -1,0 +1,45 @@
+.ProseMirror {
+  /* Placeholder Styles */
+  .is-empty::before {
+    @apply text-muted-foreground pointer-events-none float-left h-0 w-full;
+  }
+
+  &.ProseMirror-focused {
+    /* Slashmenu Placeholder */
+    > p.has-focus.is-empty::before {
+      content: "Digite '/' para navegar pelas opções";
+    }
+  }
+
+  /* Default Placeholder */
+  & > .is-editor-empty:first-child:last-child::before {
+    content: 'Comece escrevendo algo 🚀';
+  }
+
+  /* Blockquote Placeholder */
+  blockquote .is-empty:not(.is-editor-empty):first-child:last-child::before {
+    content: 'Digite uma citação';
+  }
+
+  blockquote + figcaption.is-empty:not(.is-editor-empty)::before {
+    content: 'Autor';
+  }
+
+  [data-placeholder][data-suggestion]::before,
+  [data-placeholder][data-suggestion] *::before {
+    content: none !important;
+  }
+
+  /* Details Placeholder */
+  [data-type='details'].is-editor-empty::before {
+    content: none !important;
+  }
+
+  [data-type='details'] summary.is-empty::before {
+    content: 'Sumário';
+  }
+
+  [data-type='detailsContent'] .is-empty::before {
+    content: 'Digite detalhes';
+  }
+}
