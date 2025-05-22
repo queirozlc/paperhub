@@ -4,7 +4,7 @@
     type WithoutChild,
   } from 'bits-ui'
   import AlertDialogOverlay from './alert-dialog-overlay.svelte'
-  import { cn } from '@/lib/utils.js'
+  import { cn } from '$lib/utils.js'
 
   let {
     ref = $bindable(null),

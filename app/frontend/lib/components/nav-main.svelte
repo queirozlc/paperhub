@@ -1,5 +1,5 @@
 <script lang="ts">
-  import * as Sidebar from '@/lib/components/ui/sidebar'
+  import * as Sidebar from '$lib/components/ui/sidebar'
   import { Link } from '@inertiajs/svelte'
   import { SearchSm } from '@voolt_technologies/untitledui-svelte'
   import { getOS } from '../utils'
