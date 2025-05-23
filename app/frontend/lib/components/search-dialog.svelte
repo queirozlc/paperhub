@@ -3,7 +3,7 @@
   import { File } from '@lucide/svelte'
   import type { DocumentType } from '@/pages/Document/types'
   import type { Item } from './nav-main.svelte'
-  import { normalizeText } from '@/lib/utils'
+  import { router } from '@inertiajs/svelte'
 
   let {
     open = $bindable(false),
@@ -16,40 +16,62 @@
   } = $props()
 
   let searchTerm = $state('')
-  let filteredDocs = $state(documents)
-  let filteredItems = $state(items)
+  let filteredItems = $derived.by(() => {
+    const sidebarOptions = items.filter(({ title }) => {
+      return title
+        .normalize('NFD')
+        .trim()
+        .toLowerCase()
+        .includes(searchTerm.normalize('NFD').trim().toLowerCase())
+    })
 
-  function handleInput(event: Event) {
-    const input = event.target as HTMLInputElement
-    searchTerm = normalizeText(input.value)
+    return sidebarOptions.length ? sidebarOptions : items
+  })
 
-    if (!searchTerm) {
-      filteredDocs = documents
-      filteredItems = items
-      return
+  let searchUrl = $derived.by(() => {
+    if (searchTerm) {
+      return new URL(
+        `/documents?search=${encodeURIComponent(searchTerm)}`,
+        window.location.origin
+      )
     }
 
-    filteredItems = items.filter((item) =>
-      normalizeText(item.title).includes(searchTerm)
-    )
+    return new URL('/documents', window.location.origin)
+  })
 
-    fetch(`/documents?search=${searchTerm}`, { method: 'GET' })
-      .then((res) => res.json())
-      .then((res) => (filteredDocs = res))
+  $effect(() => {
+    router.visit(searchUrl, {
+      preserveState: true,
+      preserveScroll: true,
+      replace: true,
+    })
+  })
+
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key === 'k' && (event.ctrlKey || event.metaKey)) {
+      event.preventDefault()
+      open = !open
+    }
   }
 </script>
 
+<svelte:window onkeydown={handleKeydown} />
+
 <!-- Search dialog -->
-<Command.Dialog bind:open shouldFilter={false}>
+<Command.Dialog
+  bind:open
+  shouldFilter={false}
+  onOpenChange={() => (searchTerm = '')}
+>
   <Command.Input
     placeholder="Pesquise um documento ou seu conteúdo..."
-    oninput={handleInput}
+    bind:value={searchTerm}
   />
   <Command.List>
     <Command.Empty>Nenhum resultado encontrado.</Command.Empty>
     <Command.Group heading="Documentos">
-      {#each filteredDocs as doc (doc.id)}
-        <Command.Item>
+      {#each documents as doc (doc.id)}
+        <Command.Item class="cursor-pointer">
           <File class="size-5 text-muted-foreground" />
           <span>{doc.title || 'Sem título'}</span>
         </Command.Item>
@@ -58,7 +80,7 @@
     <Command.Separator />
     <Command.Group heading="Outras opções">
       {#each filteredItems as item (item.title)}
-        <Command.Item>
+        <Command.Item class="cursor-pointer">
           <item.icon class="[&>path]:stroke-[2.5]" />
           <span class="grow">{item.title}</span>
         </Command.Item>

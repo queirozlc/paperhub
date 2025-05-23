@@ -3,21 +3,17 @@ class DocumentsController < ApplicationController
 
   # GET /documents
   def index
-    if params[:search]
-      documents = Document.where("title ILIKE ?", "%#{params[:search]}%")
-      render json: documents
-    else
-      @documents = Document.all
-      render inertia: "Document/Index", props: {
-        documents: -> { @documents.map do |document|
-            serialize_document(document)
-          end
-        },
-        teams: -> { current_user.teams.includes(:cover_attachment).map do |team|
-          serialize_team(team)
-        end }
-      }
-    end
+    @documents = filtered_documents
+
+    render inertia: "Document/Index", props: {
+      documents: -> { @documents.map do |document|
+          serialize_document(document)
+        end
+      },
+      teams: -> { current_user.teams.includes(:cover_attachment).map do |team|
+        serialize_team(team)
+      end }
+    }
   end
 
   # GET /documents/:sqid
@@ -85,5 +81,15 @@ class DocumentsController < ApplicationController
 
     def team_cover(team)
       url_for(team.cover) if team.cover.attached?
+    end
+
+    def filtered_documents
+      search = params[:search]
+
+      if search.present?
+        Document.where("title ILIKE ?", "%#{search}%")
+      else
+        Document.all
+      end
     end
 end
