@@ -1,10 +1,9 @@
 Rails.application.routes.draw do
   authenticated :user do
     root to: "documents#index", as: :authenticated_root
-    get "documents" => "documents#index"
     get "onboarding" => "users/onboarding#edit", as: :user_onboarding
     patch "onboarding" => "users/onboarding#update", as: :user_onboarding_update
-    resources :documents, except: %i[index new edit]
+    resources :documents, except: %i[new edit]
     delete "documents" => "documents#destroy_all", as: :destroy_all_documents
     resources :teams, only: %i[create]
   end
