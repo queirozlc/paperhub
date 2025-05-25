@@ -17,14 +17,18 @@
   } = $props()
 
   let searchTerm = $state('')
-  let filteredItems = $state(items)
-
-  $effect(() => {
-    searchDocuments()
-    searchMainMenuItems()
+  
+  let filteredItems = $derived.by(() => {
+    if (!searchTerm.trim()) {
+      return items
+    }
+    return items.filter(({ title }) => 
+      normalize(title).includes(normalize(searchTerm))
+    )
   })
 
-  function searchDocuments() {
+  // Search for documents
+  $effect(() => {
     const searchUrl = searchTerm
       ? `/documents?search=${encodeURIComponent(searchTerm)}`
       : '/documents'
@@ -34,19 +38,7 @@
       preserveScroll: true,
       replace: true,
     })
-  }
-
-  function searchMainMenuItems() {
-    if (!searchTerm) {
-      filteredItems = items
-      return
-    }
-
-    filteredItems = items.filter(({ title }) => {
-      return normalize(title)
-        .includes(normalize(searchTerm))
-    })
-  }
+  })
 
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'k' && (event.ctrlKey || event.metaKey)) {
