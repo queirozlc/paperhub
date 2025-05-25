@@ -4,6 +4,7 @@
   import type { DocumentType } from '@/pages/Document/types'
   import type { Item } from './nav-main.svelte'
   import { router } from '@inertiajs/svelte'
+  import { normalize } from '../utils'
 
   let {
     open = $bindable(false),
@@ -16,36 +17,36 @@
   } = $props()
 
   let searchTerm = $state('')
-  let filteredItems = $derived.by(() => {
-    const sidebarOptions = items.filter(({ title }) => {
-      return title
-        .normalize('NFD')
-        .trim()
-        .toLowerCase()
-        .includes(searchTerm.normalize('NFD').trim().toLowerCase())
-    })
-
-    return sidebarOptions.length ? sidebarOptions : items
-  })
-
-  let searchUrl = $derived.by(() => {
-    if (searchTerm) {
-      return new URL(
-        `/documents?search=${encodeURIComponent(searchTerm)}`,
-        window.location.origin
-      )
-    }
-
-    return new URL('/documents', window.location.origin)
-  })
+  let filteredItems = $state(items)
 
   $effect(() => {
+    searchDocuments()
+    searchMainMenuItems()
+  })
+
+  function searchDocuments() {
+    const searchUrl = searchTerm
+      ? `/documents?search=${encodeURIComponent(searchTerm)}`
+      : '/documents'
+
     router.visit(searchUrl, {
       preserveState: true,
       preserveScroll: true,
       replace: true,
     })
-  })
+  }
+
+  function searchMainMenuItems() {
+    if (!searchTerm) {
+      filteredItems = items
+      return
+    }
+
+    filteredItems = items.filter(({ title }) => {
+      return normalize(title)
+        .includes(normalize(searchTerm))
+    })
+  }
 
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'k' && (event.ctrlKey || event.metaKey)) {
@@ -67,8 +68,12 @@
     placeholder="Pesquise um documento ou seu conteúdo..."
     bind:value={searchTerm}
   />
+
   <Command.List>
+
     <Command.Empty>Nenhum resultado encontrado.</Command.Empty>
+
+    {#if documents.length > 0}
     <Command.Group heading="Documentos">
       {#each documents as doc (doc.id)}
         <Command.Item class="cursor-pointer">
@@ -77,7 +82,10 @@
         </Command.Item>
       {/each}
     </Command.Group>
+    {/if}
+
     <Command.Separator />
+    {#if filteredItems.length > 0}
     <Command.Group heading="Outras opções">
       {#each filteredItems as item (item.title)}
         <Command.Item class="cursor-pointer">
@@ -86,5 +94,7 @@
         </Command.Item>
       {/each}
     </Command.Group>
+    {/if}
+    
   </Command.List>
 </Command.Dialog>
