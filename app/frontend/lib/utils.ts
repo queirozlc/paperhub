@@ -51,7 +51,7 @@ export const defaultAvatar = (key: number = Math.random()) =>
     ],
   })
 
-export function normalizeText(text) {
+export function normalize(text) {
   return text
     .trim()
     .normalize('NFD') // separa caracteres com acento do caractere base
