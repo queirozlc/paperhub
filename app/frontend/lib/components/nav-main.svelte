@@ -28,13 +28,6 @@
   function openSearchDialog() {
     isSearchDialogOpen = true
   }
-
-  function getSearchShortcut() {
-    const key = "K"
-    if (os === 'macOS')
-      return `<span class='text-xs'>⌘</span>${key}`
-    return `Ctrl + ${key}`
-  }
 </script>
 
 <Sidebar.Menu>
@@ -50,7 +43,11 @@
         <kbd
           class="bg-tooltip text-tooltip-foreground pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border border-tooltip px-1.5 mt-1 font-mono text-[10px] font-medium opacity-100"
         >
-          {@html getSearchShortcut()}
+          {#if os === 'macOS'}
+            <span class='text-xs'>⌘</span>K
+          {:else}
+            Ctrl + K
+          {/if}
         </kbd>
       {/snippet}
 
