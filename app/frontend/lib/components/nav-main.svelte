@@ -3,23 +3,31 @@
   import { Link } from '@inertiajs/svelte'
   import { SearchSm } from '@voolt_technologies/untitledui-svelte'
   import { getOS } from '../utils'
+  import SearchDialog from './search-dialog.svelte'
+
+  import type { DocumentType } from '@/pages/Document/types'
+  import type { NavItem } from '../models/nav-item'
+
+  export type Item = NavItem & {
+    tooltip: string
+    isActive?: boolean
+  }
 
   let {
     items,
+    documents,
   }: {
-    items: {
-      title: string
-      url: string
-      tooltip: string
-      // This should be `Component` after @lucide/svelte updates types
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      icon: any
-      isActive?: boolean
-      badge?: number
-    }[]
+    items: Item[]
+    documents: DocumentType[]
   } = $props()
 
   const os = getOS()
+
+  let isSearchDialogOpen = $state(false)
+
+  function openSearchDialog() {
+    isSearchDialogOpen = true
+  }
 </script>
 
 <Sidebar.Menu>
@@ -32,23 +40,27 @@
       {#snippet tooltipContent()}
         <span class="text-xs">Pesquise por projetos, tarefas e muito mais.</span
         >
-        {#if os === 'macOS'}
-          <kbd
-            class="bg-tooltip text-tooltip-foreground pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border border-tooltip px-1.5 mt-1 font-mono text-[10px] font-medium opacity-100"
-          >
-            <span class="text-xs">⌘</span>K
-          </kbd>
-        {/if}
+        <kbd
+          class="bg-tooltip text-tooltip-foreground pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border border-tooltip px-1.5 mt-1 font-mono text-[10px] font-medium opacity-100"
+        >
+          {#if os === 'macOS'}
+            <span class='text-xs'>⌘</span>K
+          {:else}
+            Ctrl + K
+          {/if}
+        </kbd>
       {/snippet}
 
       {#snippet child({ props })}
-        <div {...props}>
+        <button {...props} onclick={openSearchDialog}>
           <SearchSm />
           <span class="grow">Pesquisar</span>
-        </div>
+        </button>
       {/snippet}
     </Sidebar.MenuButton>
   </Sidebar.MenuItem>
+
+  <SearchDialog bind:open={isSearchDialogOpen} {items} {documents} />
 
   {#each items as item (item.title)}
     <Sidebar.MenuItem class="font-semibold">

@@ -3,7 +3,8 @@ class DocumentsController < ApplicationController
 
   # GET /documents
   def index
-    @documents = Document.all
+    @documents = filtered_documents
+
     render inertia: "Document/Index", props: {
       documents: -> { @documents.map do |document|
           serialize_document(document)
@@ -80,5 +81,15 @@ class DocumentsController < ApplicationController
 
     def team_cover(team)
       url_for(team.cover) if team.cover.attached?
+    end
+
+    def filtered_documents
+      search = params[:search]
+
+      if search.present?
+        Document.where("title ILIKE ?", "%#{search}%")
+      else
+        Document.all
+      end
     end
 end
