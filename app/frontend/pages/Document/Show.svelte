@@ -1,7 +1,7 @@
 <script lang="ts">
   import EditorLayout from '@/layouts/EditorLayout.svelte'
   import { editorExtensions as extensions } from '@/lib/extensions'
-  import { onMount } from 'svelte'
+  import { onDestroy, onMount } from 'svelte'
   import {
     BubbleMenu,
     createEditor,
@@ -26,10 +26,60 @@
           class: 'prose dark:prose-invert focus:outline-none',
         },
       },
-      content: ``,
+      content: `<h1>Documento do Bruno</h1><p>Este é um documento de <span data-hover-mark>teste</span>.</p>`,
       extensions,
     })
   })
+
+  onDestroy(() => {
+    if (editor) {
+      $editor.destroy()
+    }
+  })
+
+  function suggest(i: number, j: number, replaceText: string) {
+    console.log("Suggest")
+    /*$editor.chain()
+      .focus()
+      .insertContentAt({ from: 4, to: 8 }, replaceText)
+      .run()
+    */
+
+    let posicaoInicio = null;
+    let posicaoFim = null;
+    let contadorIndex = 0;
+
+    $editor.state.doc.descendants((node, pos) => {
+      if (node.isText) {
+        const nodeText = node.text;
+        const iNodeText = contadorIndex;
+        const jNodeText = contadorIndex + nodeText.length;
+
+        // Verifica se o índice inicial está neste nó de texto
+        if (posicaoInicio === null && i >= iNodeText && i <= jNodeText) {
+          posicaoInicio = pos + (i - iNodeText);
+        }
+
+        // Verifica se o índice final está neste nó de texto
+        if (posicaoFim === null && j >= iNodeText && j <= jNodeText) {
+          posicaoFim = pos + (j - iNodeText);
+        }
+
+        contadorIndex += nodeText.length;
+      } else if (node.isBlock) {
+        // Adiciona quebra de linha para blocos (como parágrafos)
+        contadorIndex += 1;
+      }
+    })
+
+    if (posicaoInicio !== null && posicaoFim !== null) {
+      $editor.chain()
+        .focus()
+        .setTextSelection({ from: posicaoInicio, to: posicaoFim })
+        .insertContent(replaceText)
+        .run();
+    }
+  }
 </script>
 
 <EditorLayout {document}>
@@ -44,3 +94,22 @@
     </div>
   </div>
 </EditorLayout>
+
+<button onclick={() => console.log($editor)}>$editor</button>
+
+<button onclick={() => console.log($editor.getJSON())}>JSON</button>
+
+<button onclick={() => console.log($editor.getHTML())}>HTML</button>
+
+<button onclick={() => suggest(30, 39, "TESTE")}>Teste</button>
+
+<style>
+  :global(span[data-hover-mark]) {
+    color: var(--primary);
+    background: rgba(0, 255, 0, 0.2);
+  }
+
+  :global(span[data-hover-mark]:hover) {
+    color: yellow;
+  }
+</style>

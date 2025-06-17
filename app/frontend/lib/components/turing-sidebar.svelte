@@ -141,6 +141,7 @@
           oninput={resize}
         />
         <Button
+          title="Limpar tudo"
           variant="ghost"
           size="icon"
           class="size-6 absolute bottom-2 left-2 text-muted-foreground hover:text-accent-foreground"
@@ -150,6 +151,7 @@
 
         <div class="absolute gap-2 bottom-2 right-2 flex items-center">
           <Button
+            title="Anexar arquivo"
             variant="ghost"
             size="icon"
             class="size-6 text-muted-foreground hover:text-accent-foreground"
@@ -158,6 +160,7 @@
           </Button>
 
           <Button
+            title="Enviar"
             variant="outline"
             size="icon"
             class="size-6 text-muted-foreground hover:text-accent-foreground"
