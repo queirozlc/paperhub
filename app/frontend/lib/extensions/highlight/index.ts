@@ -1,11 +1,11 @@
-import { Mark } from '@tiptap/core';
+import { Mark, type RawCommands } from '@tiptap/core';
 
 export const HighlightedParagraph = Mark.create({
   name: 'hoverMark',
 
   addAttributes() {
     return {
-      // Atributos padrão que não precisamos no momento
+      id: 0
     };
   },
 
@@ -17,11 +17,17 @@ export const HighlightedParagraph = Mark.create({
     ];
   },
 
-  renderHTML({ HTMLAttributes }) {
+  renderHTML({ mark, HTMLAttributes }) {
     return ['span', {
       ...HTMLAttributes,
       'data-hover-mark': '',
-      class: 'hover-mark-span'
+      class: 'hover-mark-span',
+      id: mark.attrs.id || null,
     }, 0];
   },
+
+  /*addCommands() {
+    return {
+    }
+  }*/
 })
