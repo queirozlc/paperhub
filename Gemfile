@@ -32,7 +32,7 @@ gem "solid_cable"
 
 gem "vite_rails", "~> 3.0"
 
-gem "inertia_rails", "~> 3.7"
+gem "inertia_rails", "~> 3.9"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
