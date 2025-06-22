@@ -1,12 +1,15 @@
-import { SlashCommands } from './slash-commands'
-import { HighlightedParagraph } from './highlight'
 import Placeholder from '@tiptap/extension-placeholder'
 import StarterKit from '@tiptap/starter-kit'
+import { Color } from '@tiptap/extension-color'
+import TextStyle from '@tiptap/extension-text-style'
+import Highlight from '@tiptap/extension-highlight'
+
+import { SlashCommands } from './slash-commands'
+import { Suggestion } from  './suggestion'
+import { SuggestionParagraph } from './suggestion-paragrapher'
 
 export const editorExtensions = [
-  StarterKit.configure({
-    codeBlock: false,
-  }),
+  StarterKit.configure({ codeBlock: false, }),
   Placeholder.configure({
     placeholder: ({ node }) => {
       if (node.type.name === 'paragraph') {
@@ -17,5 +20,9 @@ export const editorExtensions = [
     },
   }),
   SlashCommands,
-  HighlightedParagraph,
+  Color,
+  TextStyle,
+  Highlight.configure({ multicolor: true, }),
+  Suggestion,
+  SuggestionParagraph,
 ]

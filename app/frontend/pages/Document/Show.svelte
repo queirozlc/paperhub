@@ -8,22 +8,21 @@
     Editor,
     EditorContent,
   } from 'svelte-tiptap'
+
   import type { Readable } from 'svelte/store'
   import type { DocumentType } from './types'
+  import { diffWords } from 'diff' //! TODO: Remover lib
 
   export type Suggestion = {
-    text: string,
+    originalText: string,
+    suggestedText: string,
     action: "add" | "replace" | "delete",
-    from: number | null,
-    to: number,
-    explanation: string
+    explanation: string,
   }
 
   let { document }: { document: DocumentType } = $props()
 
   let editor = $state() as Readable<Editor>
-
-  // let currentButton: HTMLButtonElement | null = null;
 
   onMount(() => {
     editor = createEditor({
@@ -36,9 +35,15 @@
           class: 'prose dark:prose-invert focus:outline-none',
         },
       },
-      //content: '<p>O primeiro presidente do Brasil foi Luiz Inácio Lula da Silva.</p>',
-      content: '<p>Quem foi o primeiro presidente do Brasil?</p><p>O primeiro presidente do Brasil foi Luiz Inácio Lula da Silva.</p>',
+      //cotent: '<p>O primeiro presidente do Brasil foi Luiz Inácio Lula da Silva.</p>',
+      //content: '<p>Quem foi o primeiro presidente do Brasil?</p><p>O primeiro presidente do Brasil foi Luiz Inácio Lula da Silva.</p>',
       //content: `<h1>Documento do Bruno</h1><p>O primeiro presidente do Brasil foi <span data-hover-mark>Luiz Inácio Lula da Silva</span>.</p>`,
+      //content: `<h1>Documento do Bruno</h1><p>O <span data-suggestion>primeiro</span> presidente do Brasil foi <mark>Luiz Inácio Lula da Silva</mark>.</p>`,
+      content: `
+        <h1>Olá Bruno</h1>
+        <p>Isto é uma <span data-suggestion data-id='0'>sugestão</span></p>
+        <p>Isto é outra <span data-suggestion data-id='1'>sugestão</span> e aqui vai <span data-suggestion data-id='2'>mais uma</span> só</p>
+      `,
       extensions,
     })
   })
@@ -56,37 +61,7 @@
     return $editor.getHTML()
   }
 
-  function suggest(suggestion: Suggestion) {
-    console.log("Suggestion:", suggestion)
-
-    if (!$editor) {
-      return
-    }
-
-    const { action, from: i, to: j, text } = suggestion
-    const { from, to } = getRealIndexes(i ?? 0, j)
-
-    const chain = $editor.chain().focus()
-
-    switch (action) {
-      case 'add':
-        chain.insertContentAt(to, text)
-        break
-      case 'replace':
-        chain.setTextSelection({ from, to })
-          .insertContent(text)
-        break
-      case 'delete':
-        chain.setTextSelection({ from, to }).deleteSelection()
-        break
-      default:
-        console.warn('Ação desconhecida:', action)
-        return
-    }
-
-    chain.run()
-  }
-
+  /*
   function getRealIndexes(i: number, j: number) {
     let from = null;
     let to = null;
@@ -120,11 +95,6 @@
 
   function suggestTeste(i: number, j: number, replaceText: string) {
     console.log("Suggest")
-    /*$editor.chain()
-      .focus()
-      .insertContentAt({ from: 4, to: 8 }, replaceText)
-      .run()
-    */
 
     let posicaoInicio = null;
     let posicaoFim = null;
@@ -161,46 +131,239 @@
         .run();
     }
   }
+  */
+
+
 
   /*
-  function addButtonAndMarkTest() {
-    const id = `mark-${incrementalMarkId++}`;
-    $editor
-      .chain()
-      .focus()
-      .insertContentAt($editor.state.doc.content.size, [
-        {
-          type: 'text',
-          text: "AAAAA",
-          marks: [{ type: 'hoverMark', attrs: { id }}],
-        },
-      ])
-      .run();
+  function processAndLoadHtml(htmlString) {
+    if (!$editor || !htmlString) {
+      console.warn("Editor não inicializado ou HTML de entrada vazio.");
+      return;
+    }
 
-    setTimeout(() => {
-      addButtonTest(id);
-    }, 100);
-  }
+    const suggestions: Suggestion[] = [
+      {
+        originalText: 'AAA',
+        suggestedText: 'BBB',
+        action: 'replace',
+        explanation: 'asdsadsadasd',
+      }, {
+        originalText: 'CCC',
+        suggestedText: 'DDD',
+        action: 'replace',
+        explanation: 'asdsadsadasd',
+      }, {
+        originalText: 'EEE',
+        suggestedText: 'FFF',
+        action: 'replace',
+        explanation: 'asdsadsadasd',
+      },
+    ];
 
-  function addButtonTest(markId: string) {
-    const mark = window.document.getElementById(markId) as HTMLElement
-    const markRect = mark.getBoundingClientRect();
+    // 1. Usamos o DOMParser para converter a string HTML em um documento DOM manipulável.
+    // Isso é muito mais seguro e robusto do que usar Regex para manipular HTML.
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, 'text/html');
+    const body = doc.body;
 
-    const btn = window.document.createElement('button');
-    btn.textContent = 'Ação';
-    btn.className = 'mark-btn';
-    btn.onclick = () => alert('Botão clicado!');
+    // 2. Encontramos todos os elementos que contêm o padrão "{{int}}".
+    // Usamos `querySelectorAll` e depois filtramos para garantir que estamos
+    // pegando o elemento mais interno que contém o texto.
+    const testRegex = /{{\d+}}/;
+    const replaceRegex = /{{(\d+)}}/;
+    const candidates = Array.from(body.querySelectorAll('*'));
 
-    //btn.style.top = `${markRect.top}px`;
-    //btn.style.left = `${markRect.left}px`;
-    //window.document.getElementById('teste').appendChild(btn);
+    // Iteramos de trás para frente para evitar problemas ao modificar o DOM
+    // enquanto o percorremos (ex: o índice dos nós muda).
+    for (let i = candidates.length - 1; i >= 0; i--) {
+      const originalElement = candidates[i];
 
-    mark.appendChild(btn)
+      console.log('Candidato:')
+      console.log(originalElement);
+      
+      const containSuggestion = testRegex.test(originalElement.innerHTML)
+
+      if (containSuggestion) {
+        // 3. Ao encontrar um elemento, clonamos ele completamente.
+        const cloneElement = originalElement.cloneNode(true) as Element;
+
+        originalElement.innerHTML = originalElement.innerHTML.replace(
+          replaceRegex,
+          (match, n) => {
+            const suggestionIndex = parseInt(n)
+            const suggestion = suggestions[suggestionIndex]
+            return suggestion.originalText;
+          }
+        );
+
+        // 3. Fazemos o mesmo para o elemento clonado, com um texto diferente
+        cloneElement.innerHTML = cloneElement.innerHTML.replace(
+          replaceRegex,
+          (match, n) => {
+            const suggestionIndex = parseInt(n)
+            const suggestion = suggestions[suggestionIndex]
+            return suggestion.suggestedText;
+          }
+        );
+
+        // 5. Inserimos o elemento clonado logo após o original no DOM.
+        originalElement.parentNode.insertBefore(cloneElement, originalElement.nextSibling);
+      }
+    }
+
+    // 6. Pegamos o HTML final do corpo do nosso documento temporário.
+    const finalHtml = body.innerHTML;
+
+    // 7. Atualizamos o conteúdo do TipTap com o resultado.
+    $editor.commands.setContent(finalHtml);
   }
   */
+
+
+  // !!!!!
+  /*
+  function processSuggestionWithAttributes(suggestionId: number) {
+		if (!editor) {
+      return;
+    }
+
+		let parentPos: number | null = null;
+		//let parentNode: ProseMirrorNode | null = null;
+    let parentNode: ProseMirrorNode | null = null;
+		
+		// 1. Encontra o nó pai da sugestão (lógica idêntica à anterior)
+		$editor.state.doc.descendants((node, pos) => {
+			if (node.isText) {
+				const suggestionMark = node.marks.find(
+					mark => mark.type.name === 'suggestion' && Number(mark.attrs.id) === suggestionId
+				);
+
+				if (suggestionMark) {
+					const resolvedPos = $editor.state.doc.resolve(pos);
+					parentNode = resolvedPos.parent;
+					parentPos = resolvedPos.start(resolvedPos.depth);
+					return false;
+				}
+			}
+		});
+
+		if (parentNode === null || parentPos === null) {
+			alert(`Sugestão com ID ${suggestionId} não encontrada.`);
+			return;
+		}
+
+		// 2. Inicia a transação
+		let tr = $editor.state.tr;
+
+    console.log('A')
+
+		// 3. Adiciona `data-suggestion-type='delete'` ao parágrafo pai original
+		tr = tr.setNodeMarkup(parentPos, undefined, { 
+			...parentNode.attrs, 
+			suggestionType: 'delete'
+		});
+
+    console.log('B')
+
+		// 4. Cria um novo nó para o clone com `data-suggestion-type='add'`
+		const clonedNode = $editor.schema.nodes.paragraph.create(
+			{ ...parentNode.attrs, suggestionType: 'add' }, // Atributos do clone
+			parentNode.content // Conteúdo é o mesmo do original
+		);
+
+    console.log('C')
+		
+		// 5. Insere o clone logo após o original
+		const insertPos = parentPos + parentNode.nodeSize;
+		tr = tr.insert(insertPos, clonedNode);
+		
+		// 6. Aplica a transação
+		$editor.view.dispatch(tr);
+		$editor.commands.focus();
+	}
+  */
+
+  function processSuggestionWithAttributes(suggestionId: number) {
+    const suggestions: Suggestion[] = [
+      {
+        originalText: 'AAA',
+        suggestedText: 'BBB',
+        action: 'replace',
+        explanation: 'asdsadsadasd',
+      }, {
+        originalText: 'CCC',
+        suggestedText: 'DDD',
+        action: 'replace',
+        explanation: 'asdsadsadasd',
+      }, {
+        originalText: 'EEE',
+        suggestedText: 'FFF',
+        action: 'replace',
+        explanation: 'asdsadsadasd',
+      },
+    ];
+
+    // 1. Buscar o span com data-suggestion e data-id igual a suggestionId
+    const suggestionSpan = $editor.view.dom.querySelector(
+      `span[data-suggestion][data-id="${suggestionId}"]`
+    ) as HTMLSpanElement;
+
+    const suggestion = suggestions[suggestionId] || null;
+
+    if (!suggestionSpan || !suggestion) {
+      console.warn(`Sugestão com ID ${suggestionId} não encontrada`);
+      return;
+    }
+
+    // 2. Obter o elemento pai do span
+    const parentElement = suggestionSpan.parentElement;
+    if (!parentElement) {
+      console.warn('Elemento pai não encontrado');
+      return;
+    }
+
+    // 3. Pintar o conteúdo do span de vermelho escuro
+    suggestionSpan.style.color = 'red'; // Vermelho escuro
+    suggestionSpan.style.backgroundColor = '#FFE4E1'; // Fundo claro para contraste
+
+    // 4. Adicionar atributo data-suggestion-type='delete' ao elemento pai
+    parentElement.setAttribute('data-suggestion-type', 'delete');
+
+    // 5. Duplicar o elemento pai
+    const clonedElement = parentElement.cloneNode(true) as HTMLElement;
+
+    // 6. Adicionar atributo data-suggestion-type='add' ao clone
+    clonedElement.setAttribute('data-suggestion-type', 'add');
+
+    // 7. No clone, pintar o texto que era circundado por span de verde escuro
+    const clonedSuggestionSpan = clonedElement.querySelector(
+      `span[data-suggestion][data-id="${suggestionId}"]`
+    ) as HTMLSpanElement;
+
+    if (clonedSuggestionSpan) {
+      // Substituir o span pela versão com texto verde
+      const textContent = clonedSuggestionSpan.textContent || '';
+      const greenSpan = window.document.createElement('span');
+      greenSpan.textContent = textContent;
+      greenSpan.style.color = 'green'; // Verde escuro
+      greenSpan.style.backgroundColor = '#E8F5E8'; // Fundo verde claro
+      greenSpan.setAttribute('data-suggestion-accepted', 'true');
+      greenSpan.textContent = suggestion.suggestedText; // Atualizar o texto do span
+      
+      clonedSuggestionSpan.replaceWith(greenSpan);
+    }
+
+    // Inserir o clone após o elemento original
+    parentElement.insertAdjacentElement('afterend', clonedElement);
+
+    // Atualizar o conteúdo do editor TipTap
+    const updatedHTML = $editor.view.dom.innerHTML;
+    $editor.commands.setContent(updatedHTML, false);
+  }
 </script>
 
-<EditorLayout {document} {getContent} {suggest}>
+<EditorLayout {document} {getContent} suggest={(a) => {}}> <!--{suggest}-->
   <div class="flex flex-col min-h-[calc(100svh-theme(spacing.4))]">
     <!-- TODO: Tirar "relative"? -->
     <div
@@ -221,45 +384,16 @@
 
 <button onclick={() => console.log($editor.getHTML())}>HTML</button>
 
-<button onclick={() => suggestTeste(1, 10, "TESTE")}>Alterar</button>
-
-<!--<button onclick={() => addButtonAndMarkTest()}>
-  AddTexto
-</button>-->
+<button onclick={() => processSuggestionWithAttributes(2)}>Suggest</button>
 
 <style>
-  :global(span[data-hover-mark]) {
-    position: relative;
-    color: var(--primary);
+  :global(*[data-suggestion-type='add']) {
     background: rgba(0, 255, 0, 0.2);
+    margin-top: 0;
   }
 
-  :global(span[data-hover-mark]:hover) {
-    color: yellow;
+  :global(*[data-suggestion-type='delete']) {
+    background: rgba(255, 0, 0, 0.2);
+    margin-bottom: 0;
   }
-
-  /*
-  :global(.hover-mark-span) {
-    position: relative;
-    background: #ffffcc;
-  }
-
-  :global(.hover-mark-btn) {
-    display: none;
-    position: absolute;
-    top: -30px;
-    right: 0;
-    z-index: 10;
-    background: #333;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 2px 8px;
-    cursor: pointer;
-  }
-
-  :global(.hover-mark-span:hover .hover-mark-btn) {
-    display: inline-block;
-  }
-  */
 </style>
