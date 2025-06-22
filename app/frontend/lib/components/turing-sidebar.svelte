@@ -16,16 +16,24 @@
   import { aiApiService } from '@/services/ai-api-service'
 
   export type Suggestion = {
-    id?: number,
-    text: string,
-    action: 'add' | 'replace' | 'delete',
-    explanation: string,
+    id?: number
+    text: string
+    action: 'add' | 'replace' | 'delete'
+    explanation: string
   }
 
   type TuringResponse = {
-    response: string,
-    modifiedDocument: string | null,
-    suggestions: Suggestion[],
+    response: string
+    modifiedDocument: string | null
+    suggestions: Suggestion[]
+  }
+
+  type ResponsePart = {
+    type: "text"
+    text: string
+  } | {
+    type: "suggestion"
+    suggestion: Suggestion
   }
 
   type Props = {
@@ -37,9 +45,9 @@
   let { getContent, updateEditorWithSuggestions, suggest }: Props = $props()
 
   let question = $state('')
-  let response = $state('')
   let nextSuggestionIndex = $state(0)
   let suggestions = $state<Suggestion[]>([])
+  let responseParts = $state<ResponsePart[]>([])
 
   let ref: HTMLTextAreaElement = $state(null)
 
@@ -73,20 +81,59 @@
 
       console.log('Response:', data)
 
-      response = data.response
+      responseParts = splitResponse(data.response, data.suggestions)
 
       if (data.modifiedDocument) {
         updateEditorWithSuggestions(data.modifiedDocument, nextSuggestionIndex)
       }
 
       data.suggestions.forEach((s, i) => {
-        s.id = i + nextSuggestionIndex++
+        s.id = i + nextSuggestionIndex
       })
       suggestions = data.suggestions
+      nextSuggestionIndex += suggestions.length
       
     } catch (e) {
       console.error('Error:', e)
     }
+  }
+
+  function splitResponse(response: string, suggestions: Suggestion[]) {
+    const parts: ResponsePart[] = []
+    const regex = /\{\{(\d+)\}\}/g
+
+    let lastIndex = 0
+    let match: RegExpExecArray
+
+    while ((match = regex.exec(response)) !== null) {
+      // Adiciona o texto antes do padrão {{n}}
+      if (match.index > lastIndex) {
+        parts.push({
+          type: 'text',
+          text: response.slice(lastIndex, match.index)
+        });
+      }
+
+      const suggestionIdx = match[1]
+      
+      // Adiciona o padrão {{n}} como um objeto span
+      parts.push({
+        type: 'suggestion',
+        suggestion: suggestions[suggestionIdx]
+      });
+      
+      lastIndex = regex.lastIndex;
+    }
+    
+    // Adiciona o texto restante após o último padrão
+    if (lastIndex < response.length) {
+      parts.push({
+        type: 'text',
+        text: response.slice(lastIndex)
+      });
+    }
+
+    return parts
   }
 </script>
 
@@ -108,12 +155,27 @@
       </div>
     </Sidebar.Group>
 
-    {#if response}
-      <Sidebar.Group class="items-center h-full justify-center gap-5">
-        { response }
-      </Sidebar.Group>
-    {:else}
-      <Sidebar.Group class="items-center h-full justify-center gap-5">
+    <Sidebar.Group class="items-center h-full justify-center gap-5">
+
+      {#if responseParts.length !== 0}
+
+        <div class="w-full">
+          {#each responseParts as part}
+            {#if part.type === 'text'}
+              <p class="w-full m-0">{ part.text }</p>
+            {:else if part.type === 'suggestion'}
+              <button
+                class="w-full m-0 bg-white/20 p-1 cursor-pointer"
+                onclick={() => suggest(part.suggestion)}
+              >
+                { part.suggestion.text }
+              </button>
+            {/if}
+          {/each}
+        </div>
+
+      {:else}
+
         <div class="flex flex-col items-center justify-center gap-4">
           <div
             class="shadow-md rounded-md bg-popover p-2 w-fit flex items-center justify-center"
@@ -153,20 +215,17 @@
             >
           </li>
         </ul>
-      </Sidebar.Group>
-    {/if}
+
+      {/if}
+
+    </Sidebar.Group>
   </Sidebar.Content>
 
   <Sidebar.Footer class="px-2">
     <div class="flex flex-col justify-center gap-4">
-      <div class="flex gap-1">
-        <Button size="icon" variant="outline" class="size-6">
-          <Plus />
-        </Button>
-        <Button size="icon" variant="outline" class="size-6" onclick={() => suggest(suggestions[0])}>
-          T
-        </Button>
-      </div>
+      <Button size="icon" variant="outline" class="size-6">
+        <Plus />
+      </Button>
 
       <div class="relative">
         <Textarea
