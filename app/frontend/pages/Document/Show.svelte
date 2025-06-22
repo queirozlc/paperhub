@@ -12,13 +12,7 @@
   import type { Readable } from 'svelte/store'
   import type { DocumentType } from './types'
   import { diffWords } from 'diff' //! TODO: Remover lib
-
-  export type Suggestion = {
-    originalText: string,
-    suggestedText: string,
-    action: "add" | "replace" | "delete",
-    explanation: string,
-  }
+  import type { Suggestion } from '@/lib/components/turing-sidebar.svelte'
 
   let { document }: { document: DocumentType } = $props()
 
@@ -35,15 +29,14 @@
           class: 'prose dark:prose-invert focus:outline-none',
         },
       },
-      //cotent: '<p>O primeiro presidente do Brasil foi Luiz Inácio Lula da Silva.</p>',
-      //content: '<p>Quem foi o primeiro presidente do Brasil?</p><p>O primeiro presidente do Brasil foi Luiz Inácio Lula da Silva.</p>',
+      content: '<p>Quem foi o primeiro presidente do Brasil?</p><p>O primeiro presidente do Brasil foi Luiz Inácio Lula da Silva.</p>',
       //content: `<h1>Documento do Bruno</h1><p>O primeiro presidente do Brasil foi <span data-hover-mark>Luiz Inácio Lula da Silva</span>.</p>`,
       //content: `<h1>Documento do Bruno</h1><p>O <span data-suggestion>primeiro</span> presidente do Brasil foi <mark>Luiz Inácio Lula da Silva</mark>.</p>`,
-      content: `
+      /*content: `
         <h1>Olá Bruno</h1>
         <p>Isto é uma <span data-suggestion data-id='0'>sugestão</span></p>
         <p>Isto é outra <span data-suggestion data-id='1'>sugestão</span> e aqui vai <span data-suggestion data-id='2'>mais uma</span> só</p>
-      `,
+      `,*/
       extensions,
     })
   })
@@ -61,258 +54,45 @@
     return $editor.getHTML()
   }
 
-  /*
-  function getRealIndexes(i: number, j: number) {
-    let from = null;
-    let to = null;
-    let contadorIndex = 0;
+  function updateEditorWithSuggestions(modifiedDocument: string, nextSuggestionIndex: number) {
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(modifiedDocument, "text/html")
 
-    $editor.state.doc.descendants((node, pos) => {
-      if (node.isText) {
-        const nodeText = node.text;
-        const iNodeText = contadorIndex;
-        const jNodeText = contadorIndex + nodeText.length;
+    // 2. Localiza todos os spans que possuem o atributo "data-suggestion"
+    //    mas que NÃO possuem o atributo "data-id".
+    //    A query CSS 'span[data-suggestion]:not([data-id])' faz essa seleção de forma precisa.
+    const seletor = 'span[data-suggestion]:not([data-id])';
+    const spansEncontrados: NodeListOf<HTMLSpanElement> = doc.querySelectorAll(seletor);
 
-        // Verifica se o índice inicial está neste nó de texto
-        if (from === null && i >= iNodeText && i <= jNodeText) {
-          from = pos + (i - iNodeText);
-        }
+    if (spansEncontrados.length === 0) {
+      return
+    }
 
-        // Verifica se o índice final está neste nó de texto
-        if (to === null && j >= iNodeText && j <= jNodeText) {
-          to = pos + (j - iNodeText);
-        }
+    spansEncontrados.forEach(span => {
+      const idx = parseInt(span.getAttribute('data-idx'))
+      span.setAttribute('data-id', nextSuggestionIndex + idx + '')
+    });
 
-        contadorIndex += nodeText.length;
-      } else if (node.isBlock) {
-        // Adiciona quebra de linha para blocos (como parágrafos)
-        contadorIndex += 1;
-      }
+    spansEncontrados.forEach(span => {
+      const idx = parseInt(span.getAttribute('data-idx'))
     })
 
-    return { from, to }
+    $editor.chain()
+      .focus()
+      .clearContent()
+      .setContent(doc.documentElement.outerHTML)
+      .run()
   }
 
-  function suggestTeste(i: number, j: number, replaceText: string) {
-    console.log("Suggest")
-
-    let posicaoInicio = null;
-    let posicaoFim = null;
-    let contadorIndex = 0;
-
-    $editor.state.doc.descendants((node, pos) => {
-      if (node.isText) {
-        const nodeText = node.text;
-        const iNodeText = contadorIndex;
-        const jNodeText = contadorIndex + nodeText.length;
-
-        // Verifica se o índice inicial está neste nó de texto
-        if (posicaoInicio === null && i >= iNodeText && i <= jNodeText) {
-          posicaoInicio = pos + (i - iNodeText);
-        }
-
-        // Verifica se o índice final está neste nó de texto
-        if (posicaoFim === null && j >= iNodeText && j <= jNodeText) {
-          posicaoFim = pos + (j - iNodeText);
-        }
-
-        contadorIndex += nodeText.length;
-      } else if (node.isBlock) {
-        // Adiciona quebra de linha para blocos (como parágrafos)
-        contadorIndex += 1;
-      }
-    })
-
-    if (posicaoInicio !== null && posicaoFim !== null) {
-      $editor.chain()
-        .focus()
-        .setTextSelection({ from: posicaoInicio, to: posicaoFim })
-        .insertContent(replaceText)
-        .run();
-    }
-  }
-  */
-
-
-
-  /*
-  function processAndLoadHtml(htmlString) {
-    if (!$editor || !htmlString) {
-      console.warn("Editor não inicializado ou HTML de entrada vazio.");
-      return;
-    }
-
-    const suggestions: Suggestion[] = [
-      {
-        originalText: 'AAA',
-        suggestedText: 'BBB',
-        action: 'replace',
-        explanation: 'asdsadsadasd',
-      }, {
-        originalText: 'CCC',
-        suggestedText: 'DDD',
-        action: 'replace',
-        explanation: 'asdsadsadasd',
-      }, {
-        originalText: 'EEE',
-        suggestedText: 'FFF',
-        action: 'replace',
-        explanation: 'asdsadsadasd',
-      },
-    ];
-
-    // 1. Usamos o DOMParser para converter a string HTML em um documento DOM manipulável.
-    // Isso é muito mais seguro e robusto do que usar Regex para manipular HTML.
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlString, 'text/html');
-    const body = doc.body;
-
-    // 2. Encontramos todos os elementos que contêm o padrão "{{int}}".
-    // Usamos `querySelectorAll` e depois filtramos para garantir que estamos
-    // pegando o elemento mais interno que contém o texto.
-    const testRegex = /{{\d+}}/;
-    const replaceRegex = /{{(\d+)}}/;
-    const candidates = Array.from(body.querySelectorAll('*'));
-
-    // Iteramos de trás para frente para evitar problemas ao modificar o DOM
-    // enquanto o percorremos (ex: o índice dos nós muda).
-    for (let i = candidates.length - 1; i >= 0; i--) {
-      const originalElement = candidates[i];
-
-      console.log('Candidato:')
-      console.log(originalElement);
-      
-      const containSuggestion = testRegex.test(originalElement.innerHTML)
-
-      if (containSuggestion) {
-        // 3. Ao encontrar um elemento, clonamos ele completamente.
-        const cloneElement = originalElement.cloneNode(true) as Element;
-
-        originalElement.innerHTML = originalElement.innerHTML.replace(
-          replaceRegex,
-          (match, n) => {
-            const suggestionIndex = parseInt(n)
-            const suggestion = suggestions[suggestionIndex]
-            return suggestion.originalText;
-          }
-        );
-
-        // 3. Fazemos o mesmo para o elemento clonado, com um texto diferente
-        cloneElement.innerHTML = cloneElement.innerHTML.replace(
-          replaceRegex,
-          (match, n) => {
-            const suggestionIndex = parseInt(n)
-            const suggestion = suggestions[suggestionIndex]
-            return suggestion.suggestedText;
-          }
-        );
-
-        // 5. Inserimos o elemento clonado logo após o original no DOM.
-        originalElement.parentNode.insertBefore(cloneElement, originalElement.nextSibling);
-      }
-    }
-
-    // 6. Pegamos o HTML final do corpo do nosso documento temporário.
-    const finalHtml = body.innerHTML;
-
-    // 7. Atualizamos o conteúdo do TipTap com o resultado.
-    $editor.commands.setContent(finalHtml);
-  }
-  */
-
-
-  // !!!!!
-  /*
-  function processSuggestionWithAttributes(suggestionId: number) {
-		if (!editor) {
-      return;
-    }
-
-		let parentPos: number | null = null;
-		//let parentNode: ProseMirrorNode | null = null;
-    let parentNode: ProseMirrorNode | null = null;
-		
-		// 1. Encontra o nó pai da sugestão (lógica idêntica à anterior)
-		$editor.state.doc.descendants((node, pos) => {
-			if (node.isText) {
-				const suggestionMark = node.marks.find(
-					mark => mark.type.name === 'suggestion' && Number(mark.attrs.id) === suggestionId
-				);
-
-				if (suggestionMark) {
-					const resolvedPos = $editor.state.doc.resolve(pos);
-					parentNode = resolvedPos.parent;
-					parentPos = resolvedPos.start(resolvedPos.depth);
-					return false;
-				}
-			}
-		});
-
-		if (parentNode === null || parentPos === null) {
-			alert(`Sugestão com ID ${suggestionId} não encontrada.`);
-			return;
-		}
-
-		// 2. Inicia a transação
-		let tr = $editor.state.tr;
-
-    console.log('A')
-
-		// 3. Adiciona `data-suggestion-type='delete'` ao parágrafo pai original
-		tr = tr.setNodeMarkup(parentPos, undefined, { 
-			...parentNode.attrs, 
-			suggestionType: 'delete'
-		});
-
-    console.log('B')
-
-		// 4. Cria um novo nó para o clone com `data-suggestion-type='add'`
-		const clonedNode = $editor.schema.nodes.paragraph.create(
-			{ ...parentNode.attrs, suggestionType: 'add' }, // Atributos do clone
-			parentNode.content // Conteúdo é o mesmo do original
-		);
-
-    console.log('C')
-		
-		// 5. Insere o clone logo após o original
-		const insertPos = parentPos + parentNode.nodeSize;
-		tr = tr.insert(insertPos, clonedNode);
-		
-		// 6. Aplica a transação
-		$editor.view.dispatch(tr);
-		$editor.commands.focus();
-	}
-  */
-
-  function processSuggestionWithAttributes(suggestionId: number) {
-    const suggestions: Suggestion[] = [
-      {
-        originalText: 'AAA',
-        suggestedText: 'BBB',
-        action: 'replace',
-        explanation: 'asdsadsadasd',
-      }, {
-        originalText: 'CCC',
-        suggestedText: 'DDD',
-        action: 'replace',
-        explanation: 'asdsadsadasd',
-      }, {
-        originalText: 'EEE',
-        suggestedText: 'FFF',
-        action: 'replace',
-        explanation: 'asdsadsadasd',
-      },
-    ];
+  function suggest(suggestion: Suggestion) {
 
     // 1. Buscar o span com data-suggestion e data-id igual a suggestionId
     const suggestionSpan = $editor.view.dom.querySelector(
-      `span[data-suggestion][data-id="${suggestionId}"]`
+      `span[data-suggestion][data-id="${suggestion.id}"]`
     ) as HTMLSpanElement;
 
-    const suggestion = suggestions[suggestionId] || null;
-
-    if (!suggestionSpan || !suggestion) {
-      console.warn(`Sugestão com ID ${suggestionId} não encontrada`);
+    if (!suggestionSpan) {
+      console.warn(`Sugestão com ID ${suggestion.id} não encontrada`);
       return;
     }
 
@@ -338,7 +118,7 @@
 
     // 7. No clone, pintar o texto que era circundado por span de verde escuro
     const clonedSuggestionSpan = clonedElement.querySelector(
-      `span[data-suggestion][data-id="${suggestionId}"]`
+      `span[data-suggestion][data-id="${suggestion.id}"]`
     ) as HTMLSpanElement;
 
     if (clonedSuggestionSpan) {
@@ -349,7 +129,7 @@
       greenSpan.style.color = 'green'; // Verde escuro
       greenSpan.style.backgroundColor = '#E8F5E8'; // Fundo verde claro
       greenSpan.setAttribute('data-suggestion-accepted', 'true');
-      greenSpan.textContent = suggestion.suggestedText; // Atualizar o texto do span
+      greenSpan.textContent = suggestion.text; // Atualizar o texto do span
       
       clonedSuggestionSpan.replaceWith(greenSpan);
     }
@@ -361,9 +141,13 @@
     const updatedHTML = $editor.view.dom.innerHTML;
     $editor.commands.setContent(updatedHTML, false);
   }
+
+  function acceptSuggestion() {
+    
+  }
 </script>
 
-<EditorLayout {document} {getContent} suggest={(a) => {}}> <!--{suggest}-->
+<EditorLayout {document} {getContent} {updateEditorWithSuggestions} {suggest}>
   <div class="flex flex-col min-h-[calc(100svh-theme(spacing.4))]">
     <!-- TODO: Tirar "relative"? -->
     <div
@@ -384,7 +168,9 @@
 
 <button onclick={() => console.log($editor.getHTML())}>HTML</button>
 
-<button onclick={() => processSuggestionWithAttributes(2)}>Suggest</button>
+<button onclick={() => suggest({ id: 0, action: 'replace', text: 'TESTE', explanation: '' })}>Suggest</button>
+
+<button onclick={() => acceptSuggestion()}>Aceitarr</button>
 
 <style>
   :global(*[data-suggestion-type='add']) {

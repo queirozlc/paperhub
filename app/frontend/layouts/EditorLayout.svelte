@@ -1,20 +1,20 @@
 <script lang="ts">
   import EditorSidebarHeader from '@/lib/components/editor-sidebar-header.svelte'
   import TableOfContents from '@/lib/components/table-of-contents.svelte'
-  import TuringSidebar from '@/lib/components/turing-sidebar.svelte'
+  import TuringSidebar, { type Suggestion } from '@/lib/components/turing-sidebar.svelte'
   import * as Sidebar from '@/lib/components/ui/sidebar'
-  import type { Suggestion } from '@/pages/Document/Show.svelte'
   import type { DocumentType } from '@/pages/Document/types'
   import { type Snippet } from 'svelte'
 
   type Props = {
     document: DocumentType
     getContent: () => string
+    updateEditorWithSuggestions: (modifiedDocument: string, nextSuggestionIndex: number) => void
     suggest: (suggestion: Suggestion) => void
     children: Snippet
   }
 
-  let { children, document, getContent, suggest }: Props = $props()
+  let { children, document, getContent, updateEditorWithSuggestions, suggest }: Props = $props()
 
   let documentTitle = $state(document.title || 'Sem título')
 
@@ -56,6 +56,6 @@
     style="--sidebar-width: 18rem;"
     class="w-fit overflow-hidden max-h-dvh"
   >
-    <TuringSidebar {getContent} {suggest} />
+    <TuringSidebar {getContent} {updateEditorWithSuggestions} {suggest} />
   </Sidebar.Provider>
 </div>

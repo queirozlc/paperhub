@@ -12,20 +12,34 @@
   import Button from './ui/button/button.svelte'
   import Textarea from './ui/textarea/textarea.svelte'
   import Icon from './ui/icon/Icon.svelte'
-  import type { Suggestion } from '@/pages/Document/Show.svelte'
   import turingSvg from '@/assets/turing.svg'
-  import axios from 'axios'
-    import { aiApiService } from '@/services/ai-api-service'
+  import { aiApiService } from '@/services/ai-api-service'
+
+  export type Suggestion = {
+    id?: number,
+    text: string,
+    action: 'add' | 'replace' | 'delete',
+    explanation: string,
+  }
+
+  type TuringResponse = {
+    response: string,
+    modifiedDocument: string | null,
+    suggestions: Suggestion[],
+  }
 
   type Props = {
-    getContent: () => string
+    getContent: () => string,
+    updateEditorWithSuggestions: (modifiedDocument: string, nextSuggestionIndex: number) => void
     suggest: (suggestion: Suggestion) => void
   }
 
-  let { getContent, suggest }: Props = $props()
+  let { getContent, updateEditorWithSuggestions, suggest }: Props = $props()
 
   let question = $state('')
   let response = $state('')
+  let nextSuggestionIndex = $state(0)
+  let suggestions = $state<Suggestion[]>([])
 
   let ref: HTMLTextAreaElement = $state(null)
 
@@ -55,13 +69,21 @@
 
     try {
       const res = await aiApiService.post('/ask', body)
-      console.log('Response:', res.data)
+      const data = res.data as TuringResponse
 
-      response = res.data.response
+      console.log('Response:', data)
 
-      res.data.suggestions.forEach((suggestion: Suggestion) => {
-        suggest(suggestion)
+      response = data.response
+
+      if (data.modifiedDocument) {
+        updateEditorWithSuggestions(data.modifiedDocument, nextSuggestionIndex)
+      }
+
+      data.suggestions.forEach((s, i) => {
+        s.id = i + nextSuggestionIndex++
       })
+      suggestions = data.suggestions
+      
     } catch (e) {
       console.error('Error:', e)
     }
@@ -137,9 +159,14 @@
 
   <Sidebar.Footer class="px-2">
     <div class="flex flex-col justify-center gap-4">
-      <Button size="icon" variant="outline" class="size-6">
-        <Plus />
-      </Button>
+      <div class="flex gap-1">
+        <Button size="icon" variant="outline" class="size-6">
+          <Plus />
+        </Button>
+        <Button size="icon" variant="outline" class="size-6" onclick={() => suggest(suggestions[0])}>
+          T
+        </Button>
+      </div>
 
       <div class="relative">
         <Textarea
