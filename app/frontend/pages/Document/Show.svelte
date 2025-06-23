@@ -162,16 +162,6 @@
   </div>
 </EditorLayout>
 
-<button onclick={() => console.log($editor)}>$editor</button>
-
-<button onclick={() => console.log($editor.getJSON())}>JSON</button>
-
-<button onclick={() => console.log($editor.getHTML())}>HTML</button>
-
-<button onclick={() => suggest({ id: 0, action: 'replace', text: 'TESTE', explanation: '' })}>Suggest</button>
-
-<button onclick={() => acceptSuggestion()}>Aceitarr</button>
-
 <style>
   :global(*[data-suggestion-type='add']) {
     background: rgba(0, 255, 0, 0.2);

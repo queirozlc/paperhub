@@ -8,6 +8,7 @@
     Plus,
     Send01,
     Translate01,
+    Loading02 as Loading
   } from '@voolt_technologies/untitledui-svelte'
   import Button from './ui/button/button.svelte'
   import Textarea from './ui/textarea/textarea.svelte'
@@ -28,7 +29,15 @@
     suggestions: Suggestion[]
   }
 
-  type ResponsePart = {
+  type ConversationPart = {
+    type: "question"
+    question: string
+  } | {
+    type: "answer"
+    answer: AnswerPart[]
+  }
+
+  type AnswerPart = {
     type: "text"
     text: string
   } | {
@@ -45,32 +54,70 @@
   let { getContent, updateEditorWithSuggestions, suggest }: Props = $props()
 
   let question = $state('')
+  let loading = $state(false)
+  let conversation = $state<ConversationPart[]>([])
+  /*let conversation = $state<ConversationPart[]>([
+    {type:"question", question:"Isto é um teste"},
+    {type:"answer", answer: [{type:"text", text: "OK!"}]},
+    {type:"question", question:"Sehloco"},
+    {type:"answer", answer: [{type:"text", text: "Num compensa"}]},
+    {type:"question", question:"Sehloco"},
+    {type:"answer", answer: [
+      {type:"text", text: "O primeiro presidente do Brasil foi"},
+      {type:"suggestion", suggestion: { id: 0, action: 'replace', text: 'Mr. Catra', explanation: '' }},
+      {type:"text", text: "Enquanto o segundo foi"},
+      {type:"suggestion", suggestion: { id: 0, action: 'replace', text: 'Sei la carai KKKK', explanation: '' }},
+    ]},
+  ])*/
   let nextSuggestionIndex = $state(0)
   let suggestions = $state<Suggestion[]>([])
-  let responseParts = $state<ResponsePart[]>([])
 
-  let ref: HTMLTextAreaElement = $state(null)
+  let chatRef: HTMLDivElement = $state(null)
+  let textareaRef: HTMLTextAreaElement = $state(null)
 
   function resize(
     event: Event & {
       currentTarget: EventTarget & HTMLTextAreaElement
     }
   ) {
-    if (ref) {
+    if (textareaRef) {
       const target = event.target as HTMLInputElement
-      ref.style.height = 'auto'
-      ref.style.height = `${target.scrollHeight - 0}px`
+      textareaRef.style.height = 'auto'
+      textareaRef.style.height = `${target.scrollHeight - 0}px`
     }
   }
 
+  function startNewChat() {
+    conversation = []
+  }
+
+  function scrollChatDown() {
+    if (chatRef) {
+      chatRef.scrollTop = chatRef.scrollHeight
+    }
+  }
+
+  $effect(() => {
+    if (loading) {
+      scrollChatDown()
+    }
+  })
+
   async function submitQuestion() {
-    if (question.trim() === '') {
+    question = question.trim()
+    if (question === '') {
       return
     }
 
+    loading = true
+    conversation.push({
+      type: "question",
+      question,
+    })
+
     const body = {
       document: getContent(),
-      question: question.trim(),
+      question,
     }
 
     question = ''
@@ -81,7 +128,13 @@
 
       console.log('Response:', data)
 
-      responseParts = splitResponse(data.response, data.suggestions)
+      const answerParts: AnswerPart[] = splitResponse(data.response, data.suggestions)
+
+      loading = false
+      conversation.push({
+        type: "answer",
+        answer: answerParts
+      })
 
       if (data.modifiedDocument) {
         updateEditorWithSuggestions(data.modifiedDocument, nextSuggestionIndex)
@@ -92,14 +145,14 @@
       })
       suggestions = data.suggestions
       nextSuggestionIndex += suggestions.length
-      
+
     } catch (e) {
       console.error('Error:', e)
     }
   }
 
   function splitResponse(response: string, suggestions: Suggestion[]) {
-    const parts: ResponsePart[] = []
+    const parts: AnswerPart[] = []
     const regex = /\{\{(\d+)\}\}/g
 
     let lastIndex = 0
@@ -140,7 +193,7 @@
 <Sidebar.Root side="right" transparent>
   <Sidebar.Header class="border-sidebar-border h-14 border-b"></Sidebar.Header>
   <Sidebar.Content class="px-2">
-    <Sidebar.Group>
+    <Sidebar.Group class="border-b border-white/4">
       <div class="flex items-center justify-between">
         <span class="text-muted-foreground text-sm font-semibold font-brand"
           >Turing AI</span
@@ -155,23 +208,42 @@
       </div>
     </Sidebar.Group>
 
-    <Sidebar.Group class="items-center h-full justify-center gap-5">
+    <Sidebar.Group bind:ref={chatRef} class="block items-center h-full justify-center gap-5 overflow-y-auto">
 
-      {#if responseParts.length !== 0}
+      {#if conversation.length !== 0}
 
-        <div class="w-full">
-          {#each responseParts as part}
-            {#if part.type === 'text'}
-              <p class="w-full m-0">{ part.text }</p>
-            {:else if part.type === 'suggestion'}
-              <button
-                class="w-full m-0 bg-white/20 p-1 cursor-pointer"
-                onclick={() => suggest(part.suggestion)}
-              >
-                { part.suggestion.text }
-              </button>
+        <div class="flex flex-col gap-4 w-full">
+          {#each conversation as statement}
+            {#if statement.type === "question"}
+              <div class="ml-4 self-end">
+                <span class="block opacity-50 text-xs text-right">você</span>
+                { statement.question }
+              </div>
+            {:else}
+              <div class="mr-4">
+                <span class="block opacity-50 text-xs">Turing</span>
+                {#each statement.answer as part}
+                  {#if part.type === 'text'}
+                    <p class="w-full m-0">{ part.text }</p>
+                  {:else if part.type === 'suggestion'}
+                    <button
+                      class="w-full m-0 bg-white/4 hover:bg-white/8 p-1 border rounded-xs text-left cursor-pointer transition"
+                      onclick={() => suggest(part.suggestion)}
+                    >
+                      { part.suggestion.text }
+                    </button>
+                  {/if}
+                {/each}
+              </div>
             {/if}
           {/each}
+
+          {#if loading}
+            <div class="mr-4">
+              <span class="block opacity-50 text-xs">Turing</span>
+              <Loading class="animate-spin duration-2000 mt-1" size={15} />
+            </div>
+          {/if}
         </div>
 
       {:else}
@@ -223,26 +295,44 @@
 
   <Sidebar.Footer class="px-2">
     <div class="flex flex-col justify-center gap-4">
-      <Button size="icon" variant="outline" class="size-6">
-        <Plus />
-      </Button>
+      
 
       <div class="relative">
         <Textarea
-          bind:ref
+          bind:ref={textareaRef}
           placeholder="Do que você está precisando ?"
           class="resize-none pb-10 no-scrollbar"
           bind:value={question}
           oninput={resize}
+          onkeydown={e => {
+            if (e.ctrlKey && e.key === 'Enter') {
+              e.preventDefault()
+              submitQuestion()
+            }
+          }}
         />
-        <Button
-          title="Limpar tudo"
-          variant="ghost"
-          size="icon"
-          class="size-6 absolute bottom-2 left-2 text-muted-foreground hover:text-accent-foreground"
-        >
-          <Icon name="broom" />
-        </Button>
+
+        <div class="absolute gap-2 bottom-2 left-2 flex items-center">
+          <Button
+            size="icon"
+            variant="outline"
+            class="size-6 text-muted-foreground hover:text-accent-foreground"
+            title="Novo chat"
+            onclick={startNewChat}
+          >
+            <Plus />
+          </Button>
+          
+          <Button
+            title="Limpar tudo"
+            variant="ghost"
+            size="icon"
+            class="size-6 text-muted-foreground hover:text-accent-foreground"
+            onclick={() => question = ''}
+          >
+            <Icon name="broom" />
+          </Button>
+        </div>
 
         <div class="absolute gap-2 bottom-2 right-2 flex items-center">
           <Button
