@@ -12,12 +12,6 @@
   } from '@lucide/svelte'
   import { ChevronDown } from '@voolt_technologies/untitledui-svelte'
 
-  import type { Editor } from 'svelte-tiptap'
-
-  type Props = {
-    editor: Editor
-  }
-
   type Item = {
     slug: string
     icon?: typeof Icon
@@ -27,8 +21,6 @@
   }
 
   let aiToolsDropdownContent = $state<HTMLDivElement>(null)
-
-  let { editor }: Props = $props()
 
   const items: Item[] = [
     {
