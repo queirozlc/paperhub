@@ -35,10 +35,10 @@
     }
 
     li {
-      @apply flex;
+      @apply flex items-center gap-2;
 
       > label {
-        @apply mt-1 mr-2 flex-auto shrink-0 grow-0 select-none;
+        @apply flex-auto shrink-0 grow-0 select-none;
       }
 
       > div {

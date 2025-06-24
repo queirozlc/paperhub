@@ -43,7 +43,7 @@
           slug: 'paragraph',
           label: 'Parágrafo',
           icon: Pilcrow,
-          onClick: () => {},
+          onClick: () => editor.chain().focus().setParagraph().run(),
         },
         {
           slug: 'heading-1',

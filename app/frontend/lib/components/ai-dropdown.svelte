@@ -2,18 +2,18 @@
 </script>
 
 <script lang="ts">
-  import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
   import Button from '$lib/components/ui/button/button.svelte'
-  import { ChevronDown } from '@voolt_technologies/untitledui-svelte'
+  import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
   import {
     CircleSlash,
-    FileText,
     Eraser,
+    FileText,
     Icon,
-    SparklesIcon,
     Languages,
     PencilLine,
+    SparklesIcon,
   } from '@lucide/svelte'
+  import { ChevronDown } from '@voolt_technologies/untitledui-svelte'
 
   import type { Editor } from 'svelte-tiptap'
 
@@ -97,11 +97,11 @@
     <Button
       size="sm"
       variant="ghost"
-      class="gap-2 items-center not-[svg]:text-primary/90 hover:text-primary"
+      class="gap-2 items-center hover:text-primary text-primary font-semibold"
     >
       <SparklesIcon class="size-4" />
       <div class="flex items-center gap-1">
-        <span class="text-sm font-medium font-brand">AI Tools</span>
+        <span class="text-sm font-brand">Turing IA</span>
         <ChevronDown class="size-3" />
       </div>
     </Button>
