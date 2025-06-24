@@ -1,9 +1,25 @@
 <script lang="ts">
   import type { Editor } from 'svelte-tiptap'
   import { Toggle } from '$lib/components/ui/toggle'
-  import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '$lib/components/ui/tooltip'
-  import { Popover, PopoverContent, PopoverTrigger } from '$lib/components/ui/popover'
-  import { Bold, Icon, Italic, Link, Strikethrough, Underline } from '@lucide/svelte'
+  import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+  } from '$lib/components/ui/tooltip'
+  import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+  } from '$lib/components/ui/popover'
+  import {
+    Bold,
+    Icon,
+    Italic,
+    Link,
+    Strikethrough,
+    Underline,
+  } from '@lucide/svelte'
   import Button from './ui/button/button.svelte'
   import LinkEditorPanel from './link-editor-panel.svelte'
   import { DEFAULT_PROTOCOL } from '$lib/constants'
@@ -79,10 +95,12 @@
       tooltip: 'Link',
     },
   ]
+
+  let pressedStates = $derived(items.map((item) => editor.isActive(item.slug)))
 </script>
 
 <div>
-  {#each items as item (item.slug)}
+  {#each items as item, index (item.slug)}
     <TooltipProvider delayDuration={0} disableHoverableContent>
       <Tooltip>
         {#if item.slug === 'link'}
@@ -105,11 +123,16 @@
             </Popover>
           </TooltipTrigger>
         {:else}
-          <Tooltip>
-            <Toggle size="sm" class="cursor-pointer" onclick={item.onClick}>
+          <TooltipTrigger>
+            <Toggle
+              size="sm"
+              class="cursor-pointer"
+              onclick={item.onClick}
+              bind:pressed={pressedStates[index]}
+            >
               <item.icon class="size-4" />
             </Toggle>
-          </Tooltip>
+          </TooltipTrigger>
         {/if}
         <TooltipContent shortcutKey={item.shortcut} class="font-medium">
           {item.tooltip}
