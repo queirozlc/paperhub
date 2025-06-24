@@ -137,6 +137,7 @@
 <div class="mt-2 space-y-1">
   {#each documents as document (document.id)}
     <Link
+      prefetch
       href={`/documents/${document.sqid}`}
       class="grid grid-cols-[1fr_auto_auto] items-center hover:bg-muted py-2 px-4 rounded cursor-pointer"
     >

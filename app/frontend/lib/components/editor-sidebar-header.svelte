@@ -36,13 +36,9 @@
     }
 
     if (documentTitle !== document.title) {
-      router.patch(
-        `/documents/${document.sqid}`,
-        {
-          document: { title: documentTitle },
-        },
-        { preserveState: false }
-      )
+      router.patch(`/documents/${document.sqid}`, {
+        document: { title: documentTitle },
+      })
     }
   }
 

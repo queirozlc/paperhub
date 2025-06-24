@@ -32,7 +32,7 @@
       {#snippet tooltipContent()}
         <span class="text-xs">Pesquise por projetos, tarefas e muito mais.</span
         >
-        {#if os === 'macOS'}
+        {#if os === 'macos'}
           <kbd
             class="bg-tooltip text-tooltip-foreground pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border border-tooltip px-1.5 mt-1 font-mono text-[10px] font-medium opacity-100"
           >

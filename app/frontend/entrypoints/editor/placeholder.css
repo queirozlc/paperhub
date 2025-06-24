@@ -31,15 +31,11 @@
   }
 
   /* Details Placeholder */
-  [data-type='details'].is-editor-empty::before {
+  [data-type='taskList'].is-editor-empty::before {
     content: none !important;
   }
 
-  [data-type='details'] summary.is-empty::before {
-    content: 'Sumário';
-  }
-
-  [data-type='detailsContent'] .is-empty::before {
-    content: 'Digite detalhes';
+  [data-type='taskItem'] .is-empty::before {
+    content: 'Digite uma tarefa';
   }
 }
