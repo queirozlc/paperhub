@@ -38,7 +38,7 @@
   {@render children()}
   {#if shortcutKey}
     {#if Array.isArray(shortcutKey)}
-      {#each shortcutKey as key}
+      {#each shortcutKey as key, index (index)}
         <TooltipShortcut shortcut={getShortcut(key)} class="ml-2" />
       {/each}
     {:else}
