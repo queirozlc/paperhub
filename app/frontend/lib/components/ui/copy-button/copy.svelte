@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '$lib/components/ui/tooltip'
+  import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+  } from '$lib/components/ui/tooltip'
   import { Button } from '$lib/components/ui/button'
   import { CheckIcon, CopyIcon } from '@lucide/svelte'
   import { cn } from '$lib/utils'
