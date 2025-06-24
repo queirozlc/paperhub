@@ -3,6 +3,8 @@ import TiptapLink from '@tiptap/extension-link'
 import { Plugin } from '@tiptap/pm/state'
 import { EditorView } from '@tiptap/pm/view'
 
+const unallowedProtocols = ['javascript:', 'vbscript:', 'data:']
+
 export const Link = TiptapLink.extend({
   inclusive: false,
 
@@ -11,12 +13,10 @@ export const Link = TiptapLink.extend({
       {
         tag: 'a[href]:not([data-type="button"]):not([href *= "javascript:" i])',
         getAttrs: (element) => {
-          // check if link starts with javascript:
+          const href = element.getAttribute('href')
           if (
-            element
-              .getAttribute('href')
-              ?.toLowerCase()
-              .startsWith('javascript:')
+            href &&
+            unallowedProtocols.some((protocol) => href.startsWith(protocol))
           ) {
             return false
           }
@@ -28,7 +28,12 @@ export const Link = TiptapLink.extend({
   },
 
   renderHTML({ HTMLAttributes }) {
-    if (HTMLAttributes.href?.toLowerCase().startsWith('javascript:')) {
+    const href = HTMLAttributes.href
+
+    if (
+      href &&
+      unallowedProtocols.some((protocol) => href.startsWith(protocol))
+    ) {
       return [
         'a',
         mergeAttributes(
