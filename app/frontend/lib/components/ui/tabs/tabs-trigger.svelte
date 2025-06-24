@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cn } from '@/lib/utils.js'
+  import { cn } from '$lib/utils'
   import { Link } from '@inertiajs/svelte'
   import type { LinkProps } from '@inertiajs/svelte/dist/components/Link.svelte'
   import { Tabs as TabsPrimitive } from 'bits-ui'

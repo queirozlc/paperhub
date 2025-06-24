@@ -9,15 +9,15 @@
     AlertDialogRemove,
     AlertDialogTitle,
     AlertDialogTrigger,
-  } from '@/lib/components/ui/alert-dialog'
-  import Checkbox from '@/lib/components/ui/checkbox/checkbox.svelte'
+  } from '$lib/components/ui/alert-dialog'
+  import Checkbox from '$lib/components/ui/checkbox/checkbox.svelte'
   import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-  } from '@/lib/components/ui/dropdown-menu'
-  import { Separator } from '@/lib/components/ui/separator'
+  } from '$lib/components/ui/dropdown-menu'
+  import { Separator } from '$lib/components/ui/separator'
   import { Link, router } from '@inertiajs/svelte'
   import { ListChecks } from '@lucide/svelte'
   import {
@@ -137,6 +137,7 @@
 <div class="mt-2 space-y-1">
   {#each documents as document (document.id)}
     <Link
+      prefetch
       href={`/documents/${document.sqid}`}
       class="grid grid-cols-[1fr_auto_auto] items-center hover:bg-muted py-2 px-4 rounded cursor-pointer"
     >

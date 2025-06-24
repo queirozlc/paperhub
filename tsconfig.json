@@ -5,12 +5,43 @@
     "target": "esNext",
     "module": "esNext",
     "moduleResolution": "node",
-    "types": ["vite/client", "vitest/globals"],
+    "types": [
+      "vite/client",
+      "vitest/globals"
+    ],
     "paths": {
-      "@/*": ["./app/frontend/*"],
-      "@test/*": ["./spec/frontend/*"]
+      "$assets": [
+        "./app/frontend/assets"
+      ],
+      "$layouts": [
+        "./app/frontend/layouts"
+      ],
+      "$layouts/*": [
+        "./app/frontend/layouts/*"
+      ],
+      "$pages": [
+        "./app/frontend/pages"
+      ],
+      "$pages/*": [
+        "./app/frontend/pages/*"
+      ],
+      "$lib": [
+        "./app/frontend/lib"
+      ],
+      "$lib/*": [
+        "./app/frontend/lib/*"
+      ],
+      "@test/*": [
+        "./spec/frontend/*"
+      ]
     }
   },
-  "include": ["app/frontend/**/*", "spec/frontend/**/*"],
-  "exclude": ["node_modules", "public"]
+  "include": [
+    "app/frontend/**/*",
+    "spec/frontend/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "public"
+  ]
 }

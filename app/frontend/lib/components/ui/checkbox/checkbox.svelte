@@ -4,7 +4,7 @@
     type WithoutChildrenOrChild,
   } from 'bits-ui'
   import { Check, Minus } from '@lucide/svelte'
-  import { cn } from '@/lib/utils.js'
+  import { cn } from '$lib/utils'
 
   let {
     ref = $bindable(null),

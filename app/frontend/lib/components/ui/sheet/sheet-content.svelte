@@ -22,7 +22,7 @@
 </script>
 
 <script lang="ts">
-  import { cn } from '@/lib/utils'
+  import { cn } from '$lib/utils'
   import { X } from '@lucide/svelte'
   import {
     Dialog as SheetPrimitive,

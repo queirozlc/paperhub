@@ -15,8 +15,8 @@ RSpec.describe User do
   end
 
   context "when creating a team for a user" do
-    let (:user) { create(:user) }
-    let (:name) { "John" }
+    let(:user) { create(:user) }
+    let(:name) { "John" }
 
     it "creates a new personal team for the user" do
       expect { user.new_personal_team(name:) }.to change { user.teams.count }.by(1)

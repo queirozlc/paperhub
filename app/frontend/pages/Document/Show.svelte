@@ -1,15 +1,13 @@
 <script lang="ts">
-  import EditorLayout from '@/layouts/EditorLayout.svelte'
-  import { editorExtensions as extensions } from '@/lib/extensions'
+  import EditorLayout from '$layouts/EditorLayout.svelte'
+  import { editorExtensions as extensions } from '$lib/extensions/extension-kit'
   import { onMount } from 'svelte'
-  import {
-    BubbleMenu,
-    createEditor,
-    Editor,
-    EditorContent,
-  } from 'svelte-tiptap'
+
+  import ToolsBubbleMenu from '$lib/components/tools-bubble-menu.svelte'
+  import { createEditor, Editor, EditorContent } from 'svelte-tiptap'
   import type { Readable } from 'svelte/store'
   import type { DocumentType } from './types'
+  import LinkBubbleMenu from '$lib/components/link-bubble-menu.svelte'
 
   let { document }: { document: DocumentType } = $props()
 
@@ -23,7 +21,7 @@
           autocomplete: 'off',
           autocorrect: 'off',
           autocapitalize: 'off',
-          class: 'prose dark:prose-invert focus:outline-none',
+          class: 'min-h-full relative',
         },
       },
       content: ``,
@@ -33,13 +31,14 @@
 </script>
 
 <EditorLayout {document}>
-  <div class="flex flex-col min-h-[calc(100svh-theme(spacing.4))]">
+  <div class="flex flex-col min-h-[calc(100svh-theme(spacing.4))] pb-5">
     <div
-      class="border border-border px-20 py-16 size-full max-w-screen-md mx-auto"
+      class="border border-border px-20 bg-background-editor py-16 relative size-full max-w-screen-md mx-auto"
     >
       <EditorContent editor={$editor} />
       {#if $editor}
-        <BubbleMenu editor={$editor} />
+        <ToolsBubbleMenu editor={$editor} />
+        <LinkBubbleMenu editor={$editor} />
       {/if}
     </div>
   </div>
