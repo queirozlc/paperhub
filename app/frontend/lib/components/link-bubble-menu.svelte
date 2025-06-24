@@ -11,16 +11,42 @@
   let { editor, editMode = $bindable(false) }: Props = $props()
 
   let url = $derived(editor.getAttributes('link').href ?? '')
-  let protocol = $derived.by(() => {
-    const protocol = url.split('://')[0]
-    return protocol ? `${protocol}://` : DEFAULT_PROTOCOL
-  })
-  let openInNewTab = $derived(editor.getAttributes('link').target === '_blank')
+  let protocol = $state(getProtocol())
+  let openInNewTab = $state(editor.getAttributes('link').target === '_blank')
+
+  function getProtocol() {
+    const address = editor.getAttributes('link').href ?? ''
+
+    if (address) {
+      return `${address.split('://')[0]}://`
+    }
+
+    return DEFAULT_PROTOCOL
+  }
 
   function handleKeyDown(e: KeyboardEvent) {
     if (e.key === 'Escape' && editMode) {
       editMode = false
     }
+  }
+
+  function editLink() {
+    let address = url
+
+    if (url.startsWith(DEFAULT_PROTOCOL)) {
+      address = url.slice(DEFAULT_PROTOCOL.length)
+    }
+
+    editor
+      .chain()
+      .focus()
+      .extendMarkRange('link')
+      .setLink({
+        href: `${protocol}${address}`,
+        target: openInNewTab ? '_blank' : '_self',
+      })
+      .run()
+    editMode = false
   }
 </script>
 
@@ -51,21 +77,15 @@
 >
   {#if editMode}
     <LinkEditorPanel
-      onSubmit={() => {
-        editor
-          .chain()
-          .focus()
-          .extendMarkRange('link')
-          .setLink({
-            href: `${protocol}${url}`,
-            target: openInNewTab ? '_blank' : '_self',
-          })
-          .run()
-        editMode = false
-      }}
+      onSubmit={editLink}
       bind:openInNewTab
       bind:protocol
-      bind:url
+      bind:url={
+        () => url.split('://')[1],
+        (updatedUrl) => {
+          url = updatedUrl
+        }
+      }
     />
   {:else}
     <LinkPreview {editor} {url} bind:editMode />

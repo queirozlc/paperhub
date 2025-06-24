@@ -21,28 +21,25 @@
     e.preventDefault()
     onSubmit()
   }
-
-  $effect(() => {
-    console.log({ protocol, url, openInNewTab })
-  })
 </script>
 
-<div class="rounded-lg flex flex-col gap-4 p-4">
-  <form onsubmit={handleSubmit} class="flex items-center gap-2 relative">
+<div class="rounded-lg flex flex-col gap-4 p-4 w-full">
+  <form class="flex items-center gap-2 relative" onsubmit={handleSubmit}>
     <div class="flex rounded-md shadow-xs">
       <div class="relative flex">
         <select
           bind:value={protocol}
-          class="peer border-input has-[option[disabled]:checked]:text-muted-foreground inline-flex cursor-pointer appearance-none items-center rounded-md border text-sm transition-[color,box-shadow] outline-none disabled:pointer-events-none text-muted-foreground hover:text-foreground w-fit rounded-e-none shadow-none bg-background h-9"
+          class="peer border-input outline-none focus-visible:ring-0 has-[option[disabled]:checked]:text-muted-foreground inline-flex cursor-pointer appearance-none items-center rounded-md border text-sm transition-[color,box-shadow] disabled:pointer-events-none text-muted-foreground hover:text-foreground w-fit rounded-e-none shadow-none bg-background h-9"
         >
           <option value="https://">https://</option>
           <option value="http://">http://</option>
         </select>
       </div>
       <Input
-        class="rounded-s-none shadow-none focus-visible:z-10"
+        bind:value={url}
+        class="rounded-s-none grow shadow-none focus-visible:ring-0 outline-none"
         placeholder="google.com"
-        type="text"
+        autocomplete="off"
       />
     </div>
 
@@ -56,9 +53,9 @@
       Abrir em uma nova aba
     </label>
     <Switch
-      id="open-in-new-tab"
-      class="cursor-pointer"
       bind:checked={openInNewTab}
+      class="cursor-pointer"
+      id="open-in-new-tab"
     />
   </div>
 </div>

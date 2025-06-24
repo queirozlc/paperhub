@@ -94,7 +94,7 @@
                 </Button>
               </PopoverTrigger>
 
-              <PopoverContent sideOffset={10} trapFocus={false} class="p-0">
+              <PopoverContent sideOffset={10} class="p-0 w-full">
                 <LinkEditorPanel
                   bind:protocol
                   bind:url
