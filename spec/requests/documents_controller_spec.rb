@@ -6,12 +6,42 @@ RSpec.describe DocumentsController, :inertia do
   end
 
   describe "GET #index" do
-    it "renders a successful response" do
-      get authenticated_root_url
+    context "without search parameter" do
+      it "renders a successful response" do
+        get authenticated_root_url
 
-      expect_inertia.to render_component("Document/Index").and include_props(
-        documents: [ document.as_json(methods: :sqid) ]
-      )
+        expect_inertia.to render_component("Document/Index").and include_props(
+          documents: [ document.as_json(methods: :sqid) ]
+        )
+      end
+    end
+
+    context "with search parameter" do
+      let!(:matching_document) { create(:blank_document, title: "Test Document", team: document.team) }
+
+      it "renders filtered documents based on search" do
+        get authenticated_root_url, params: { search: "Test" }
+
+        expect_inertia.to render_component("Document/Index").and include_props(
+          documents: [ matching_document.as_json(methods: :sqid) ]
+        )
+      end
+
+      it "renders all documents when search does not match" do
+        get authenticated_root_url, params: { search: "NonExistent" }
+
+        expect_inertia.to render_component("Document/Index").and include_props(
+          documents: []
+        )
+      end
+
+      it "performs case insensitive search" do
+        get authenticated_root_url, params: { search: "test" }
+
+        expect_inertia.to render_component("Document/Index").and include_props(
+          documents: [ matching_document.as_json(methods: :sqid) ]
+        )
+      end
     end
   end
 

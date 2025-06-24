@@ -82,7 +82,13 @@
     teams: TeamType[]
   } & ComponentProps<typeof Sidebar.Root>
 
-  let { teams, ref = $bindable(null), children, ...restProps }: Props = $props()
+  let {
+    documents,
+    teams,
+    ref = $bindable(null),
+    children,
+    ...restProps
+  }: Props = $props()
 </script>
 
 <svelte:head>
@@ -97,7 +103,7 @@
   <Sidebar.Root bind:ref {...restProps}>
     <Sidebar.Header>
       <TeamSwitcher {teams} />
-      <NavMain items={data.navMain} />
+      <NavMain items={data.navMain} {documents} />
     </Sidebar.Header>
     <Sidebar.Content>
       <NavFolders folders={data.folders} />
