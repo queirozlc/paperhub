@@ -62,7 +62,7 @@
   <div
     class="inline-flex gap-0.5 h-full items-center leading-none text-foreground"
   >
-    <AiDropdown {editor} />
+    <AiDropdown />
 
     <Separator
       orientation="vertical"
