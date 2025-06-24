@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Button } from '@/lib/components/ui/button'
-  import { cn } from '@/lib/utils'
+  import { Button } from '$lib/components/ui/button'
+  import { cn } from '$lib/utils'
   import { PanelLeft } from '@lucide/svelte'
   import type { ComponentProps } from 'svelte'
   import { getSidebarRegistry } from './registry.svelte'

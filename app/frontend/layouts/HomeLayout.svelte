@@ -58,31 +58,30 @@
 </script>
 
 <script lang="ts">
-  import * as Sidebar from '@/lib/components/ui/sidebar'
+  import * as Sidebar from '$lib/components/ui/sidebar'
 
-  import NavFolders from '@/lib/components/nav-folders.svelte'
-  import NavMain from '@/lib/components/nav-main.svelte'
-  import NavSecondary from '@/lib/components/nav-secondary.svelte'
-  import TeamSwitcher from '@/lib/components/team-switcher.svelte'
+  import NavFolders from '$lib/components/nav-folders.svelte'
+  import NavMain from '$lib/components/nav-main.svelte'
+  import NavSecondary from '$lib/components/nav-secondary.svelte'
+  import TeamSwitcher from '$lib/components/team-switcher.svelte'
   import {
     Avatar,
     AvatarFallback,
     AvatarImage,
-  } from '@/lib/components/ui/avatar'
-  import Button from '@/lib/components/ui/button/button.svelte'
-  import Separator from '@/lib/components/ui/separator/separator.svelte'
-  import { Tabs, TabsList, TabsTrigger } from '@/lib/components/ui/tabs'
+  } from '$lib/components/ui/avatar'
+  import Button from '$lib/components/ui/button/button.svelte'
+  import Separator from '$lib/components/ui/separator/separator.svelte'
+  import { Tabs, TabsList, TabsTrigger } from '$lib/components/ui/tabs'
+  import type { TeamType } from '$pages/Team/types'
   import { Send } from '@lucide/svelte'
-  import type { ComponentProps } from 'svelte'
-  import type { TeamType } from '@/pages/Team/types'
-  import type { DocumentType } from '@/pages/Document/types'
+  import type { Snippet } from 'svelte'
 
   type Props = {
-    documents: DocumentType[]
     teams: TeamType[]
-  } & ComponentProps<typeof Sidebar.Root>
+    children: Snippet
+  }
 
-  let { teams, ref = $bindable(null), children, ...restProps }: Props = $props()
+  let { teams, children }: Props = $props()
 </script>
 
 <svelte:head>
@@ -94,7 +93,7 @@
 </svelte:head>
 
 <Sidebar.Provider>
-  <Sidebar.Root bind:ref {...restProps}>
+  <Sidebar.Root>
     <Sidebar.Header>
       <TeamSwitcher {teams} />
       <NavMain items={data.navMain} />

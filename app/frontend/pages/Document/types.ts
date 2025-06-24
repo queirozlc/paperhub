@@ -1,4 +1,4 @@
-import type { HashableModel } from '@/lib/utils'
+import type { HashableModel } from '$lib/utils'
 
 export interface DocumentType extends HashableModel {
   id: number

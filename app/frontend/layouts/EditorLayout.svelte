@@ -1,9 +1,9 @@
 <script lang="ts">
-  import EditorSidebarHeader from '@/lib/components/editor-sidebar-header.svelte'
-  import TableOfContents from '@/lib/components/table-of-contents.svelte'
-  import TuringSidebar from '@/lib/components/turing-sidebar.svelte'
-  import * as Sidebar from '@/lib/components/ui/sidebar'
-  import type { DocumentType } from '@/pages/Document/types'
+  import EditorSidebarHeader from '$lib/components/editor-sidebar-header.svelte'
+  import TableOfContents from '$lib/components/table-of-contents.svelte'
+  import TuringSidebar from '$lib/components/turing-sidebar.svelte'
+  import * as Sidebar from '$lib/components/ui/sidebar'
+  import type { DocumentType } from '$pages/Document/types'
   import { type Snippet } from 'svelte'
 
   type Props = {

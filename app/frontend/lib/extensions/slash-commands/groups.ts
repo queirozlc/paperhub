@@ -6,7 +6,6 @@ import {
   Heading3,
   Image,
   List,
-  ListCollapse,
   ListOrdered,
   ListTodo,
   Minus,
@@ -105,16 +104,6 @@ export const GROUPS: Group[] = [
         aliases: ['todo'],
         action: (editor: Editor) => {
           editor.chain().focus().toggleTaskList().run()
-        },
-      },
-      {
-        name: 'toggleList',
-        label: 'Lista Recolhível',
-        icon: ListCollapse,
-        description: 'Alternadores podem mostrar e ocultar conteúdo',
-        aliases: ['toggle'],
-        action: (editor: Editor) => {
-          editor.chain().focus().setDetails().run()
         },
       },
       {

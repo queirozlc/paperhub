@@ -1,4 +1,4 @@
-import Layout from '@/layouts/Layout.svelte'
+import Layout from '$layouts/Layout.svelte'
 import { createInertiaApp, type ResolvedComponent } from '@inertiajs/svelte'
 import { mount } from 'svelte'
 

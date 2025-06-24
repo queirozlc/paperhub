@@ -1,19 +1,27 @@
-import { SlashCommands } from './slash-commands'
-import Placeholder from '@tiptap/extension-placeholder'
-import StarterKit from '@tiptap/starter-kit'
+/**
+ * TipTap extensions
+ */
 
-export const editorExtensions = [
-  StarterKit.configure({
-    codeBlock: false,
-  }),
-  Placeholder.configure({
-    placeholder: ({ node }) => {
-      if (node.type.name === 'paragraph') {
-        return "Digite '/' para ver os comandos disponíveis"
-      }
+export { Blockquote } from '@tiptap/extension-blockquote'
+export { Color } from '@tiptap/extension-color'
+export { FocusClasses as Focus } from '@tiptap/extension-focus'
+export { FontFamily } from '@tiptap/extension-font-family'
+export { Heading } from '@tiptap/extension-heading'
+export { Highlight } from '@tiptap/extension-highlight'
+export { Placeholder } from '@tiptap/extension-placeholder'
+export { TaskItem } from '@tiptap/extension-task-item'
+export { TaskList } from '@tiptap/extension-task-list'
+export { TextAlign } from '@tiptap/extension-text-align'
+export { TextStyle } from '@tiptap/extension-text-style'
+export { Typography } from '@tiptap/extension-typography'
+export { Underline } from '@tiptap/extension-underline'
+export { StarterKit } from '@tiptap/starter-kit'
 
-      return 'Comece escrevendo algo 🚀'
-    },
-  }),
-  SlashCommands,
-]
+/**
+ * Custom extensions
+ */
+
+export { FontSize } from './font-size'
+export { Link } from './link'
+export { Pagination } from './pagination'
+export { SlashCommands } from './slash-commands'
