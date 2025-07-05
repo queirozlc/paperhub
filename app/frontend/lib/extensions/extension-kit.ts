@@ -69,7 +69,7 @@ export const editorExtensions = [
     },
     openOnClick: false,
     HTMLAttributes: {
-      class: 'underline !font-normal !text-blue-700',
+      class: 'underline !font-normal',
     },
   }),
 ]
