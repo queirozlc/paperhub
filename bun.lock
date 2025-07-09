@@ -21,6 +21,7 @@
         "@tiptap/extension-highlight": "^2.12.0",
         "@tiptap/extension-link": "^2.12.0",
         "@tiptap/extension-placeholder": "^2.12.0",
+        "@tiptap/extension-table-of-contents": "^2.22.3",
         "@tiptap/extension-task-item": "^2.12.0",
         "@tiptap/extension-task-list": "^2.12.0",
         "@tiptap/extension-text-align": "^2.12.0",
@@ -409,6 +410,8 @@
     "@tiptap/extension-placeholder": ["@tiptap/extension-placeholder@2.12.0", "", { "peerDependencies": { "@tiptap/core": "^2.7.0", "@tiptap/pm": "^2.7.0" } }, "sha512-K7irDox4P+NLAMjVrJeG72f0sulsCRYpx1Cy4gxKCdi1LTivj5VkXa6MXmi42KTCwBu3pWajBctYIOAES1FTAA=="],
 
     "@tiptap/extension-strike": ["@tiptap/extension-strike@2.12.0", "", { "peerDependencies": { "@tiptap/core": "^2.7.0" } }, "sha512-nBaa5YtBsLJPZFfSs36sBz4Zgi/c8b3MsmS/Az8uXaHb0R9yPewOVUMDIQbxMct8SXUlIo9VtKlOL+mVJ3Nkpw=="],
+
+    "@tiptap/extension-table-of-contents": ["@tiptap/extension-table-of-contents@2.22.3", "", { "dependencies": { "uuid": "^10.0.0" }, "peerDependencies": { "@tiptap/core": "^2.7.0", "@tiptap/pm": "^2.7.0" } }, "sha512-sMf3MLOlkgqFyLvbfWs2kLm3Zsd16niIMRr3AAkv3b0w1EtKXGNCTu5CGP0plSEvAF5AZ8fqQnGjblUrRE0CNw=="],
 
     "@tiptap/extension-task-item": ["@tiptap/extension-task-item@2.12.0", "", { "peerDependencies": { "@tiptap/core": "^2.7.0", "@tiptap/pm": "^2.7.0" } }, "sha512-IyAcy5CGU4Oesb5HpoZ7nU3wvP61Spz5/KCy1aXCgBfx3c1tF+JOijxKDnYKWSvfxzziGGIiOKR89EllnzTsdw=="],
 
@@ -1043,6 +1046,8 @@
     "user-agent-data-types": ["user-agent-data-types@0.4.2", "", {}, "sha512-jXep3kO/dGNmDOkbDa8ccp4QArgxR4I76m3QVcJ1aOF0B9toc+YtSXtX5gLdDTZXyWlpQYQrABr6L1L2GZOghw=="],
 
     "util-deprecate": ["util-deprecate@1.0.2", "", {}, "sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw=="],
+
+    "uuid": ["uuid@10.0.0", "", { "bin": { "uuid": "dist/bin/uuid" } }, "sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ=="],
 
     "vite": ["vite@5.4.19", "", { "dependencies": { "esbuild": "^0.21.3", "postcss": "^8.4.43", "rollup": "^4.20.0" }, "optionalDependencies": { "fsevents": "~2.3.3" }, "peerDependencies": { "@types/node": "^18.0.0 || >=20.0.0", "less": "*", "lightningcss": "^1.21.0", "sass": "*", "sass-embedded": "*", "stylus": "*", "sugarss": "*", "terser": "^5.4.0" }, "optionalPeers": ["@types/node", "less", "lightningcss", "sass", "sass-embedded", "stylus", "sugarss", "terser"], "bin": { "vite": "bin/vite.js" } }, "sha512-qO3aKv3HoQC8QKiNSTuUM1l9o/XX3+c+VTgLHbJWHZGeTPVAg2XwazI9UWzoxjIJCGCV2zU60uqMzjeLZuULqA=="],
 

@@ -9,6 +9,7 @@ import {
   Placeholder,
   SlashCommands,
   StarterKit,
+  TableOfContents,
   TaskItem,
   TaskList,
   TextAlign,
@@ -52,6 +53,7 @@ export const editorExtensions = [
   FontFamily,
   Typography,
   Color,
+  TableOfContents,
   Underline,
   TextAlign.extend({
     addKeyboardShortcuts() {
@@ -69,7 +71,7 @@ export const editorExtensions = [
     },
     openOnClick: false,
     HTMLAttributes: {
-      class: 'underline !font-normal !text-blue-700',
+      class: 'underline !font-normal',
     },
   }),
 ]

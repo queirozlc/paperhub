@@ -60,7 +60,7 @@
   <div class="flex items-center gap-2 px-2">
     <Link class="size-4" />
     <a
-      class="text-sm font-medium max-w-xs text-blue-700 underline cursor-pointer"
+      class="text-sm font-medium max-w-xs text-link underline cursor-pointer"
       href={url}
       target={editor.getAttributes('link').target}
     >
