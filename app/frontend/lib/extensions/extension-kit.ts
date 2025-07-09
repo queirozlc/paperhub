@@ -9,6 +9,7 @@ import {
   Placeholder,
   SlashCommands,
   StarterKit,
+  TableOfContents,
   TaskItem,
   TaskList,
   TextAlign,
@@ -52,6 +53,7 @@ export const editorExtensions = [
   FontFamily,
   Typography,
   Color,
+  TableOfContents,
   Underline,
   TextAlign.extend({
     addKeyboardShortcuts() {
