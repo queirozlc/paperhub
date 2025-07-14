@@ -15,16 +15,16 @@
   import Icon from './ui/icon/Icon.svelte'
   import turingSvg from '@/assets/turing.svg'
   import { aiApiService } from '@/services/ai-api-service'
+    import { setIdsToNewSuggestions } from '../suggestion-utils'
 
   export type Suggestion = {
     id?: number
-    text: string
-    action: 'add' | 'replace' | 'delete'
+    change: string
     explanation: string
   }
 
   type TuringResponse = {
-    response: string
+    answer: string
     modifiedDocument: string | null
     suggestions: Suggestion[]
   }
@@ -47,28 +47,22 @@
 
   type Props = {
     getContent: () => string,
-    updateEditorWithSuggestions: (modifiedDocument: string, nextSuggestionIndex: number) => void
+    updateEditorWithSuggestions: (modifiedDocument: string) => void
     suggest: (suggestion: Suggestion) => void
   }
 
   let { getContent, updateEditorWithSuggestions, suggest }: Props = $props()
 
-  let question = $state('')
+  let question = $state('Corrija as informações do texto')
   let loading = $state(false)
-  let conversation = $state<ConversationPart[]>([])
-  /*let conversation = $state<ConversationPart[]>([
-    {type:"question", question:"Isto é um teste"},
-    {type:"answer", answer: [{type:"text", text: "OK!"}]},
-    {type:"question", question:"Sehloco"},
-    {type:"answer", answer: [{type:"text", text: "Num compensa"}]},
-    {type:"question", question:"Sehloco"},
-    {type:"answer", answer: [
-      {type:"text", text: "O primeiro presidente do Brasil foi"},
-      {type:"suggestion", suggestion: { id: 0, action: 'replace', text: 'Mr. Catra', explanation: '' }},
-      {type:"text", text: "Enquanto o segundo foi"},
-      {type:"suggestion", suggestion: { id: 0, action: 'replace', text: 'Sei la carai KKKK', explanation: '' }},
-    ]},
-  ])*/
+  //let conversation = $state<ConversationPart[]>([])
+  let conversation = $state<ConversationPart[]>([
+    { type: "question", question: "Quem foi o primeiro presidente do Brasil?" },
+    { type: "answer", answer: [
+      { type: "text", text: "Aqui está:" },
+      { type: "suggestion", suggestion: { change: "<p>O primeiro presidente do Brasil foi Deodoro da Fonseca. O segundo presidente do Brasil foi Floriano Peixoto.</p>", explanation: "" } },
+    ]}
+  ])
   let nextSuggestionIndex = $state(0)
   let suggestions = $state<Suggestion[]>([])
 
@@ -126,9 +120,7 @@
       const res = await aiApiService.post('/ask', body)
       const data = res.data as TuringResponse
 
-      console.log('Response:', data)
-
-      const answerParts: AnswerPart[] = splitResponse(data.response, data.suggestions)
+      const answerParts: AnswerPart[] = splitResponse(data.answer, data.suggestions)
 
       loading = false
       conversation.push({
@@ -137,7 +129,8 @@
       })
 
       if (data.modifiedDocument) {
-        updateEditorWithSuggestions(data.modifiedDocument, nextSuggestionIndex)
+        const newDocumentContent = setIdsToNewSuggestions(data.modifiedDocument, nextSuggestionIndex)
+        updateEditorWithSuggestions(newDocumentContent)
       }
 
       data.suggestions.forEach((s, i) => {
@@ -227,10 +220,10 @@
                     <p class="w-full m-0">{ part.text }</p>
                   {:else if part.type === 'suggestion'}
                     <button
-                      class="w-full m-0 bg-white/4 hover:bg-white/8 p-1 border rounded-xs text-left cursor-pointer transition"
+                      class="w-full m-0 bg-white/4 hover:bg-white/8 p-1 text-sm border rounded-xs text-left cursor-pointer transition"
                       onclick={() => suggest(part.suggestion)}
                     >
-                      { part.suggestion.text }
+                      {@html part.suggestion.change }
                     </button>
                   {/if}
                 {/each}

@@ -6,7 +6,7 @@ import Highlight from '@tiptap/extension-highlight'
 
 import { SlashCommands } from './slash-commands'
 import { Suggestion } from  './suggestion'
-import { SuggestionParagraph } from './suggestion-paragrapher'
+import { Change } from './change'
 
 export const editorExtensions = [
   StarterKit.configure({ codeBlock: false, }),
@@ -24,5 +24,5 @@ export const editorExtensions = [
   TextStyle,
   Highlight.configure({ multicolor: true, }),
   Suggestion,
-  SuggestionParagraph,
+  Change,
 ]

@@ -9,7 +9,7 @@
   type Props = {
     document: DocumentType
     getContent: () => string
-    updateEditorWithSuggestions: (modifiedDocument: string, nextSuggestionIndex: number) => void
+    updateEditorWithSuggestions: (modifiedDocument: string) => void
     suggest: (suggestion: Suggestion) => void
     children: Snippet
   }

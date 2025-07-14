@@ -1,102 +1,166 @@
-import { Mark, mergeAttributes } from '@tiptap/core'
+import { Node, mergeAttributes } from '@tiptap/core'
 
-/**
- * Interface para definir as opções da nossa extensão.
- * Teremos que passar o 'id' e 'idx' ao aplicar a marca.
- */
 export interface SuggestionOptions {
-  id: string,
-  idx: number,
+  HTMLAttributes: Record<string, any>
 }
 
-// Declara o novo tipo para o módulo do Tiptap, para que os comandos fiquem disponíveis com tipagem
+export interface SuggestionAttributes {
+  'data-action'?: 'add' | 'remove'
+  'data-idx'?: number
+  'data-id'?: number
+}
+
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     suggestion: {
       /**
-       * Define uma marca de sugestão
+       * Insere um elemento suggestion
        */
-      setSuggestion: (attributes: SuggestionOptions) => ReturnType,
+      setSuggestion: (attributes?: SuggestionAttributes, content?: string) => ReturnType
       /**
-       * Alterna uma marca de sugestão
+       * Remove o elemento suggestion
        */
-      toggleSuggestion: (attributes: SuggestionOptions) => ReturnType,
+      unsetSuggestion: () => ReturnType
       /**
-       * Remove uma marca de sugestão
+       * Alterna o elemento suggestion
        */
-      unsetSuggestion: () => ReturnType,
+      toggleSuggestion: (attributes?: SuggestionAttributes) => ReturnType
     }
   }
 }
 
-export const Suggestion = Mark.create<SuggestionOptions>({
+export const Suggestion = Node.create<SuggestionOptions>({
   name: 'suggestion',
 
-  // Adiciona os atributos 'id' e 'idx' à nossa marca.
-  addAttributes() {
+  addOptions() {
     return {
-      id: {
-        default: null,
-        // Mapeia o atributo 'id' para o atributo 'data-id' no HTML
-        parseHTML: element => element.getAttribute('data-id'),
-        renderHTML: attributes => {
-          if (!attributes.id) {
-            return {}
-          }
-          return { 'data-id': attributes.id }
-        },
-      },
-      idx: {
-        default: null,
-        // Mapeia o atributo 'idx' para o atributo 'data-idx' no HTML
-        parseHTML: element => element.getAttribute('data-idx'),
-        renderHTML: attributes => {
-            if (!attributes.idx) {
-                return {}
-            }
-          return { 'data-idx': attributes.idx }
-        },
-      }
+      HTMLAttributes: {},
     }
   },
 
-  /**
-   * Define como o Tiptap deve interpretar o HTML e reconhecer esta marca.
-   * Ele vai reconhecer tanto a tag customizada <suggestion> quanto a tag <span> com o atributo data-suggestion.
-   */
+  group: 'block',
+
+  content: 'block+',
+
+  defining: true,
+
+  addAttributes() {
+    return {
+      'data-action': {
+        default: null,
+        parseHTML: element => element.getAttribute('data-action'),
+        renderHTML: attributes => {
+          if (!attributes['data-action']) {
+            return {}
+          }
+          return {
+            'data-action': attributes['data-action'],
+          }
+        },
+      },
+      'data-idx': {
+        default: null,
+        parseHTML: element => {
+          const value = element.getAttribute('data-idx')
+          return value ? parseInt(value, 10) : null
+        },
+        renderHTML: attributes => {
+          if (attributes['data-idx'] === null || attributes['data-idx'] === undefined) {
+            return {}
+          }
+          return {
+            'data-idx': attributes['data-idx'],
+          }
+        },
+      },
+      'data-id': {
+        default: null,
+        parseHTML: element => {
+          const value = element.getAttribute('data-id')
+          return value ? parseInt(value, 10) : null
+        },
+        renderHTML: attributes => {
+          if (attributes['data-id'] === null || attributes['data-id'] === undefined) {
+            return {}
+          }
+          return {
+            'data-id': attributes['data-id'],
+          }
+        },
+      },
+    }
+  },
+
   parseHTML() {
     return [
       {
-        tag: 'suggestion',
+        tag: 'div[data-suggestion]',
       },
       {
-        tag: 'span[data-suggestion]',
-      },
+        tag: 'suggestion'
+      }
     ]
   },
 
-  /**
-   * Define como esta marca será renderizada para HTML.
-   * @param HTMLAttributes - Os atributos definidos em `addAttributes` já processados.
-   */
   renderHTML({ HTMLAttributes }) {
-    // `mergeAttributes` junta os atributos que definimos com quaisquer outros que possam existir.
-    // O '0' no final é um "buraco" onde o conteúdo (o texto) será inserido.
-    return ['span', mergeAttributes(HTMLAttributes, { 'data-suggestion': '' }), 0]
+    const attrs = { ...HTMLAttributes }
+    return [
+      'div',
+      mergeAttributes(
+        {
+          'data-suggestion': '',
+          contenteditable: !attrs['data-action'], // <- Se suggestion possuir action, não permite edição
+        },
+        this.options.HTMLAttributes,
+        HTMLAttributes
+      ),
+      0,
+    ]
   },
 
-  // Adiciona comandos customizados para manipular a nossa marca.
   addCommands() {
     return {
-      setSuggestion: attributes => ({ commands }) => {
-        return commands.setMark(this.name, attributes)
-      },
-      toggleSuggestion: attributes => ({ commands }) => {
-        return commands.toggleMark(this.name, attributes)
-      },
-      unsetSuggestion: () => ({ commands }) => {
-        return commands.unsetMark(this.name)
-      },
+      setSuggestion: (attributes, content) => ({ commands }) => {
+          return commands.insertContent({
+            type: this.name,
+            content: parseHTMLContent(content),
+            attrs: attributes
+          })
+        },
+      unsetSuggestion:
+        () =>
+        ({ commands }) => {
+          return commands.lift(this.name)
+        },
+      toggleSuggestion:
+        (attributes) =>
+        ({ commands }) => {
+          return commands.toggleWrap(this.name, attributes)
+        },
     }
   },
 })
+
+export function parseHTMLContent(htmlString: string) {
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(htmlString, 'text/html')
+  const content: any[] = []
+  
+  // Converte elementos HTML para formato do Tiptap
+  Array.from(doc.body.children).forEach(element => {
+    if (element.tagName === 'P') {
+      content.push({
+        type: 'paragraph',
+        content: element.textContent ? [
+          {
+            type: 'text',
+            text: element.textContent,
+          }
+        ] : [],
+      })
+    }
+    // Adicione outros tipos de elementos conforme necessário
+  })
+  
+  return content
+}
