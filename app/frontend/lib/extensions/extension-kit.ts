@@ -10,12 +10,14 @@ import {
   SlashCommands,
   StarterKit,
   TableOfContents,
+  TableOfContentsNode,
   TaskItem,
   TaskList,
   TextAlign,
   TextStyle,
   Typography,
   Underline,
+  UniqueID,
 } from '.'
 
 export const editorExtensions = [
@@ -24,7 +26,6 @@ export const editorExtensions = [
     heading: false,
     horizontalRule: false,
     blockquote: false,
-    history: false,
   }),
   Placeholder.configure({
     includeChildren: true,
@@ -54,7 +55,11 @@ export const editorExtensions = [
   Typography,
   Color,
   TableOfContents,
+  TableOfContentsNode,
   Underline,
+  UniqueID.configure({
+    types: ['paragraph', 'heading', 'blockquote', 'codeBlock', 'table'],
+  }),
   TextAlign.extend({
     addKeyboardShortcuts() {
       return {}

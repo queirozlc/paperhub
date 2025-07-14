@@ -16,6 +16,7 @@ export { TextAlign } from '@tiptap/extension-text-align'
 export { TextStyle } from '@tiptap/extension-text-style'
 export { Typography } from '@tiptap/extension-typography'
 export { Underline } from '@tiptap/extension-underline'
+export { UniqueID } from '@tiptap/extension-unique-id'
 export { StarterKit } from '@tiptap/starter-kit'
 
 /**
@@ -26,3 +27,4 @@ export { FontSize } from './font-size'
 export { Link } from './link'
 export { Pagination } from './pagination'
 export { SlashCommands } from './slash-commands'
+export { TableOfContentsNode } from './table-of-contents-node'

@@ -33,7 +33,21 @@
     name="summary"
     class="w-fit overflow-hidden max-h-dvh"
   >
-    <TableOfContents {editor} />
+    <Sidebar.Root transparent>
+      <Sidebar.Header class="p-4">
+        <p
+          class="text-sm uppercase text-muted-foreground font-brand font-semibold tracking-wide"
+        >
+          Sumário
+        </p>
+      </Sidebar.Header>
+
+      <Sidebar.Content>
+        <Sidebar.Group class="space-y-2">
+          <TableOfContents {editor} />
+        </Sidebar.Group>
+      </Sidebar.Content>
+    </Sidebar.Root>
   </Sidebar.Provider>
 
   <Sidebar.Inset class="w-full">

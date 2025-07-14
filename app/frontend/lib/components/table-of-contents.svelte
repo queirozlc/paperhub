@@ -48,41 +48,28 @@
 
 <svelte:window onscroll={onScroll} />
 
-<Sidebar.Root transparent>
-  <Sidebar.Header class="p-4">
-    <p
-      class="text-sm uppercase text-muted-foreground font-brand font-semibold tracking-wide"
-    >
-      Sumário
-    </p>
-  </Sidebar.Header>
-  <Sidebar.Content>
-    <Sidebar.Group class="space-y-2">
-      {#if headings && headings.length}
-        <div class="flex flex-col gap-1.5">
-          {#each headings as heading (heading.id)}
-            <a
-              href={`#${heading.id}`}
-              onclick={(e) => {
-                e.preventDefault()
-                onItemClick(heading.id)
-              }}
-              style:margin-left={`${1 * heading.level - 1}rem`}
-              class={cn(
-                'block font-medium text-muted-foreground text-sm px-2 py-1 rounded truncate',
-                'hover:text-foreground transition-all',
-                {
-                  'bg-accent text-foreground': heading.isActive,
-                }
-              )}
-            >
-              {heading.itemIndex}. {heading.textContent}
-            </a>
-          {/each}
-        </div>
-      {:else}
-        <Sidebar.GroupLabel>Sem títulos encontrados.</Sidebar.GroupLabel>
-      {/if}
-    </Sidebar.Group>
-  </Sidebar.Content>
-</Sidebar.Root>
+{#if headings && headings.length}
+  <div class="flex flex-col gap-1.5">
+    {#each headings as heading (heading.id)}
+      <a
+        href={`#${heading.id}`}
+        onclick={(e) => {
+          e.preventDefault()
+          onItemClick(heading.id)
+        }}
+        style:margin-left={`${1 * heading.level - 1}rem`}
+        class={cn(
+          'block font-medium text-muted-foreground text-sm px-2 py-1 rounded truncate',
+          'hover:text-foreground transition-all',
+          {
+            'bg-accent text-foreground': heading.isActive,
+          }
+        )}
+      >
+        {heading.textContent}
+      </a>
+    {/each}
+  </div>
+{:else}
+  <Sidebar.GroupLabel>Sem títulos encontrados.</Sidebar.GroupLabel>
+{/if}
