@@ -30,7 +30,7 @@
   })
 </script>
 
-<EditorLayout {document}>
+<EditorLayout {document} editor={$editor}>
   <div class="flex flex-col min-h-[calc(100svh-theme(spacing.4))] pb-5">
     <div
       class="border border-border px-20 bg-background-editor py-16 relative size-full max-w-screen-md mx-auto"

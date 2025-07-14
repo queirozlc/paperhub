@@ -10,6 +10,7 @@
   --background-off: hsl(30, 20%, 98%);
   --background-editor: hsl(30, 10%, 98%);
   --foreground: hsl(240, 10%, 3.9%);
+  --link: hsl(240, 100%, 50%);
   --card: hsl(0, 0%, 100%);
   --card-foreground: hsl(240, 10%, 3.9%);
   --popover: hsl(0, 0%, 100%);
@@ -50,6 +51,7 @@
   --background-off: hsl(223.81, 0%, 12%);
   --background-editor: hsl(223.81, 0%, 10%);
   --foreground: hsl(0, 0%, 95%);
+  --link: hsl(225, 94.34%, 60%);
   --card: hsl(24, 9.8%, 10%);
   --card-foreground: hsl(0, 0%, 95%);
   --popover: hsl(0, 0%, 9%);
@@ -104,6 +106,7 @@
   --color-background-off: var(--background-off);
   --color-background-editor: var(--background-editor);
   --color-foreground: var(--foreground);
+  --color-link: var(--link);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);

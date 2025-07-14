@@ -1,6 +1,5 @@
 import {
   Book,
-  Columns2,
   Heading1,
   Heading2,
   Heading3,
@@ -8,11 +7,9 @@ import {
   List,
   ListOrdered,
   ListTodo,
-  Minus,
   Quote,
   Sparkles,
   SquareCode,
-  Table,
 } from '@lucide/svelte'
 import type { Editor } from '@tiptap/core'
 import type { Group } from './types'
@@ -132,20 +129,20 @@ export const GROUPS: Group[] = [
     name: 'insert',
     title: 'Inserir',
     commands: [
-      {
-        name: 'table',
-        label: 'Tabela',
-        icon: Table,
-        description: 'Inserir uma tabela',
-        shouldBeHidden: (editor: Editor) => editor.isActive('columns'),
-        action: (editor: Editor) => {
-          editor
-            .chain()
-            .focus()
-            .insertTable({ rows: 3, cols: 3, withHeaderRow: false })
-            .run()
-        },
-      },
+      // {
+      //   name: 'table',
+      //   label: 'Tabela',
+      //   icon: Table,
+      //   description: 'Inserir uma tabela',
+      //   shouldBeHidden: (editor: Editor) => editor.isActive('columns'),
+      //   action: (editor: Editor) => {
+      //     editor
+      //       .chain()
+      //       .focus()
+      //       .insertTable({ rows: 3, cols: 3, withHeaderRow: false })
+      //       .run()
+      //   },
+      // },
       {
         name: 'image',
         label: 'Imagem',
@@ -156,32 +153,32 @@ export const GROUPS: Group[] = [
           editor.chain().focus().setImageUpload().run()
         },
       },
-      {
-        name: 'columns',
-        label: 'Colunas',
-        icon: Columns2,
-        description: 'Adicionar conteúdo em duas colunas',
-        aliases: ['cols'],
-        shouldBeHidden: (editor: Editor) => editor.isActive('columns'),
-        action: (editor: Editor) => {
-          editor
-            .chain()
-            .focus()
-            .setColumns()
-            .focus(editor.state.selection.head - 1)
-            .run()
-        },
-      },
-      {
-        name: 'horizontalRule',
-        label: 'Linha Horizontal',
-        icon: Minus,
-        description: 'Inserir um divisor horizontal',
-        aliases: ['hr'],
-        action: (editor: Editor) => {
-          editor.chain().focus().setHorizontalRule().run()
-        },
-      },
+      // {
+      //   name: 'columns',
+      //   label: 'Colunas',
+      //   icon: Columns2,
+      //   description: 'Adicionar conteúdo em duas colunas',
+      //   aliases: ['cols'],
+      //   shouldBeHidden: (editor: Editor) => editor.isActive('columns'),
+      //   action: (editor: Editor) => {
+      //     editor
+      //       .chain()
+      //       .focus()
+      //       .setColumns()
+      //       .focus(editor.state.selection.head - 1)
+      //       .run()
+      //   },
+      // },
+      // {
+      //   name: 'horizontalRule',
+      //   label: 'Linha Horizontal',
+      //   icon: Minus,
+      //   description: 'Inserir um divisor horizontal',
+      //   aliases: ['hr'],
+      //   action: (editor: Editor) => {
+      //     editor.chain().focus().setHorizontalRule().run()
+      //   },
+      // },
       {
         name: 'toc',
         label: 'Sumário',
