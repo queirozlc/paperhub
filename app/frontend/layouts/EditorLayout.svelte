@@ -4,14 +4,17 @@
   import TuringSidebar from '$lib/components/turing-sidebar.svelte'
   import * as Sidebar from '$lib/components/ui/sidebar'
   import type { DocumentType } from '$pages/Document/types'
+  import type { Editor } from '@tiptap/core'
+
   import { type Snippet } from 'svelte'
 
   type Props = {
     document: DocumentType
     children: Snippet
+    editor: Editor
   }
 
-  let { children, document }: Props = $props()
+  let { children, document, editor }: Props = $props()
 
   let documentTitle = $state(document.title || 'Sem título')
 
@@ -24,13 +27,27 @@
   </title>
 </svelte:head>
 
-<div class="overflow-hidden flex max-h-dvh w-full">
+<div class="overflow-hidden flex w-full">
   <Sidebar.Provider
     open={false}
     name="summary"
     class="w-fit overflow-hidden max-h-dvh"
   >
-    <TableOfContents />
+    <Sidebar.Root transparent>
+      <Sidebar.Header class="p-4">
+        <p
+          class="text-sm uppercase text-muted-foreground font-brand font-semibold tracking-wide"
+        >
+          Sumário
+        </p>
+      </Sidebar.Header>
+
+      <Sidebar.Content>
+        <Sidebar.Group class="space-y-2">
+          <TableOfContents {editor} />
+        </Sidebar.Group>
+      </Sidebar.Content>
+    </Sidebar.Root>
   </Sidebar.Provider>
 
   <Sidebar.Inset class="w-full">

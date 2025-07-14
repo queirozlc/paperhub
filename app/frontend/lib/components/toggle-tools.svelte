@@ -128,7 +128,12 @@
               size="sm"
               class="cursor-pointer"
               onclick={item.onClick}
-              bind:pressed={pressedStates[index]}
+              bind:pressed={
+                () => pressedStates[index],
+                (updatedValue) => {
+                  pressedStates[index] = updatedValue
+                }
+              }
             >
               <item.icon class="size-4" />
             </Toggle>

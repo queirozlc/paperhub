@@ -1,4 +1,5 @@
 import { Link } from '$lib/extensions'
+import { TableOfContentsNode } from '$lib/extensions/table-of-contents-node'
 import type { Editor } from 'svelte-tiptap'
 
 export const isTableGripSelected = (node: HTMLElement) => {
@@ -34,7 +35,7 @@ export const isCustomNodeSelected = (editor: Editor, node: HTMLElement) => {
     // AiWriter.name,
     // AiImage.name,
     // Figcaption.name,
-    // TableOfContentsNode.name,
+    TableOfContentsNode.name,
   ]
 
   return (

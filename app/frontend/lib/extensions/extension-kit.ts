@@ -9,12 +9,15 @@ import {
   Placeholder,
   SlashCommands,
   StarterKit,
+  TableOfContents,
+  TableOfContentsNode,
   TaskItem,
   TaskList,
   TextAlign,
   TextStyle,
   Typography,
   Underline,
+  UniqueID,
 } from '.'
 
 export const editorExtensions = [
@@ -23,7 +26,6 @@ export const editorExtensions = [
     heading: false,
     horizontalRule: false,
     blockquote: false,
-    history: false,
   }),
   Placeholder.configure({
     includeChildren: true,
@@ -52,7 +54,12 @@ export const editorExtensions = [
   FontFamily,
   Typography,
   Color,
+  TableOfContents,
+  TableOfContentsNode,
   Underline,
+  UniqueID.configure({
+    types: ['paragraph', 'heading', 'blockquote', 'codeBlock', 'table'],
+  }),
   TextAlign.extend({
     addKeyboardShortcuts() {
       return {}
@@ -69,7 +76,7 @@ export const editorExtensions = [
     },
     openOnClick: false,
     HTMLAttributes: {
-      class: 'underline !font-normal !text-blue-700',
+      class: 'underline !font-normal',
     },
   }),
 ]
