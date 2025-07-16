@@ -1,8 +1,9 @@
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :magic_link_authenticatable,
-    :rememberable, :validatable, :trackable, :verifiable
+  devise :invitable, :magic_link_authenticatable, :rememberable, :validatable,
+         :trackable, :verifiable
+
   verify_fields :name
 
   has_many :owned_teams, class_name: "Team", foreign_key: :owner_id, inverse_of: :owner, dependent: :destroy

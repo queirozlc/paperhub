@@ -115,7 +115,11 @@ GEM
       globalid
     devise-verifiable (1.0.0)
       devise (~> 4.4)
+    devise_invitable (2.0.11)
+      actionmailer (>= 5.0)
+      devise (>= 4.6)
     diff-lcs (1.6.2)
+    docile (1.4.1)
     dotenv (3.1.8)
     drb (2.2.3)
     dry-cli (1.2.0)
@@ -238,6 +242,13 @@ GEM
     public_suffix (6.0.1)
     puma (6.6.0)
       nio4r (~> 2.0)
+    pundit (2.5.0)
+      activesupport (>= 3.0.0)
+    pundit-matchers (4.0.0)
+      rspec-core (~> 3.12)
+      rspec-expectations (~> 3.12)
+      rspec-mocks (~> 3.12)
+      rspec-support (~> 3.12)
     raabro (1.4.0)
     racc (1.8.1)
     rack (3.1.16)
@@ -347,6 +358,12 @@ GEM
       rubocop-rspec (~> 3.5)
     ruby-progressbar (1.13.0)
     securerandom (0.4.1)
+    simplecov (0.22.0)
+      docile (~> 1.1)
+      simplecov-html (~> 0.11)
+      simplecov_json_formatter (~> 0.1)
+    simplecov-html (0.13.1)
+    simplecov_json_formatter (0.1.4)
     solid_cable (3.0.11)
       actioncable (>= 7.2)
       activejob (>= 7.2)
@@ -430,6 +447,7 @@ DEPENDENCIES
   devise (~> 4.9)
   devise-passwordless
   devise-verifiable
+  devise_invitable (~> 2.0.0)
   erb-formatter
   factory_bot_rails
   inertia_rails (~> 3.9)
@@ -440,12 +458,15 @@ DEPENDENCIES
   pry-rails
   pry-stack_explorer (~> 0.6.0)
   puma (>= 5.0)
+  pundit
+  pundit-matchers (~> 4.0)
   rails (~> 8.0.2)
   rspec-rails (~> 8.0.1)
   rubocop-factory_bot
   rubocop-rails-omakase
   rubocop-rspec
   rubocop-rspec_rails
+  simplecov
   solid_cable
   solid_cache
   solid_queue
