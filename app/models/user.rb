@@ -29,7 +29,7 @@ class User < ApplicationRecord
 
     team = teams.build(name: name, owner: self)
     assign_attributes(active_team: team, name: name)
-    self.memberships.build(team: team, role: :owner)
+    memberships.build(team: team, role: :owner)
     save
   end
 
@@ -37,5 +37,10 @@ class User < ApplicationRecord
     ActsAsTenant.with_mutable_tenant do
       update!(active_team: team)
     end
+  end
+
+  def can_invite?
+    return false unless active_team.present?
+    active_team.owner == self || active_team.has_owner_role?(self)
   end
 end
