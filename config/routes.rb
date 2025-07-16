@@ -15,7 +15,8 @@ Rails.application.routes.draw do
 
   devise_for :users, path: "", controllers: {
     sessions: "users/sessions",
-    verification: "users/onboarding"
+    verification: "users/onboarding",
+    invitation: "users/invitations"
   }, skip: %i[verification]
 
   get "verify_email" => "users/confirmations#show", as: :verify_email

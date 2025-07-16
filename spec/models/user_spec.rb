@@ -15,10 +15,10 @@ RSpec.describe User do
   end
 
   context "when creating a team for a user" do
-    let(:user) { create(:user) }
     let(:name) { "John" }
 
     it "creates a new personal team for the user" do
+      user = create(:user)
       expect { user.new_personal_team(name:) }.to change { user.teams.count }.by(1)
     end
 
@@ -31,7 +31,36 @@ RSpec.describe User do
     end
 
     it "does not create a new personal team if the name is blank" do
+      user = create(:user)
       expect { user.new_personal_team({ name: "" }) }.not_to change { user.teams.count }
+    end
+  end
+
+  context "when checking if user can invite someone" do
+    let(:team) { create(:team) }
+    let(:user) { create(:user) }
+
+    it "allows inviting if the user is the owner of the active team" do
+      team.owner.set_current_team team
+      expect(team.owner.can_invite?).to be true
+    end
+
+    it "allows inviting if the user has an owner role in the active team" do
+      create(:membership, team:, member: user, role: :owner)
+      user.set_current_team team
+
+      expect(user.can_invite?).to be true
+    end
+
+    it "does not allow inviting if the user is not the owner and has no owner role" do
+      user.set_current_team team
+      user.memberships.build(team:, role: :member)
+
+      expect(user.can_invite?).to be false
+    end
+
+    it "does not allow inviting if the user has no active team" do
+      expect(user.can_invite?).to be false
     end
   end
 end

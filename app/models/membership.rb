@@ -4,8 +4,4 @@ class Membership < ApplicationRecord
 
   enum :role, [ :owner, :member ], validate: true
   validates :role, presence: true
-
-  def self.owner?(user, team)
-    find_by(member: user, team: team)&.owner?
-  end
 end
