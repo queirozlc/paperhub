@@ -1,4 +1,4 @@
-import { mergeAttributes, Node, type Content } from '@tiptap/core'
+import { mergeAttributes, Node } from '@tiptap/core'
 
 export interface SuggestionOptions {
   HTMLAttributes: Record<string, any>
@@ -14,15 +14,15 @@ declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     suggestion: {
       /**
-       * Insere um elemento suggestion
+       * Inserts a suggestion element
        */
       setSuggestion: (attributes?: SuggestionAttributes, content?: string) => ReturnType
       /**
-       * Remove o elemento suggestion
+       * Removes the suggestion element
        */
       unsetSuggestion: () => ReturnType
       /**
-       * Alterna o elemento suggestion
+       * Toggles the suggestion element
        */
       toggleSuggestion: (attributes?: SuggestionAttributes) => ReturnType
     }
@@ -109,7 +109,7 @@ export const Suggestion = Node.create<SuggestionOptions>({
       mergeAttributes(
         {
           'data-suggestion': '',
-          contenteditable: !attrs['data-action'], // <- Se suggestion possuir action, não permite edição
+          contenteditable: !attrs['data-action'], // <- Block editing if suggestion has action
         },
         this.options.HTMLAttributes,
         HTMLAttributes
@@ -120,47 +120,18 @@ export const Suggestion = Node.create<SuggestionOptions>({
 
   addCommands() {
     return {
-      setSuggestion: (attributes, content) => ({ commands }) => {
-          return commands.insertContent({
-            type: this.name,
-            content: parseHTMLContent(content),
-            attrs: attributes
-          })
+      setSuggestion: (attributes) =>
+        ({ commands }) => {
+          return commands.wrapIn(this.name, attributes)
         },
-      unsetSuggestion:
-        () =>
+      unsetSuggestion: () =>
         ({ commands }) => {
           return commands.lift(this.name)
         },
-      toggleSuggestion:
-        (attributes) =>
+      toggleSuggestion: (attributes) =>
         ({ commands }) => {
           return commands.toggleWrap(this.name, attributes)
         },
     }
   },
 })
-
-export function parseHTMLContent(htmlString: string): any[] {
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(htmlString, 'text/html')
-  const content: any[] = []
-  
-  // Converte elementos HTML para formato do Tiptap
-  Array.from(doc.body.children).forEach(element => {
-    if (element.tagName === 'P') {
-      content.push({
-        type: 'paragraph',
-        content: element.textContent ? [
-          {
-            type: 'text',
-            text: element.textContent,
-          }
-        ] : [],
-      })
-    }
-    // Adicione outros tipos de elementos conforme necessário
-  })
-  
-  return content
-}

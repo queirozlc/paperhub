@@ -1,5 +1,4 @@
 import type { Editor } from "svelte-tiptap"
-import { parseHTMLContent } from "./extensions/suggestion"
 import type { ChainedCommands } from "@tiptap/core"
 import * as Diff from 'diff';
 import { generateHTML, generateJSON } from "@tiptap/html"
@@ -78,7 +77,13 @@ export function displaySuggestion(editor: Editor, suggestionId: number, suggesti
   return true
 }
 
-function getSuggestionNodeById(editor: Editor, suggestionId: number): NodeData | null {
+/**
+ * Search for suggestion node with "data-id" `id` and return some data about the node
+ * @param editor Tiptap Editor
+ * @param id Suggestion ID to search for 
+ * @returns Data about the node found or null if not found
+ */
+function getSuggestionNodeById(editor: Editor, id: number): NodeData | null {
   const { state } = editor
   const { doc } = state
 
@@ -87,7 +92,7 @@ function getSuggestionNodeById(editor: Editor, suggestionId: number): NodeData |
   doc.descendants((node, pos) => {
 
     if (node.type.name === 'suggestion'
-    &&  node.attrs['data-id'] === suggestionId
+    &&  node.attrs['data-id'] === id
     && !node.attrs['data-action']) {
 
       founded = {
@@ -107,18 +112,32 @@ function getSuggestionNodeById(editor: Editor, suggestionId: number): NodeData |
   return founded
 }
 
+/**
+ * Extract HTML content from node as string
+ * @param node Tiptap Node to extract HTML content from
+ * @returns HTML as string
+ */
 function extractNodeHtmlContent(node: Node): string {
   const html = generateHTML(node.toJSON(), editorExtensions)
   return html.replace(/ xmlns="[^"]*"/g, '')
 }
 
+/**
+ * Add "data-action" to the original suggestion node and change its content to `content`
+ * @param chain Tiptap chain of commands (ChainedCommands)
+ * @param pos Start and end positions of the suggestion node
+ * @param content New node HTML content
+ */
 function highlightOriginalContent(chain: ChainedCommands, pos: NodePos, content: string) {
   chain
+    // Replaces the original suggestion node content with a new one
     .deleteRange({
       from: pos.init + 1,
       to: pos.end - 1
     })
     .insertContentAt(pos.init + 1, content)
+    // Adds "data-action" attribute to the suggestion container
+    // and removes the last empty paragraph
     .command(({ tr }) => {
       const node = tr.doc.nodeAt(pos.init)
 
@@ -145,6 +164,11 @@ function highlightOriginalContent(chain: ChainedCommands, pos: NodePos, content:
     })
 }
 
+/**
+ * 
+ * @param chain Tiptap chain of commands (ChainedCommands)
+ * @param suggesion contains id (suggestion ID), pos (position to insert the new container) and content (HTML content of the suggestion)
+ */
 function addSecondSuggestionNode(chain: ChainedCommands, suggesion: { id: number; pos: number; content: string }) {
   chain.insertContentAt(suggesion.pos, {
     type: 'suggestion',
@@ -156,6 +180,12 @@ function addSecondSuggestionNode(chain: ChainedCommands, suggesion: { id: number
   })
 }
 
+/**
+ * Finds the differences between two strings. Their differences are circled with the <diff> tag
+ * @param html1 HTML string to compare
+ * @param html2 HTML string to compare
+ * @returns List with two strings. Each has its differences highlighted
+ */
 function highlightHtmllDifferences(html1: string, html2: string): string[] {
   const changes = Diff.diffWords(html1, html2);
   
