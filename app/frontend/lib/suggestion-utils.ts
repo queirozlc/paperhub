@@ -1,6 +1,20 @@
 import type { Editor } from "svelte-tiptap"
 import { parseHTMLContent } from "./extensions/suggestion"
 import type { ChainedCommands } from "@tiptap/core"
+import * as Diff from 'diff';
+import { generateHTML, generateJSON } from "@tiptap/html"
+import { editorExtensions } from './extensions/index'
+import type { Node } from "@tiptap/pm/model";
+
+type NodePos = {
+  init: number;
+  end: number;
+}
+
+type NodeData = {
+  content: string;
+  pos: NodePos;
+}
 
 /**
  * Loops through HTML (as a string) adding the "data-id" attribute to all <suggestion> elements.
@@ -39,50 +53,96 @@ export function setIdsToNewSuggestions(modifiedDocumentContent: string, nextSugg
  * @returns true if the suggestion was displayed, false if not found
  */
 export function displaySuggestion(editor: Editor, suggestionId: number, suggestionContent: string) {
-  const { state } = editor
-  const { doc } = state
-  let nodePos: { init: number; end: number } = null;
 
-  // Percorre todo o documento procurando pelo nó
-  doc.descendants((node, pos) => {
-    // Verifica se é o nó que estamos procurando
-    if (node.type.name === 'suggestion' && node.attrs['data-id'] === suggestionId && !node.attrs['data-action']) {
-      // Calcula a posição após o nó (pos + tamanho do nó)
-      nodePos = {
-        init: pos,
-        end: pos + node.nodeSize,
-      }
-      return false // Para a busca
-    }
-    return true // Continua a busca
-  })
+  const original = getSuggestionNodeById(editor, suggestionId)
   
-  if (nodePos == null) {
+  if (original == null) {
     return false
   }
 
-  const chain = editor.chain().focus()
-  highlightOriginalContent(chain, nodePos.init)
+  const [ originalDiff, suggestionDiff ] = highlightHtmllDifferences(original.content, suggestionContent)
+
+  const chain = editor.chain()
+    .focus()
+
   addSecondSuggestionNode(chain, {
     id: suggestionId,
-    pos: nodePos.end,
-    content: suggestionContent,
+    pos: original.pos.end,
+    content: suggestionDiff,
   })
+
+  highlightOriginalContent(chain, original.pos, originalDiff)
+
   chain.run()
 
   return true
 }
 
-function highlightOriginalContent(chain: ChainedCommands, suggestionNodePosition: number) {
-  chain.command(({ tr }) => {
-    const node = tr.doc.nodeAt(suggestionNodePosition)
-    tr.setNodeMarkup(suggestionNodePosition, undefined, {
-      ...node?.attrs,
-      "data-action": "remove",
-    });
+function getSuggestionNodeById(editor: Editor, suggestionId: number): NodeData | null {
+  const { state } = editor
+  const { doc } = state
 
-    return true;
+  let founded: NodeData = null
+
+  doc.descendants((node, pos) => {
+
+    if (node.type.name === 'suggestion'
+    &&  node.attrs['data-id'] === suggestionId
+    && !node.attrs['data-action']) {
+
+      founded = {
+        content: extractNodeHtmlContent(node),
+        pos: {
+          init: pos,
+          end: pos + node.nodeSize,
+        }
+      }
+
+      return false // Stops searching
+    }
+
+    return true // Continues searching
   })
+
+  return founded
+}
+
+function extractNodeHtmlContent(node: Node): string {
+  const html = generateHTML(node.toJSON(), editorExtensions)
+  return html.replace(/ xmlns="[^"]*"/g, '')
+}
+
+function highlightOriginalContent(chain: ChainedCommands, pos: NodePos, content: string) {
+  chain
+    .deleteRange({
+      from: pos.init + 1,
+      to: pos.end - 1
+    })
+    .insertContentAt(pos.init + 1, content)
+    .command(({ tr }) => {
+      const node = tr.doc.nodeAt(pos.init)
+
+      if (!node) {
+        return true;
+      }
+
+      // Add "data-action" attribute
+      tr.setNodeMarkup(pos.init, undefined, {
+        ...node?.attrs,
+        "data-action": "remove",
+      })
+
+      // Find last empty paragraph and remove it
+      node.descendants((descendant, childPos) => {
+        if (descendant.type.name === 'paragraph' && descendant.content.size === 0) {
+          const absolutePos = pos.init + 1 + childPos
+          tr.delete(absolutePos, absolutePos + descendant.nodeSize)
+          return false // Stop the search
+        }
+      })
+
+      return true;
+    })
 }
 
 function addSecondSuggestionNode(chain: ChainedCommands, suggesion: { id: number; pos: number; content: string }) {
@@ -92,6 +152,26 @@ function addSecondSuggestionNode(chain: ChainedCommands, suggesion: { id: number
       "data-action": "add",
       "data-id": suggesion.id,
     },
-    content: parseHTMLContent(suggesion.content),
+    content: generateJSON(suggesion.content, editorExtensions).content
   })
+}
+
+function highlightHtmllDifferences(html1: string, html2: string): string[] {
+  const changes = Diff.diffWords(html1, html2);
+  
+  let string1diff = '';
+  let string2diff = '';
+  
+  changes.forEach(change => {
+    if (change.added) {
+      string2diff += `<diff>${change.value}</diff>`;
+    } else if (change.removed) {
+      string1diff += `<diff>${change.value}</diff>`;
+    } else {
+      string1diff += change.value;
+      string2diff += change.value;
+    }
+  });
+  
+  return [ string1diff, string2diff ];
 }

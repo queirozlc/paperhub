@@ -1,34 +1,34 @@
 import { Node, mergeAttributes } from '@tiptap/core'
 
-export interface ChangeOptions {
+export interface DiffOptions {
   HTMLAttributes: Record<string, any>
 }
 
-export interface ChangeAttributes {
-  'data-action': 'add' | 'remove'
+export interface DiffAttributes {
+  //'data-action': 'add' | 'remove'
 }
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
-    change: {
+    diff: {
       /**
-       * Insere um elemento change
+       * Insere um elemento diff
        */
-      setChange: (attributes?: ChangeAttributes) => ReturnType
+      setDiff: (attributes?: DiffAttributes) => ReturnType
       /**
-       * Remove o elemento change
+       * Remove o elemento diff
        */
-      unsetChange: () => ReturnType
+      unsetDiff: () => ReturnType
       /**
-       * Alterna o elemento change
+       * Alterna o elemento diff
        */
-      toggleChange: (attributes?: ChangeAttributes) => ReturnType
+      toggleDiff: (attributes?: DiffAttributes) => ReturnType
     }
   }
 }
 
-export const Change = Node.create<ChangeOptions>({
-  name: 'change',
+export const Diff = Node.create<DiffOptions>({
+  name: 'diff',
 
   addOptions() {
     return {
@@ -64,10 +64,10 @@ export const Change = Node.create<ChangeOptions>({
   parseHTML() {
     return [
       {
-        tag: 'span[data-change]',
+        tag: 'span[data-diff]',
       },
       {
-        tag: 'change'
+        tag: 'diff'
       }
     ]
   },
@@ -76,7 +76,7 @@ export const Change = Node.create<ChangeOptions>({
     return [
       'span',
       mergeAttributes(
-        { 'data-change': '' },
+        { 'data-diff': '' },
         this.options.HTMLAttributes,
         HTMLAttributes
       ),
@@ -86,27 +86,21 @@ export const Change = Node.create<ChangeOptions>({
 
   addCommands() {
     return {
-      setChange:
+      setDiff:
         (attributes) =>
         ({ commands }) => {
           return commands.wrapIn(this.name, attributes)
         },
-      unsetChange:
+      unsetDiff:
         () =>
         ({ commands }) => {
           return commands.lift(this.name)
         },
-      toggleChange:
+      toggleDiff:
         (attributes) =>
         ({ commands }) => {
           return commands.toggleWrap(this.name, attributes)
         },
     }
   },
-
-  // addKeyboardShortcuts() {
-  //   return {
-  //     'Mod-Shift-s': () => this.editor.commands.toggleChange(),
-  //   }
-  // },
 })

@@ -32,7 +32,17 @@
       //content: '',
       content: `
         <p>Quem foi o primeiro presidente do Brasil?</p>
-        <p>O primeiro presidente do Brasil foi Luiz Inácio Lula da Silva. O segundo presidente do Brasil foi Jair Messias Bolsonaro.</p>`,
+        <suggestion data-id="0">
+          <p>O primeiro presidente do Brasil foi Luiz Inácio Lula da Silva. O segundo presidente do Brasil foi Jair Messias Bolsonaro.</p>
+        </suggestion>`,
+      /*content: `
+        <p>Quem foi o primeiro presidente do Brasil?</p>
+        <suggestion data-action="remove" data-id="0">
+          <p>O primeiro presidente do Brasil foi <diff>Luiz Inácio Lula da Silva</diff>. O segundo presidente do Brasil foi <diff>Jair Messias Bolsonaro</diff>.</p>
+        </suggestion>
+        <suggestion data-action="add" data-id="0">
+          <p>O primeiro presidente do Brasil foi <diff>Sei lá</diff>. O segundo presidente do Brasil foi <diff>Outro aí</diff>.</p>
+        </suggestion>`,*/
       extensions,
     })
   })
@@ -82,6 +92,8 @@
   </div>
 </EditorLayout>
 
+<button onclick={() => console.log($editor.getHTML())}>HTML</button>
+
 <style>
   :global(*[data-suggestion]) {
     &[data-action="add"] {
@@ -99,12 +111,10 @@
     margin-bottom: 0;
   }
 
-  :global(*[data-change]) {
-    &[data-action="add"] {
-      background: green;
-    }
-    &[data-action="remove"] {
-      background: red;
-    }
+  :global(*[data-suggestion][data-action="add"] *[data-diff]) {
+    background: green;
+  }
+  :global(*[data-suggestion][data-action="remove"] *[data-diff]) {
+    background: red;
   }
 </style>

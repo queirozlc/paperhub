@@ -15,7 +15,7 @@
   import Icon from './ui/icon/Icon.svelte'
   import turingSvg from '@/assets/turing.svg'
   import { aiApiService } from '@/services/ai-api-service'
-    import { setIdsToNewSuggestions } from '../suggestion-utils'
+  import { setIdsToNewSuggestions } from '../suggestion-utils'
 
   export type Suggestion = {
     id?: number
@@ -60,7 +60,7 @@
     { type: "question", question: "Quem foi o primeiro presidente do Brasil?" },
     { type: "answer", answer: [
       { type: "text", text: "Aqui está:" },
-      { type: "suggestion", suggestion: { change: "<p>O primeiro presidente do Brasil foi Deodoro da Fonseca. O segundo presidente do Brasil foi Floriano Peixoto.</p>", explanation: "" } },
+      { type: "suggestion", suggestion: { id: 0, change: "<p>O primeiro presidente do Brasil foi Deodoro da Fonseca. O segundo presidente do Brasil foi Floriano Peixoto.</p>", explanation: "" } },
     ]}
   ])
   let nextSuggestionIndex = $state(0)

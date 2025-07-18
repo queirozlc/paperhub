@@ -1,4 +1,4 @@
-import { Node, mergeAttributes } from '@tiptap/core'
+import { mergeAttributes, Node, type Content } from '@tiptap/core'
 
 export interface SuggestionOptions {
   HTMLAttributes: Record<string, any>
@@ -141,7 +141,7 @@ export const Suggestion = Node.create<SuggestionOptions>({
   },
 })
 
-export function parseHTMLContent(htmlString: string) {
+export function parseHTMLContent(htmlString: string): any[] {
   const parser = new DOMParser()
   const doc = parser.parseFromString(htmlString, 'text/html')
   const content: any[] = []
