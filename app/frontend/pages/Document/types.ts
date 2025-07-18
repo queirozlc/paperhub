@@ -13,3 +13,8 @@ export type DocumentFormType = Omit<
   DocumentType,
   'id' | 'team_id' | 'created_at' | 'updated_at' | 'sqid'
 >
+
+export type InvitationForm = {
+  email: string
+  role: string
+}

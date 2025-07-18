@@ -1,9 +1,9 @@
 class ApplicationController < ActionController::Base
   include Pundit::Authorization
-  # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
   set_current_tenant_through_filter
   before_action :set_tenant
+  before_action :authenticate_user!
   before_action :authenticate_verified_user!
 
   inertia_share flash: -> { flash.to_hash }
@@ -14,9 +14,7 @@ class ApplicationController < ActionController::Base
   end
 
   def require_unauthenticated_user!
-    return unless user_signed_in?
-
-    redirect_to root_path, alert: t("devise.failure.already_authenticated")
+    redirect_to documents_path, alert: t("devise.failure.already_authenticated") if user_signed_in?
   end
 
 

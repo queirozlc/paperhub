@@ -159,6 +159,7 @@ Devise.setup do |config|
   # The invitation won't be sent if this check fails.
   # Default: false
   config.validate_on_invite = true
+  config.require_password_on_accepting = false
 
   # Resend invitation if user with invited status is invited again
   # Default: true

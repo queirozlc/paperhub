@@ -45,13 +45,13 @@ class DocumentsController < ApplicationController
   # DELETE /documents/1
   def destroy
     @document.destroy!
-    redirect_to authenticated_root_url, notice: "document was successfully destroyed."
+    redirect_to documents_url, notice: "document was successfully destroyed."
   end
 
   # DELETE /documents
   def destroy_all
     Document.where(id: document_id_params).destroy_all
-    redirect_to authenticated_root_url, notice: "documents were successfully destroyed."
+    redirect_to documents_url, notice: "documents were successfully destroyed."
   end
 
 

@@ -5,9 +5,9 @@ class Users::ProfileController < ApplicationController
   # PATCH/PUT /users/teams/1
   def update
     if @user.set_current_team(@team)
-      redirect_to authenticated_root_path, notice: "Profile was successfully updated."
+      redirect_to documents_path, notice: "Profile was successfully updated."
     else
-      redirect_to authenticated_root_path, inertia: { errors: @user.errors }
+      redirect_to documents_path, inertia: { errors: @user.errors }
     end
   end
 

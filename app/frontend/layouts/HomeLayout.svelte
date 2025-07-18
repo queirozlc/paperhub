@@ -6,8 +6,9 @@
     Home05 as Home,
     Inbox01 as Inbox,
     Settings01,
-    UserPlus01,
   } from '@voolt_technologies/untitledui-svelte'
+
+  import type { InvitationForm } from '$pages/Document/types'
 
   const data = {
     navMain: [
@@ -75,20 +76,44 @@
   import type { TeamType } from '$pages/Team/types'
   import { Send } from '@lucide/svelte'
   import type { Snippet } from 'svelte'
-
+  import { useForm } from '@inertiajs/svelte'
+  import InvitationDialog from '$lib/components/documents/invitation-dialog.svelte'
+  import { toast } from 'svelte-sonner'
   type Props = {
     teams: TeamType[]
     children: Snippet
   }
 
   let { teams, children }: Props = $props()
+
+  let openInvitationDialog = $state(false)
+
+  const form = useForm<InvitationForm>({
+    email: '',
+    role: '',
+  })
+
+  function sendInvite(e: SubmitEvent) {
+    e.preventDefault()
+    $form
+      .transform(({ email, role }) => ({
+        user: { email, invitation_role: role },
+      }))
+      .post('/invitation', {
+        preserveState: false,
+        onSuccess: () => {
+          openInvitationDialog = false
+          toast.success('Convite enviado com sucesso')
+        },
+      })
+  }
 </script>
 
 <svelte:head>
   <title>Home | Seus Documentos</title>
   <meta
-    name="description"
     content="Seus Documentos - Dashboard de gerenciamento de documentos"
+    name="description"
   />
 </svelte:head>
 
@@ -100,12 +125,13 @@
     </Sidebar.Header>
     <Sidebar.Content>
       <NavFolders folders={data.folders} />
-      <NavSecondary items={data.navSecondary} class="mt-auto" />
+      <NavSecondary class="mt-auto" items={data.navSecondary} />
       <Sidebar.Group class="pb-4">
-        <Button variant="outline" size="sm">
-          <UserPlus01 />
-          Convidar novos membros
-        </Button>
+        <InvitationDialog
+          bind:form={$form}
+          bind:open={openInvitationDialog}
+          {sendInvite}
+        />
       </Sidebar.Group>
     </Sidebar.Content>
   </Sidebar.Root>
@@ -114,8 +140,8 @@
     <header class="flex h-14 items-center px-4 justify-between">
       <div class="flex items-center gap-2">
         <Sidebar.Trigger />
-        <Separator orientation="vertical" class="mr-2 h-4" />
-        <Button class="gap-2 h-7 shadow-none" variant="outline" size="sm">
+        <Separator class="mr-2 h-4" orientation="vertical" />
+        <Button class="gap-2 h-7 shadow-none" size="sm" variant="outline">
           <div class="rounded-full border border-accent-foreground p-0.5">
             <FilterLines class="size-2 text-accent-foreground" />
           </div>
@@ -132,11 +158,15 @@
       </div>
       <div class="flex items-center gap-5">
         <Avatar class="size-8">
-          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+          <AvatarImage alt="@shadcn" src="https://github.com/shadcn.png" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
 
-        <Button class="font-brand font-semibold rounded-lg px-6" size="sm">
+        <Button
+          class="font-brand font-semibold rounded-lg px-6"
+          size="sm"
+          onclick={() => (openInvitationDialog = true)}
+        >
           <Send />
           Convidar
         </Button>

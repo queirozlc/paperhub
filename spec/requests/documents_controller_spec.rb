@@ -7,7 +7,7 @@ RSpec.describe DocumentsController, :inertia do
 
   describe "GET #index" do
     it "renders a successful response" do
-      get authenticated_root_url
+      get documents_url
 
       expect_inertia.to render_component("Document/Index").and include_props(
         documents: [ document.as_json(methods: :sqid) ]
@@ -72,7 +72,7 @@ RSpec.describe DocumentsController, :inertia do
 
     it "redirects to the documents list" do
       delete document_url(document)
-      expect(response).to redirect_to(authenticated_root_url)
+      expect(response).to redirect_to(documents_url)
     end
   end
 
@@ -89,7 +89,7 @@ RSpec.describe DocumentsController, :inertia do
 
       it "redirects to the documents list" do
         delete destroy_all_documents_url, params: { ids: documents.map(&:id) }
-        expect(response).to redirect_to(authenticated_root_url)
+        expect(response).to redirect_to(documents_url)
       end
     end
 
@@ -102,7 +102,7 @@ RSpec.describe DocumentsController, :inertia do
 
       it "redirects to the documents list" do
         delete destroy_all_documents_url, params: { ids: [] }
-        expect(response).to redirect_to(authenticated_root_url)
+        expect(response).to redirect_to(documents_url)
       end
     end
 
@@ -115,7 +115,7 @@ RSpec.describe DocumentsController, :inertia do
 
       it "redirects to the documents list" do
         delete destroy_all_documents_url, params: { ids: [ document.id ] }
-        expect(response).to redirect_to(authenticated_root_url)
+        expect(response).to redirect_to(documents_url)
       end
     end
   end

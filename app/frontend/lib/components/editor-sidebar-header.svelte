@@ -67,13 +67,13 @@
 <header
   class="flex min-h-14 border-sidebar-border border-b items-center px-4 justify-between"
 >
-  <div class="flex items-center gap-4">
+  <div class="flex items-center gap-2">
     <div class="flex items-center gap-2">
       <Sidebar.Trigger for="summary" />
       <Separator orientation="vertical" class="mr-2 h-4" />
     </div>
 
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-2">
       <h5
         bind:this={documentTitleInput}
         contenteditable="true"
@@ -117,11 +117,6 @@
   </div>
 
   <div class="flex items-center gap-4">
-    <Button variant="outline" size="sm" class="shadow-none h-7">
-      <Share01 />
-      <span class="font-medium">Compartilhar</span>
-    </Button>
-
     <div class="flex items-center gap-2">
       <Separator orientation="vertical" class="mr-2 h-4" />
       <div class="flex items-center gap-1">

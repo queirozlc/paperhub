@@ -44,7 +44,7 @@
   }
 
   function destroyAll() {
-    router.delete('/documents', {
+    router.delete('/documents/destroy_all', {
       data: {
         ids: selectedDocuments,
       },
