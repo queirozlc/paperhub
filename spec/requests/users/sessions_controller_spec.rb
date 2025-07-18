@@ -13,7 +13,7 @@ RSpec.describe Users::SessionsController, :inertia do
 
       it 'redirects to the root path' do
         get new_user_session_path
-        expect(response).to redirect_to(authenticated_root_path)
+        expect(response).to redirect_to(documents_path)
       end
     end
   end

@@ -26,7 +26,7 @@ RSpec.describe TeamsController, :inertia do
     it "redirects to the authenticated root path" do
       post teams_url, params: { team: valid_attributes }
 
-      expect(response).to redirect_to(authenticated_root_url)
+      expect(response).to redirect_to(documents_url)
     end
   end
 end

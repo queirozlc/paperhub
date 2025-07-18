@@ -76,12 +76,14 @@ group :development, :test do
   gem "pry-rails"
 
   gem "pry-stack_explorer", "~> 0.6.0"
-  gem "simplecov"
+
+  gem "foreman"
 end
 
 group :test do
   gem "rspec-rails", "~> 8.0.1"
   gem "pundit-matchers", "~> 4.0"
+  gem "simplecov", require: false
 end
 
 group :development do

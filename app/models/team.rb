@@ -15,8 +15,7 @@ class Team < ApplicationRecord
     memberships.create!(member: user, role:) unless already_member? user
   end
 
-  private
-    def already_member?(user)
-      members.exists?(user.id)
-    end
+  def already_member?(user)
+    members.exists?(user.id)
+  end
 end

@@ -1,13 +1,11 @@
 module Users
-  class InvitationPolicy
-    attr_reader :user
-
-    def initialize(user, _record)
-      @user = user
+  class InvitationPolicy < ApplicationPolicy
+    def create?
+      user.can_invite? record
     end
 
-    def create?
-      user.can_invite?
+    def edit?
+      record.id == user.id
     end
   end
 end
