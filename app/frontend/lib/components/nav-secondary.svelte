@@ -1,27 +1,20 @@
 <script lang="ts">
+  import type { NavSecondaryItem } from '$layouts/HomeLayout.svelte'
   import {
     SidebarGroup,
     SidebarGroupContent,
     SidebarMenu,
     SidebarMenuBadge,
     SidebarMenuButton,
-    SidebarMenuItem
+    SidebarMenuItem,
   } from '$lib/components/ui/sidebar'
   import type { ComponentProps } from 'svelte'
-  import type { Icon } from "@lucide/svelte";
 
-  let {
-    ref = $bindable(null),
-    items,
-    ...restProps
-  }: ComponentProps<typeof SidebarGroup> & {
-    items: {
-      title: string
-      url: string
-      icon: typeof Icon
-      badge?: string
-    }[]
-  } = $props()
+  type Props = {
+    items: NavSecondaryItem[]
+  } & ComponentProps<typeof SidebarGroup>
+
+  let { ref = $bindable(null), items, ...restProps }: Props = $props()
 </script>
 
 <SidebarGroup {...restProps} bind:ref>
