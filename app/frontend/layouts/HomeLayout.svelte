@@ -1,11 +1,81 @@
 <script lang="ts" module>
-  import { Blocks, MessageCircleQuestion, Settings, Sparkles } from '@lucide/svelte'
+  import {
+    Blocks,
+    Icon,
+    MessageCircleQuestion,
+    Settings,
+    Sparkles,
+  } from '@lucide/svelte'
 
-  import { FilterLines, Home05 as Home, Inbox01 as Inbox } from '@voolt_technologies/untitledui-svelte'
+  import {
+    FilterLines,
+    Home05 as Home,
+    Inbox01 as Inbox,
+  } from '@voolt_technologies/untitledui-svelte'
 
   import type { InvitationForm } from '$pages/Document/types'
 
-  const data = {
+  export type NavMainItem = {
+    title: string
+    url: string
+    // Eslint disabled because we need to use any to pass the icon to the component
+    // the lib untitledui-svelte is not typed yet
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    icon: any
+    isActive?: boolean
+    tooltip: string
+    badge?: number
+  }
+
+  export type NavSecondaryItem = {
+    title: string
+    url: string
+    icon: typeof Icon
+    badge?: string
+  }
+
+  export { default as layout } from './HomeLayout.svelte'
+</script>
+
+<script lang="ts">
+  import {
+    Sidebar,
+    SidebarInset,
+    SidebarHeader,
+    SidebarProvider,
+    SidebarTrigger,
+    SidebarContent,
+    SidebarGroup,
+  } from '$lib/components/ui/sidebar'
+
+  import NavFolders from '$lib/components/nav-folders.svelte'
+  import NavMain from '$lib/components/nav-main.svelte'
+  import NavSecondary from '$lib/components/nav-secondary.svelte'
+  import TeamSwitcher from '$lib/components/team-switcher.svelte'
+  import {
+    Avatar,
+    AvatarFallback,
+    AvatarImage,
+  } from '$lib/components/ui/avatar'
+  import Button from '$lib/components/ui/button/button.svelte'
+  import Separator from '$lib/components/ui/separator/separator.svelte'
+  import { Tabs, TabsList, TabsTrigger } from '$lib/components/ui/tabs'
+  import type { TeamType } from '$pages/Team/types'
+  import { Send } from '@lucide/svelte'
+  import type { Component, ComponentProps, Snippet } from 'svelte'
+  import { useForm } from '@inertiajs/svelte'
+  import InvitationDialog from '$lib/components/documents/invitation-dialog.svelte'
+  import { toast } from 'svelte-sonner'
+  type Props = {
+    teams: TeamType[]
+    children: Snippet
+  }
+
+  const sidebarSections: {
+    navMain: NavMainItem[]
+    navSecondary: NavSecondaryItem[]
+    folders: any[]
+  } = {
     navMain: [
       {
         title: 'Pergunte ao Turing ✨',
@@ -50,36 +120,6 @@
     folders: [],
   }
 
-  export { default as layout } from './HomeLayout.svelte'
-</script>
-
-<script lang="ts">
-  import { Sidebar, SidebarInset, SidebarHeader, SidebarProvider, SidebarTrigger, SidebarContent, SidebarGroup } from
-            '$lib/components/ui/sidebar'
-
-  import NavFolders from '$lib/components/nav-folders.svelte'
-  import NavMain from '$lib/components/nav-main.svelte'
-  import NavSecondary from '$lib/components/nav-secondary.svelte'
-  import TeamSwitcher from '$lib/components/team-switcher.svelte'
-  import {
-    Avatar,
-    AvatarFallback,
-    AvatarImage,
-  } from '$lib/components/ui/avatar'
-  import Button from '$lib/components/ui/button/button.svelte'
-  import Separator from '$lib/components/ui/separator/separator.svelte'
-  import { Tabs, TabsList, TabsTrigger } from '$lib/components/ui/tabs'
-  import type { TeamType } from '$pages/Team/types'
-  import { Send } from '@lucide/svelte'
-  import type { Snippet } from 'svelte'
-  import { useForm } from '@inertiajs/svelte'
-  import InvitationDialog from '$lib/components/documents/invitation-dialog.svelte'
-  import { toast } from 'svelte-sonner'
-  type Props = {
-    teams: TeamType[]
-    children: Snippet
-  }
-
   let { teams, children }: Props = $props()
 
   let openInvitationDialog = $state(false)
@@ -117,11 +157,11 @@
   <Sidebar>
     <SidebarHeader>
       <TeamSwitcher {teams} />
-      <NavMain items={data.navMain} />
+      <NavMain items={sidebarSections.navMain} />
     </SidebarHeader>
     <SidebarContent>
-      <NavFolders folders={data.folders} />
-      <NavSecondary class="mt-auto" items={data.navSecondary} />
+      <NavFolders folders={sidebarSections.folders} />
+      <NavSecondary class="mt-auto" items={sidebarSections.navSecondary} />
       <SidebarGroup class="pb-4">
         <InvitationDialog
           bind:form={$form}
