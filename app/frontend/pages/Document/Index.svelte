@@ -18,7 +18,7 @@
   import Document from './Document.svelte'
   import type { DocumentType } from './types'
   import type { TeamType } from '../Team/types'
-    import HomeLayout from '$layouts/HomeLayout.svelte'
+  import HomeLayout from '$layouts/HomeLayout.svelte'
 
   type Props = {
     documents: DocumentType[]

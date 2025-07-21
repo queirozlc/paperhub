@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Editor } from '@tiptap/core'
-  import * as Sidebar from './ui/sidebar'
+  import { SidebarGroupLabel } from './ui/sidebar'
   import { TextSelection } from '@tiptap/pm/state'
   import type { TableOfContentsStorage } from '@tiptap/extension-table-of-contents'
   import { cn } from '$lib/utils'
@@ -57,7 +57,7 @@
           e.preventDefault()
           onItemClick(heading.id)
         }}
-        style:margin-left={`${1 * heading.level - 1}rem`}
+        style:margin-left={`${heading.level - 1}rem`}
         class={cn(
           'block font-medium text-muted-foreground text-sm px-2 py-1 rounded truncate',
           'hover:text-foreground transition-all',
@@ -71,5 +71,5 @@
     {/each}
   </div>
 {:else}
-  <Sidebar.GroupLabel>Sem títulos encontrados.</Sidebar.GroupLabel>
+  <SidebarGroupLabel>Sem títulos encontrados.</SidebarGroupLabel>
 {/if}

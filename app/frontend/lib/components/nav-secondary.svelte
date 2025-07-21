@@ -1,41 +1,47 @@
 <script lang="ts">
-  import * as Sidebar from '$lib/components/ui/sidebar'
+  import {
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarMenu,
+    SidebarMenuBadge,
+    SidebarMenuButton,
+    SidebarMenuItem
+  } from '$lib/components/ui/sidebar'
   import type { ComponentProps } from 'svelte'
+  import type { Icon } from "@lucide/svelte";
 
   let {
     ref = $bindable(null),
     items,
     ...restProps
-  }: ComponentProps<typeof Sidebar.Group> & {
+  }: ComponentProps<typeof SidebarGroup> & {
     items: {
       title: string
       url: string
-      // This should be `Component` after @lucide/svelte updates types
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      icon: any
+      icon: typeof Icon
       badge?: string
     }[]
   } = $props()
 </script>
 
-<Sidebar.Group bind:ref {...restProps}>
-  <Sidebar.GroupContent>
-    <Sidebar.Menu>
+<SidebarGroup {...restProps} bind:ref>
+  <SidebarGroupContent>
+    <SidebarMenu>
       {#each items as item (item.title)}
-        <Sidebar.MenuItem class="font-semibold">
-          <Sidebar.MenuButton>
+        <SidebarMenuItem class="font-semibold">
+          <SidebarMenuButton>
             {#snippet child({ props })}
               <a href={item.url} {...props}>
                 <item.icon class="stroke-[2.5]" />
                 <span>{item.title}</span>
               </a>
             {/snippet}
-          </Sidebar.MenuButton>
+          </SidebarMenuButton>
           {#if item.badge}
-            <Sidebar.MenuBadge>{item.badge}</Sidebar.MenuBadge>
+            <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
           {/if}
-        </Sidebar.MenuItem>
+        </SidebarMenuItem>
       {/each}
-    </Sidebar.Menu>
-  </Sidebar.GroupContent>
-</Sidebar.Group>
+    </SidebarMenu>
+  </SidebarGroupContent>
+</SidebarGroup>
