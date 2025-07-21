@@ -6,9 +6,9 @@ class TeamsController < ApplicationController
 
     if @team.save
       current_user.set_current_team(@team)
-      redirect_to authenticated_root_path, notice: "Team was successfully created."
+      redirect_to documents_path, notice: "Team was successfully created."
     else
-      redirect_to authenticated_root_path, inertia: { errors: @team.errors }
+      redirect_to documents_path, inertia: { errors: @team.errors }
     end
   end
 

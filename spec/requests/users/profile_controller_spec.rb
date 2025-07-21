@@ -17,7 +17,7 @@ RSpec.describe Users::ProfileController do
 
     it "redirects to the authenticated root path" do
       patch users_team_path(user), params: valid_params
-      expect(response).to redirect_to(authenticated_root_path)
+      expect(response).to redirect_to(documents_path)
     end
   end
 end

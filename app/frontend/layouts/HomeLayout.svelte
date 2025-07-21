@@ -1,13 +1,9 @@
 <script lang="ts" module>
-  import { Blocks, MessageCircleQuestion, Sparkles } from '@lucide/svelte'
+  import { Blocks, MessageCircleQuestion, Settings, Sparkles } from '@lucide/svelte'
 
-  import {
-    FilterLines,
-    Home05 as Home,
-    Inbox01 as Inbox,
-    Settings01,
-    UserPlus01,
-  } from '@voolt_technologies/untitledui-svelte'
+  import { FilterLines, Home05 as Home, Inbox01 as Inbox } from '@voolt_technologies/untitledui-svelte'
+
+  import type { InvitationForm } from '$pages/Document/types'
 
   const data = {
     navMain: [
@@ -38,7 +34,7 @@
       {
         title: 'Configurações',
         url: '#',
-        icon: Settings01,
+        icon: Settings,
       },
       {
         title: 'Modelos',
@@ -58,7 +54,8 @@
 </script>
 
 <script lang="ts">
-  import * as Sidebar from '$lib/components/ui/sidebar'
+  import { Sidebar, SidebarInset, SidebarHeader, SidebarProvider, SidebarTrigger, SidebarContent, SidebarGroup } from
+            '$lib/components/ui/sidebar'
 
   import NavFolders from '$lib/components/nav-folders.svelte'
   import NavMain from '$lib/components/nav-main.svelte'
@@ -75,47 +72,72 @@
   import type { TeamType } from '$pages/Team/types'
   import { Send } from '@lucide/svelte'
   import type { Snippet } from 'svelte'
-
+  import { useForm } from '@inertiajs/svelte'
+  import InvitationDialog from '$lib/components/documents/invitation-dialog.svelte'
+  import { toast } from 'svelte-sonner'
   type Props = {
     teams: TeamType[]
     children: Snippet
   }
 
   let { teams, children }: Props = $props()
+
+  let openInvitationDialog = $state(false)
+
+  const form = useForm<InvitationForm>({
+    email: '',
+    role: '',
+  })
+
+  function sendInvite(e: SubmitEvent) {
+    e.preventDefault()
+    $form
+      .transform(({ email, role }) => ({
+        user: { email, invitation_role: role },
+      }))
+      .post('/invitation', {
+        preserveState: false,
+        onSuccess: () => {
+          openInvitationDialog = false
+          toast.success('Convite enviado com sucesso')
+        },
+      })
+  }
 </script>
 
 <svelte:head>
   <title>Home | Seus Documentos</title>
   <meta
-    name="description"
     content="Seus Documentos - Dashboard de gerenciamento de documentos"
+    name="description"
   />
 </svelte:head>
 
-<Sidebar.Provider>
-  <Sidebar.Root>
-    <Sidebar.Header>
+<SidebarProvider>
+  <Sidebar>
+    <SidebarHeader>
       <TeamSwitcher {teams} />
       <NavMain items={data.navMain} />
-    </Sidebar.Header>
-    <Sidebar.Content>
+    </SidebarHeader>
+    <SidebarContent>
       <NavFolders folders={data.folders} />
-      <NavSecondary items={data.navSecondary} class="mt-auto" />
-      <Sidebar.Group class="pb-4">
-        <Button variant="outline" size="sm">
-          <UserPlus01 />
-          Convidar novos membros
-        </Button>
-      </Sidebar.Group>
-    </Sidebar.Content>
-  </Sidebar.Root>
+      <NavSecondary class="mt-auto" items={data.navSecondary} />
+      <SidebarGroup class="pb-4">
+        <InvitationDialog
+          bind:form={$form}
+          bind:open={openInvitationDialog}
+          {sendInvite}
+        />
+      </SidebarGroup>
+    </SidebarContent>
+  </Sidebar>
 
-  <Sidebar.Inset>
+  <SidebarInset>
     <header class="flex h-14 items-center px-4 justify-between">
       <div class="flex items-center gap-2">
-        <Sidebar.Trigger />
-        <Separator orientation="vertical" class="mr-2 h-4" />
-        <Button class="gap-2 h-7 shadow-none" variant="outline" size="sm">
+        <SidebarTrigger />
+        <Separator class="mr-2 h-4" orientation="vertical" />
+        <Button class="gap-2 h-7 shadow-none" size="sm" variant="outline">
           <div class="rounded-full border border-accent-foreground p-0.5">
             <FilterLines class="size-2 text-accent-foreground" />
           </div>
@@ -132,11 +154,15 @@
       </div>
       <div class="flex items-center gap-5">
         <Avatar class="size-8">
-          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+          <AvatarImage alt="@shadcn" src="https://github.com/shadcn.png" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
 
-        <Button class="font-brand font-semibold rounded-lg px-6" size="sm">
+        <Button
+          class="font-brand font-semibold rounded-lg px-6"
+          onclick={() => (openInvitationDialog = true)}
+          size="sm"
+        >
           <Send />
           Convidar
         </Button>
@@ -145,5 +171,5 @@
     <div class="flex flex-1 relative flex-col gap-2 py-10">
       {@render children()}
     </div>
-  </Sidebar.Inset>
-</Sidebar.Provider>
+  </SidebarInset>
+</SidebarProvider>

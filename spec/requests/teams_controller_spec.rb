@@ -10,7 +10,6 @@ RSpec.describe TeamsController, :inertia do
       name: "New team"
     }}
 
-
     it "creates a new team without cover image" do
       expect {
         post teams_url, params: { team: valid_attributes }
@@ -26,7 +25,7 @@ RSpec.describe TeamsController, :inertia do
     it "redirects to the authenticated root path" do
       post teams_url, params: { team: valid_attributes }
 
-      expect(response).to redirect_to(authenticated_root_url)
+      expect(response).to redirect_to(documents_url)
     end
   end
 end

@@ -1,8 +1,9 @@
 class ApplicationController < ActionController::Base
-  # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
-  allow_browser versions: :modern
+  include Pundit::Authorization
   set_current_tenant_through_filter
+  allow_browser versions: :modern
   before_action :set_tenant
+  before_action :authenticate_user!
   before_action :authenticate_verified_user!
 
   inertia_share flash: -> { flash.to_hash }
@@ -13,12 +14,11 @@ class ApplicationController < ActionController::Base
   end
 
   def require_unauthenticated_user!
-    return unless user_signed_in?
-
-    redirect_to root_path, alert: t("devise.failure.already_authenticated")
+    redirect_to documents_path, alert: t("devise.failure.already_authenticated") if user_signed_in?
   end
 
 
+  # :nocov: Both skipped because they're used by devise
   def after_magic_link_sent_path_for(resource)
     verify_email_path(email: resource.email)
   end
@@ -26,6 +26,7 @@ class ApplicationController < ActionController::Base
   def new_user_verification_path
     user_onboarding_path
   end
+  # :nocov:
 
   private
     def set_tenant
@@ -34,8 +35,6 @@ class ApplicationController < ActionController::Base
     end
 
     def serialized_user
-      return unless current_user
-
       current_user.as_json(
         only: %i[id email name active_team_id]
       )
