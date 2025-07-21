@@ -18,6 +18,7 @@ class ApplicationController < ActionController::Base
   end
 
 
+  # :nocov: Both skipped because they're used by devise
   def after_magic_link_sent_path_for(resource)
     verify_email_path(email: resource.email)
   end
@@ -25,6 +26,7 @@ class ApplicationController < ActionController::Base
   def new_user_verification_path
     user_onboarding_path
   end
+  # :nocov:
 
   private
     def set_tenant
@@ -33,8 +35,6 @@ class ApplicationController < ActionController::Base
     end
 
     def serialized_user
-      return unless current_user
-
       current_user.as_json(
         only: %i[id email name active_team_id]
       )

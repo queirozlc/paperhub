@@ -10,7 +10,6 @@ RSpec.describe TeamsController, :inertia do
       name: "New team"
     }}
 
-
     it "creates a new team without cover image" do
       expect {
         post teams_url, params: { team: valid_attributes }
