@@ -1,12 +1,7 @@
 <script lang="ts" module>
-  import { Blocks, MessageCircleQuestion, Sparkles } from '@lucide/svelte'
+  import { Blocks, MessageCircleQuestion, Settings, Sparkles } from '@lucide/svelte'
 
-  import {
-    FilterLines,
-    Home05 as Home,
-    Inbox01 as Inbox,
-    Settings01,
-  } from '@voolt_technologies/untitledui-svelte'
+  import { FilterLines, Home05 as Home, Inbox01 as Inbox } from '@voolt_technologies/untitledui-svelte'
 
   import type { InvitationForm } from '$pages/Document/types'
 
@@ -39,7 +34,7 @@
       {
         title: 'Configurações',
         url: '#',
-        icon: Settings01,
+        icon: Settings,
       },
       {
         title: 'Modelos',
@@ -59,7 +54,8 @@
 </script>
 
 <script lang="ts">
-  import * as Sidebar from '$lib/components/ui/sidebar'
+  import { Sidebar, SidebarInset, SidebarHeader, SidebarProvider, SidebarTrigger, SidebarContent, SidebarGroup } from
+            '$lib/components/ui/sidebar'
 
   import NavFolders from '$lib/components/nav-folders.svelte'
   import NavMain from '$lib/components/nav-main.svelte'
@@ -117,29 +113,29 @@
   />
 </svelte:head>
 
-<Sidebar.Provider>
-  <Sidebar.Root>
-    <Sidebar.Header>
+<SidebarProvider>
+  <Sidebar>
+    <SidebarHeader>
       <TeamSwitcher {teams} />
       <NavMain items={data.navMain} />
-    </Sidebar.Header>
-    <Sidebar.Content>
+    </SidebarHeader>
+    <SidebarContent>
       <NavFolders folders={data.folders} />
       <NavSecondary class="mt-auto" items={data.navSecondary} />
-      <Sidebar.Group class="pb-4">
+      <SidebarGroup class="pb-4">
         <InvitationDialog
           bind:form={$form}
           bind:open={openInvitationDialog}
           {sendInvite}
         />
-      </Sidebar.Group>
-    </Sidebar.Content>
-  </Sidebar.Root>
+      </SidebarGroup>
+    </SidebarContent>
+  </Sidebar>
 
-  <Sidebar.Inset>
+  <SidebarInset>
     <header class="flex h-14 items-center px-4 justify-between">
       <div class="flex items-center gap-2">
-        <Sidebar.Trigger />
+        <SidebarTrigger />
         <Separator class="mr-2 h-4" orientation="vertical" />
         <Button class="gap-2 h-7 shadow-none" size="sm" variant="outline">
           <div class="rounded-full border border-accent-foreground p-0.5">
@@ -164,8 +160,8 @@
 
         <Button
           class="font-brand font-semibold rounded-lg px-6"
-          size="sm"
           onclick={() => (openInvitationDialog = true)}
+          size="sm"
         >
           <Send />
           Convidar
@@ -175,5 +171,5 @@
     <div class="flex flex-1 relative flex-col gap-2 py-10">
       {@render children()}
     </div>
-  </Sidebar.Inset>
-</Sidebar.Provider>
+  </SidebarInset>
+</SidebarProvider>

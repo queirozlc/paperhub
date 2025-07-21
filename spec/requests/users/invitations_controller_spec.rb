@@ -15,7 +15,8 @@ RSpec.describe 'Users::InvitationsController', :inertia do
     end
 
     context "when user is not authorized to perform the action" do
-      subject { post user_invitation_path, params: { user: { email: user_to_invite.email, invitation_role: 'member' } } }
+      subject(:call) { post user_invitation_path, params: { user: { email: user_to_invite.email, invitation_role:
+        'member' } } }
 
       let(:team) { create(:team) }
       let(:user) { create(:user_verified) }
@@ -28,7 +29,7 @@ RSpec.describe 'Users::InvitationsController', :inertia do
       end
 
       it "raises Pundit::NotAuthorizedError" do
-        expect { subject }.to raise_error(Pundit::NotAuthorizedError)
+        expect { call }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
@@ -69,7 +70,7 @@ RSpec.describe 'Users::InvitationsController', :inertia do
     end
 
     context "when invited user is unauthorized to accept" do
-      subject { get accept_user_invitation_path params: { invitation_token: invitation_token } }
+      subject(:call) { get accept_user_invitation_path params: { invitation_token: invitation_token } }
 
       let(:user) { create(:user_verified) }
       let(:another_user) { create(:user) }
@@ -81,7 +82,7 @@ RSpec.describe 'Users::InvitationsController', :inertia do
       end
 
       it "raises Pundit::NotAuthorizedError" do
-        expect { subject }.to raise_error(Pundit::NotAuthorizedError)
+        expect { call }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
