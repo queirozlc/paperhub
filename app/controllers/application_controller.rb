@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   include Pundit::Authorization
-  allow_browser versions: :modern
   set_current_tenant_through_filter
+  allow_browser versions: :modern
   before_action :set_tenant
   before_action :authenticate_user!
   before_action :authenticate_verified_user!

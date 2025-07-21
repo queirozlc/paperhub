@@ -47,12 +47,14 @@ class User < ApplicationRecord
   def can_invite?(invited_user)
     return false unless active_team.present?
     return false if active_team.already_member?(invited_user)
-    active_team.owner == self || active_team.has_owner_role?(self)
+    active_team.has_owner_role?(self)
   end
 
   def invite_for_team(invited_user, invitation_role: :member)
-    invited_user.invited_team = active_team
-    invited_user.invitation_role = invitation_role
+    if active_team.present?
+      invited_user.invited_team = active_team
+      invited_user.invitation_role = invitation_role
+    end
   end
 
 

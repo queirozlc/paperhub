@@ -1,20 +1,35 @@
 RSpec.describe Users::SessionsController, :inertia do
-  describe 'GET /sign_in' do
+  describe '#new' do
     context 'when user is not logged in' do
-      it 'renders sign in inertia component' do
-        get new_user_session_path
+      before { get new_user_session_path }
 
-        expect_inertia.to render_component('Users/Sessions')
-      end
+      it { expect_inertia.to render_component("Users/Sessions") }
     end
 
-    context 'when user is logged in' do
-      login_user
+    context 'when an unverified user is logged in' do
+      subject { response }
 
-      it 'redirects to the root path' do
+      let(:user) { create(:user) }
+
+      before do
+        sign_in user, scope: :user
         get new_user_session_path
-        expect(response).to redirect_to(documents_path)
       end
+
+      it { is_expected.to redirect_to user_onboarding_path }
+    end
+
+    context 'when a verified user is logged is' do
+      subject { response }
+
+      let(:user) { create(:user_verified) }
+
+      before do
+        sign_in user, scope: :user
+        get new_user_session_path
+      end
+
+      it { is_expected.to redirect_to documents_path }
     end
   end
 end

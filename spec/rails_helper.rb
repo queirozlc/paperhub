@@ -72,5 +72,4 @@ RSpec.configure do |config|
   config.include Rails.application.routes.url_helpers, type: :request
   config.include FactoryBot::Syntax::Methods
   config.include Devise::Test::IntegrationHelpers, type: :request
-  config.extend ControllerMacros, type: :request
 end

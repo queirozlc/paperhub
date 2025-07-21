@@ -4,11 +4,8 @@ class Users::ProfileController < ApplicationController
 
   # PATCH/PUT /users/teams/1
   def update
-    if @user.set_current_team(@team)
-      redirect_to documents_path, notice: "Profile was successfully updated."
-    else
-      redirect_to documents_path, inertia: { errors: @user.errors }
-    end
+    @user.set_current_team(@team)
+    redirect_to documents_path, notice: "Profile was successfully updated."
   end
 
   private
@@ -18,7 +15,7 @@ class Users::ProfileController < ApplicationController
     end
 
     def set_team
-      @team = current_user.teams.find(params.require(:user).require(:active_team_id))
+      @team = current_user.teams.find(switch_team_params[:active_team_id])
     end
 
     def switch_team_params

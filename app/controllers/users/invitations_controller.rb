@@ -1,10 +1,10 @@
 module Users
-  class InvitationsController < Users::BaseController
+  class InvitationsController < ApplicationController
     def create
       ActsAsTenant.without_tenant do
         if (user_to_invite = User.find_by_email(invite_params[:email]))
           authorize user_to_invite, policy_class: Users::InvitationPolicy
-          current_user.invite_for_team(user_to_invite)
+          current_user.invite_for_team(user_to_invite, invitation_role: invite_params[:invitation_role])
           user_to_invite.invite!(current_user)
           redirect_to documents_path, notice: "User invited."
         else
@@ -33,7 +33,7 @@ module Users
     private
 
       def invite_params
-        params.expect(user: [ :email ])
+        params.expect(user: [ :email, :invitation_role ])
       end
   end
 end

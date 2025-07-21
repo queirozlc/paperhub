@@ -79,4 +79,24 @@ RSpec.describe User do
       it { expect(user.can_invite?(invited_user)).to be false }
     end
   end
+
+  describe ".invite_for_team" do
+    subject { invited_user }
+
+    before { user.invite_for_team invited_user, invitation_role: :member }
+
+    context "when user has no active team" do
+      let(:user) { build(:user) }
+      let(:invited_user) { build(:user) }
+
+      it { is_expected.to have_attributes(invited_team: nil, invitation_role: nil) }
+    end
+
+    context "when user can invite another user" do
+      let(:user) { create(:user_verified) }
+      let(:invited_user) { build(:user) }
+
+      it { is_expected.to have_attributes(invited_team: user.active_team, invitation_role: "member") }
+    end
+  end
 end
