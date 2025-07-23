@@ -8,14 +8,29 @@
     SidebarMenuButton,
     SidebarMenuItem,
   } from '$lib/components/ui/sidebar'
-  import type { ComponentProps } from 'svelte'
+  import { Link } from '@inertiajs/svelte'
+  import { SettingsDialog } from './index'
+  import { type ComponentProps } from 'svelte'
 
   type Props = {
     items: NavSecondaryItem[]
   } & ComponentProps<typeof SidebarGroup>
 
   let { ref = $bindable(null), items, ...restProps }: Props = $props()
+
+  let settingsOpen = $state(false)
+
+  const dialogs = {
+    settings: settingsDialog,
+  }
 </script>
+
+{#snippet settingsDialog(
+  item: NavSecondaryItem,
+  props: ComponentProps<typeof SidebarMenuButton>
+)}
+  <SettingsDialog bind:open={settingsOpen} {item} triggerProps={props} />
+{/snippet}
 
 <SidebarGroup {...restProps} bind:ref>
   <SidebarGroupContent>
@@ -24,10 +39,14 @@
         <SidebarMenuItem class="font-semibold">
           <SidebarMenuButton>
             {#snippet child({ props })}
-              <a href={item.url} {...props}>
-                <item.icon class="stroke-[2.5]" />
-                <span>{item.title}</span>
-              </a>
+              {#if item.url}
+                <Link href={item.url} {...props}>
+                  <item.icon class="stroke-[2.5]" />
+                  <span>{item.title}</span>
+                </Link>
+              {:else}
+                {@render dialogs[item.name](item, props)}
+              {/if}
             {/snippet}
           </SidebarMenuButton>
           {#if item.badge}

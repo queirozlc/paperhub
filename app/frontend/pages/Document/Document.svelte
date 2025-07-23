@@ -16,7 +16,8 @@
   import { ListChecks } from '@lucide/svelte'
   import { Trash01, X } from '@voolt_technologies/untitledui-svelte'
   import type { DocumentType } from './types'
-  import DocumentsList from '$lib/components/documents/list.svelte'
+  import { DocumentsList } from '$lib/components/documents/index'
+
   type Props = {
     documents: DocumentType[]
   }
