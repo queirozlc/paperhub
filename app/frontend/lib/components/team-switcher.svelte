@@ -9,11 +9,10 @@
   import { ChevronDown, Plus } from '@lucide/svelte'
   import { defaultAvatar } from '../utils'
   import { Check } from '@voolt_technologies/untitledui-svelte'
-  import type { UserType } from '$pages/Users/types'
 
   let { teams }: { teams: TeamType[] } = $props()
 
-  const user = $page.props.user as UserType
+  const user = $page.props.user
 
   let activeTeam = $state(teams.find((team) => team.id === user.active_team_id))
   let open = $state(false)
@@ -28,14 +27,10 @@
 
   function switchTeam(team: TeamType) {
     router.patch(
-      `/users/teams/${user.id}`,
-      {
-        user: { active_team_id: team.id },
-      },
+      `/users/${team.id}/switch_team`,
+      {},
       {
         preserveState: false,
-        preserveUrl: false,
-        preserveScroll: false,
       }
     )
   }

@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { cn } from '$lib/utils'
+  import { cn, userNameFallback } from '$lib/utils'
   import {
     Avatar,
     AvatarFallback,
     AvatarImage,
   } from '$lib/components/ui/avatar'
   import { Badge } from '$lib/components/ui/badge'
+  import { page } from '@inertiajs/svelte'
 
   type Props = {
     onProfileClick: () => void
@@ -13,6 +14,8 @@
   }
 
   let { onProfileClick, isActive }: Props = $props()
+
+  const user = $derived($page.props.user)
 </script>
 
 <button
@@ -23,17 +26,19 @@
   onclick={onProfileClick}
 >
   <Avatar>
-    <AvatarImage src="https://github.com/shadcn.png" />
-    <AvatarFallback>CN</AvatarFallback>
+    <AvatarImage src={user.avatar} alt={user.name} />
+    <AvatarFallback>
+      {userNameFallback(user.name)}
+    </AvatarFallback>
   </Avatar>
 
   <div class="flex flex-col gap-1">
-    <h3 class="text-sm font-medium">
-      <div class="flex items-center gap-2">
-        <span class="text-sm font-brand font-medium">John Doe</span>
-        <Badge class="rounded-full font-brand py-px">Grátis</Badge>
-      </div>
-      <span class="text-xs text-muted-foreground">john.doe@example.com</span>
-    </h3>
+    <div class="flex items-center gap-2">
+      <span class="text-sm font-brand font-medium truncate">{user.name}</span>
+      <Badge class="rounded-full font-brand py-px">Grátis</Badge>
+    </div>
+    <span class="text-xs w-fit text-muted-foreground truncate"
+      >{user.email}</span
+    >
   </div>
 </button>
