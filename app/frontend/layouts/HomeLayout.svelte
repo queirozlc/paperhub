@@ -28,8 +28,9 @@
   }
 
   export type NavSecondaryItem = {
+    name: string
     title: string
-    url: string
+    url?: string
     icon: typeof Icon
     badge?: string
   }
@@ -48,9 +49,11 @@
     SidebarGroup,
   } from '$lib/components/ui/sidebar'
 
-  import NavFolders from '$lib/components/nav-folders.svelte'
-  import NavMain from '$lib/components/nav-main.svelte'
-  import NavSecondary from '$lib/components/nav-secondary.svelte'
+  import {
+    NavFolders,
+    NavMain,
+    NavSecondary,
+  } from '$lib/components/documents/index'
   import TeamSwitcher from '$lib/components/team-switcher.svelte'
   import {
     Avatar,
@@ -62,9 +65,9 @@
   import { Tabs, TabsList, TabsTrigger } from '$lib/components/ui/tabs'
   import type { TeamType } from '$pages/Team/types'
   import { Send } from '@lucide/svelte'
-  import type { Component, ComponentProps, Snippet } from 'svelte'
+  import type { Snippet } from 'svelte'
   import { useForm } from '@inertiajs/svelte'
-  import InvitationDialog from '$lib/components/documents/invitation-dialog.svelte'
+  import { InvitationDialog } from '$lib/components/documents/index'
   import { toast } from 'svelte-sonner'
   type Props = {
     teams: TeamType[]
@@ -102,16 +105,18 @@
     ],
     navSecondary: [
       {
+        name: 'settings',
         title: 'Configurações',
-        url: '#',
         icon: Settings,
       },
       {
+        name: 'templates',
         title: 'Modelos',
         url: '#',
         icon: Blocks,
       },
       {
+        name: 'help',
         title: 'Ajuda',
         url: '#',
         icon: MessageCircleQuestion,
