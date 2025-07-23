@@ -69,6 +69,8 @@
   import { useForm } from '@inertiajs/svelte'
   import { InvitationDialog } from '$lib/components/documents/index'
   import { toast } from 'svelte-sonner'
+  import { page } from '@inertiajs/svelte'
+
   type Props = {
     teams: TeamType[]
     children: Snippet
@@ -77,6 +79,8 @@
   const sidebarSections: {
     navMain: NavMainItem[]
     navSecondary: NavSecondaryItem[]
+    // Just for a while
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     folders: any[]
   } = {
     navMain: [
@@ -199,8 +203,13 @@
       </div>
       <div class="flex items-center gap-5">
         <Avatar class="size-8">
-          <AvatarImage alt="@shadcn" src="https://github.com/shadcn.png" />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarImage
+            alt={$page.props.user.name}
+            src={$page.props.user.avatar}
+          />
+          <AvatarFallback>
+            {$page.props.user.name.slice(0, 2).toUpperCase()}
+          </AvatarFallback>
         </Avatar>
 
         <Button
