@@ -2,8 +2,8 @@
   import {
     Dialog,
     DialogContent,
-    DialogTitle,
     DialogDescription,
+    DialogTitle,
     DialogTrigger,
   } from '$lib/components/ui/dialog'
   import {
@@ -36,7 +36,7 @@
     BreadcrumbSeparator,
   } from '$lib/components/ui/breadcrumb'
   import type { NavSecondaryItem } from '$layouts/HomeLayout.svelte'
-  import { tick, type ComponentProps } from 'svelte'
+  import { type ComponentProps } from 'svelte'
   import ProfileSettings from './profile-settings.svelte'
   import {
     SettingsDialogInset,
@@ -138,6 +138,10 @@
 
   const menuOptionsContent = {
     appearence: appearenceContent,
+    payments: paymentsContent,
+    plans: plansContent,
+    preferences: preferencesContent,
+    members: membersContent,
   }
 
   function setProfileView() {
@@ -160,6 +164,30 @@
   </div>
 {/snippet}
 
+{#snippet paymentsContent(item: GroupItem)}
+  <div>
+    <h1>{item.label}</h1>
+  </div>
+{/snippet}
+
+{#snippet plansContent(item: GroupItem)}
+  <div>
+    <h1>{item.label}</h1>
+  </div>
+{/snippet}
+
+{#snippet preferencesContent(item: GroupItem)}
+  <div>
+    <h1>{item.label}</h1>
+  </div>
+{/snippet}
+
+{#snippet membersContent(item: GroupItem)}
+  <div>
+    <h1>{item.label}</h1>
+  </div>
+{/snippet}
+
 <Dialog bind:open>
   <DialogTrigger>
     {#snippet child({ props })}
@@ -177,15 +205,15 @@
     <DialogDescription class="sr-only"
       >Customize your settings here.</DialogDescription
     >
-    <SidebarProvider class="items-start">
-      <Sidebar collapsible="none" class="hidden md:flex">
+    <SidebarProvider class="items-start" name="settings">
+      <Sidebar class="hidden md:flex" collapsible="none">
         <SidebarHeader class="px-4 py-3">
           <h4 class="text-lg font-semibold">Configurações</h4>
         </SidebarHeader>
         <SidebarContent>
           <ProfileSettings
-            onProfileClick={() => setProfileView()}
             isActive={profileView}
+            onProfileClick={() => setProfileView()}
           />
 
           {#each groups as group, groupIndex (group.title)}
@@ -241,7 +269,7 @@
                   </BreadcrumbItem>
                 {:else if activeItem}
                   <BreadcrumbSeparator class="hidden md:block" />
-                  {#each groups as group, groupIndex}
+                  {#each groups as group, groupIndex (group.title)}
                     {#if group.items.find(({ slug }) => slug === activeItem.slug)}
                       <BreadcrumbItem class="hidden md:block">
                         <DropdownMenu>
@@ -255,7 +283,7 @@
                             align="start"
                             class="min-w-[160px]"
                           >
-                            {#each group.items as item}
+                            {#each group.items as item (item.slug)}
                               <DropdownMenuItem
                                 class={cn(
                                   'flex items-center gap-2 px-2 py-2 text-sm cursor-pointer',
@@ -291,7 +319,7 @@
             </Breadcrumb>
           </div>
         </SettingsDialogInsetHeader>
-        <div class="flex flex-1 flex-col gap-4 overflow-y-auto p-4 pt-0">
+        <div class="flex flex-1 flex-col gap-4 overflow-y-auto py-4 px-8 pt-0">
           {#if activeItem && !profileView}
             {@render menuOptionsContent[activeItem.slug](activeItem)}
           {:else}

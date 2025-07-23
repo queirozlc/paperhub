@@ -37,6 +37,12 @@ class ApplicationController < ActionController::Base
     def serialized_user
       current_user.as_json(
         only: %i[id email name active_team_id]
-      )
+      ).merge(avatar: user_avatar)
+    end
+
+    def user_avatar
+      return if current_user.avatar.blank?
+
+      url_for(current_user.avatar)
     end
 end

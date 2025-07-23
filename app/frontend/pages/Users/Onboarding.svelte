@@ -14,7 +14,6 @@
   import { Input } from '$lib/components/ui/input'
   import { page, useForm } from '@inertiajs/svelte'
   import { capitalize } from '$lib/utils'
-  import type { UserType } from './types'
 
   const form = useForm({
     name: '',
@@ -29,7 +28,7 @@
       .patch('/onboarding')
   }
 
-  const user = $page.props.user as UserType
+  const user = $page.props.user
 
   const placeholder = capitalize(user.email.split('@')[0])
 </script>

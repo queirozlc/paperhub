@@ -19,8 +19,15 @@ Rails.application.routes.draw do
   end
 
   resources :teams, only: %i[create]
+
+  resources :users, only: [] do
+    member do
+      patch "switch_team" => "users#switch_team"
+    end
+  end
+
   namespace :users do
-    resources :teams, only: %i[update], controller: "profile"
+    patch "profile" => "profile#update"
   end
 
 

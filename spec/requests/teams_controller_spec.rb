@@ -1,31 +1,38 @@
 RSpec.describe TeamsController, :inertia do
-  let(:user) { create(:user_verified) }
-
-  before do
-    sign_in user, scope: :user
-  end
-
   describe "POST #create" do
-    let(:valid_attributes) { {
-      name: "New team"
-    }}
+    let(:user) { create(:user_verified) }
 
-    it "creates a new team without cover image" do
-      expect {
-        post teams_url, params: { team: valid_attributes }
-      }.to change(Team, :count).by(1)
+    before do
+      sign_in user, scope: :user
     end
 
-    it "sets the owner current team" do
-      post teams_url, params: { team: valid_attributes }
+    context "when creating with invalid params" do
+      subject { response }
 
-      expect(user.active_team).to eq(Team.last)
+      let(:invalid_params) { { team: { name: "" } } }
+
+      before { post teams_path, params: invalid_params }
+
+      it { is_expected.to redirect_to(documents_path) }
     end
 
-    it "redirects to the authenticated root path" do
-      post teams_url, params: { team: valid_attributes }
+    context "when creating with valid params" do
+      subject(:create_team) { post teams_path, params: valid_params }
 
-      expect(response).to redirect_to(documents_url)
+      let(:valid_params) { { team: { name: "New team" } } }
+
+      it "creates a new team" do
+        expect { create_team }.to change(Team, :count).by(1)
+      end
+
+      it "sets the owner current team" do
+        create_team
+        expect(user.active_team).to eq(Team.last)
+      end
+
+      it "redirects to the documents path" do
+        expect(create_team).to redirect_to(documents_path)
+      end
     end
   end
 end
