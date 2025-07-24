@@ -24,22 +24,14 @@ class DocumentsController < ApplicationController
 
   # POST /documents
   def create
-    @document = Document.new(document_params)
-
-    if @document.save
-      redirect_to document_path(@document), notice: "document was successfully created."
-    else
-      redirect_to new_document_url, inertia: { errors: @document.errors }
-    end
+    @document = Document.create!(document_params)
+    redirect_to document_path(@document), notice: "document was successfully created."
   end
 
   # PATCH/PUT /documents/1
   def update
-    if @document.update(document_params)
-      redirect_to @document, notice: "Document was successfully updated."
-    else
-      redirect_to edit_document_url(@document), inertia: { errors: @document.errors }
-    end
+    @document.update!(document_params)
+    redirect_to @document, notice: "Document was successfully updated."
   end
 
   # DELETE /documents/1

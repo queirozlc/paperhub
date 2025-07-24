@@ -4,7 +4,7 @@
 </script>
 
 <script lang="ts">
-  import MostRecents from '$lib/components/most-recents.svelte'
+  import { MostRecents } from '$lib/components/documents/index'
   import Button from '$lib/components/ui/button/button.svelte'
   import {
     DropdownMenu,
