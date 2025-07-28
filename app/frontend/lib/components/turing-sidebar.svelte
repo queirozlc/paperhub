@@ -47,11 +47,11 @@
 
   type Props = {
     getContent: () => string,
-    updateEditorWithSuggestions: (modifiedDocument: string) => void
+    replaceEditorContent: (modifiedDocument: string) => void
     suggest: (suggestion: Suggestion) => void
   }
 
-  let { getContent, updateEditorWithSuggestions, suggest }: Props = $props()
+  let { getContent, replaceEditorContent, suggest }: Props = $props()
 
   let question = $state('Corrija as informações do texto')
   let loading = $state(false)
@@ -130,7 +130,7 @@
 
       if (data.modifiedDocument) {
         const newDocumentContent = setIdsToNewSuggestions(data.modifiedDocument, nextSuggestionIndex)
-        updateEditorWithSuggestions(newDocumentContent)
+        replaceEditorContent(newDocumentContent)
       }
 
       data.suggestions.forEach((s, i) => {

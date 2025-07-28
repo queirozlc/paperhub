@@ -1,4 +1,4 @@
-import { Node, mergeAttributes } from '@tiptap/core'
+import { Mark, mergeAttributes } from '@tiptap/core'
 
 export interface DiffOptions {
   HTMLAttributes: Record<string, any>
@@ -27,7 +27,7 @@ declare module '@tiptap/core' {
   }
 }
 
-export const Diff = Node.create<DiffOptions>({
+export const Diff = Mark.create<DiffOptions>({
   name: 'diff',
 
   addOptions() {
@@ -36,13 +36,13 @@ export const Diff = Node.create<DiffOptions>({
     }
   },
 
-  group: 'inline',
+  // group: 'inline',
 
-  content: 'text*',
+  // content: 'text*',
 
-  inline: true,
+  // inline: true,
 
-  defining: true,
+  // defining: true,
 
   addAttributes() {
     return {

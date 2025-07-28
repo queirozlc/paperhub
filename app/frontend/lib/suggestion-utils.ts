@@ -4,15 +4,17 @@ import * as Diff from 'diff';
 import { generateHTML, generateJSON } from "@tiptap/html"
 import { editorExtensions } from './extensions/index'
 import type { Node } from "@tiptap/pm/model";
+import type { Action } from "./extensions/suggestion";
 
-type NodePos = {
-  init: number;
-  end: number;
+export type NodePos = {
+  init: number
+  end: number
 }
 
-type NodeData = {
-  content: string;
-  pos: NodePos;
+export type NodeData = {
+  node: Node
+  content: string
+  pos: NodePos
 }
 
 /**
@@ -53,9 +55,9 @@ export function setIdsToNewSuggestions(modifiedDocumentContent: string, nextSugg
  */
 export function displaySuggestion(editor: Editor, suggestionId: number, suggestionContent: string) {
 
-  const original = getSuggestionNodeById(editor, suggestionId)
+  const original = getSuggestionNodesById(editor, suggestionId, 'none')[0]
   
-  if (original == null) {
+  if (!original) {
     return false
   }
 
@@ -81,27 +83,34 @@ export function displaySuggestion(editor: Editor, suggestionId: number, suggesti
  * Search for suggestion node with "data-id" `id` and return some data about the node
  * @param editor Tiptap Editor
  * @param id Suggestion ID to search for 
+ * @param action If undefined, ignore "data-action" (it may or may not exist). If "none", search for nodes without "data-action". If "both", the node must have "data-action", but it doesn't matter if its value is "add" or "remove". If "add" or "remove", search for nodes with that "data-action" value
  * @returns Data about the node found or null if not found
  */
-function getSuggestionNodeById(editor: Editor, id: number): NodeData | null {
+export function getSuggestionNodesById(editor: Editor, id: number, action?: Action | 'none' | 'both'): NodeData[] {
   const { state } = editor
   const { doc } = state
 
-  let founded: NodeData = null
+  const founded: NodeData[] = []
 
   doc.descendants((node, pos) => {
 
     if (node.type.name === 'suggestion'
     &&  node.attrs['data-id'] === id
-    && !node.attrs['data-action']) {
+    && (
+      (!action) || // data-action not matters
+      (action === 'none' && !node.attrs['data-action']) || // data-action must not exist
+      (action === 'both' && node.attrs['data-action']) || // data-action can be anything
+      (node.attrs['data-action'] === action) // data-action must be equal to `action`
+    )) {
 
-      founded = {
+      founded.push({
+        node,
         content: extractNodeHtmlContent(node),
         pos: {
           init: pos,
           end: pos + node.nodeSize,
         }
-      }
+      })
 
       return false // Stops searching
     }

@@ -9,12 +9,12 @@
   type Props = {
     document: DocumentType
     getContent: () => string
-    updateEditorWithSuggestions: (modifiedDocument: string) => void
+    replaceEditorContent: (modifiedDocument: string) => void
     suggest: (suggestion: Suggestion) => void
     children: Snippet
   }
 
-  let { children, document, getContent, updateEditorWithSuggestions, suggest }: Props = $props()
+  let { children, document, getContent, replaceEditorContent, suggest }: Props = $props()
 
   let documentTitle = $state(document.title || 'Sem título')
 
@@ -56,6 +56,6 @@
     style="--sidebar-width: 18rem;"
     class="w-fit overflow-hidden max-h-dvh"
   >
-    <TuringSidebar {getContent} {updateEditorWithSuggestions} {suggest} />
+    <TuringSidebar {getContent} {replaceEditorContent} {suggest} />
   </Sidebar.Provider>
 </div>
