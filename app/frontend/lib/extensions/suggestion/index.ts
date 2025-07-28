@@ -1,6 +1,8 @@
 import { mergeAttributes, Node } from '@tiptap/core'
 import type { Node as NodeType } from '@tiptap/pm/model'
 import { NodeSelection } from '@tiptap/pm/state'
+import { SvelteNodeViewRenderer } from 'svelte-tiptap'
+import SuggestionView from './view.svelte'
 
 export interface SuggestionOptions {
   HTMLAttributes: Record<string, any>
@@ -142,6 +144,10 @@ export const Suggestion = Node.create<SuggestionOptions>({
     ]
   },
 
+  addNodeView() {
+    return SvelteNodeViewRenderer(SuggestionView)
+  },
+
   addCommands() {
     return {
       setSuggestion: (attributes) =>
@@ -242,7 +248,7 @@ export const Suggestion = Node.create<SuggestionOptions>({
         ({ tr }) => {
 
           //TODO: Implementar validação de dispatch
-          
+
           // 1. Obtém o nó na posição especificada.
           const pos = tr.selection.from
           const node = tr.doc.nodeAt(pos);
