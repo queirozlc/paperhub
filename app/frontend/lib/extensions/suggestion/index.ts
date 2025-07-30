@@ -150,18 +150,22 @@ export const Suggestion = Node.create<SuggestionOptions>({
 
   addCommands() {
     return {
+
       setSuggestion: (attributes) =>
         ({ commands }) => {
           return commands.wrapIn(this.name, attributes)
         },
+
       unsetSuggestion: () =>
         ({ commands }) => {
           return commands.lift(this.name)
         },
+
       toggleSuggestion: (attributes) =>
         ({ commands }) => {
           return commands.toggleWrap(this.name, attributes)
         },
+
       selectSuggestion: (attributes) =>
         ({ tr }) => {
           
@@ -179,27 +183,7 @@ export const Suggestion = Node.create<SuggestionOptions>({
 
           return true
         },
-      /*removeDiffsByNodePos: (pos: number) =>
-        ({ state, tr }) => {
-          // const pos = 19;
-          const node = state.doc.nodeAt(pos);
-          const diffType = state.schema.marks.diff;
 
-          if (!node) {
-            return false;
-          }
-
-          const insideNodePos = pos + 1;
-
-          node.forEach((child, offset) => {
-            const childPos = insideNodePos + offset
-            if (child.isText && child.marks.some(mark => mark.type === diffType)) {
-              tr.removeMark(childPos, childPos + child.nodeSize, diffType)
-            }
-          })
-
-          return true
-        },*/
       removeDiffsFromSelected: () =>
         ({ state, tr }) => {
           const pos = tr.selection.from
@@ -235,6 +219,7 @@ export const Suggestion = Node.create<SuggestionOptions>({
 
           return true
         },
+
       /*removeActionFromSelected: () =>
         ({ state, tr }) => {
           const pos = tr.selection.from
@@ -244,6 +229,7 @@ export const Suggestion = Node.create<SuggestionOptions>({
           tr.setNodeMarkup(pos, null, attrs)
           return true
         },*/
+        
       removeSelectedSuggestionContainer: () =>
         ({ tr }) => {
 

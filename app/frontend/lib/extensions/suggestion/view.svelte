@@ -1,7 +1,8 @@
 <script lang="ts">
   import type { Editor } from "@tiptap/core"
-    import type { Node } from "@tiptap/pm/model"
+  import type { Node } from "@tiptap/pm/model"
   import { NodeViewContent, NodeViewWrapper } from "svelte-tiptap"
+  import { twMerge } from "tailwind-merge"
 
   // Props passadas automaticamente pelo SvelteNodeViewRenderer
   export let node: Node;
@@ -10,8 +11,6 @@
 
   // Em Svelte, uma variável 'let' já é reativa dentro do componente.
   let isHovered = false;
-  //const isSuggestionDisplayed = !!node.attrs["data-action"]
-  const isSuggestionDisplayed = node.attrs["data-action"] === "add"
 
   function acceptSuggestion() {
     const suggestionId = node.attrs["data-id"]
@@ -56,14 +55,17 @@
 <NodeViewWrapper
   data-suggestion
   {...node.attrs}
-  class="relative data-[action=add]:bg-green-950 data-[action=remove]:bg-red-950 px-0.5 rounded border"
-  onmouseenter={() => {isHovered = true }}
+  class="relative data-[action=add]:bg-green-900 data-[action=remove]:bg-red-900 px-0.5 rounded data-action:border-2"
+  onmouseenter={() => { isHovered = true; console.log(node.attrs["data-action"]) } }
   onmouseleave={() => isHovered = false}
 >
-  {#if isSuggestionDisplayed && isHovered}
-    <div
-      class="absolute z-10 -bottom-7 left-0 flex gap-1 border-b-2 border-b-white/5"
-    >
+  {#if !!node.attrs["data-action"] && isHovered}
+    <div class={twMerge(
+      "absolute z-10 left-0 flex gap-1 border-b-white/5",
+      node.attrs["data-action"] === "add"
+        ? "-bottom-7 border-b-2"
+        : "-top-7 border-t-2"
+    )}>
       <button
         on:click={acceptSuggestion}
         contenteditable="false"
@@ -87,8 +89,8 @@
       </button>
     </div>
   {/if}
-
-  <NodeViewContent/>
+  
+  <NodeViewContent contenteditable={!node.attrs["data-action"]} />
 </NodeViewWrapper>
 
 <!-- TODO: Avaliar melhoria na estrutura do CSS -->
@@ -102,9 +104,9 @@
   }
 
   :global(*[data-suggestion][data-action="add"] *[data-diff]) {
-    background: green;
+    background: rgba(0, 128, 0, 0.75);
   }
   :global(*[data-suggestion][data-action="remove"] *[data-diff]) {
-    background: red;
+    background: rgba(255, 0, 0, 0.75);
   }
 </style>
