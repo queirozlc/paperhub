@@ -175,7 +175,7 @@ module OwnershipTransferable
       # @param team_ids [Array<Integer>] Team IDs to delete
       # @return [void]
       def delete_solo_teams(team_ids)
-        Team.where(id: team_ids).destroy_all if team_ids.any?
+        Team.with_attached_cover.where(id: team_ids).destroy_all if team_ids.any?
       end
 
       # Promotes members to owners in teams where this user is the sole owner.

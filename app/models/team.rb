@@ -1,9 +1,9 @@
 class Team < ApplicationRecord
   belongs_to :owner, class_name: "User", foreign_key: "owner_id"
-  has_many :memberships, dependent: :destroy
+  has_many :memberships, dependent: :delete_all
   has_many :members, through: :memberships
   has_many :active_members, class_name: "User", inverse_of: :active_team, foreign_key: "active_team_id", dependent: :nullify
-  has_many :documents, dependent: :destroy
+  has_many :documents, dependent: :delete_all
   has_one_attached :cover
 
 
