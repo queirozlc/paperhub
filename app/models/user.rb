@@ -12,10 +12,11 @@ class User < ApplicationRecord
 
   enum :invitation_role, [ :owner, :member ], validate: { allow_nil: true }
 
-  belongs_to :invited_team, class_name: "Team", foreign_key: "invited_team_id", optional: true
+  belongs_to :invited_team, class_name: "Team", optional: true
   has_many :owned_teams, class_name: "Team", foreign_key: :owner_id, inverse_of: :owner, dependent: :destroy
   has_many :memberships, dependent: :destroy, inverse_of: :member
   has_many :teams, through: :memberships
+  has_many :invitations, class_name: self.to_s, inverse_of: :invited_by, dependent: :nullify
   has_one_attached :avatar
   acts_as_tenant :active_team, class_name: "Team", optional: true
 

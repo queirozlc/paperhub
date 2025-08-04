@@ -14,8 +14,10 @@ class UsersController < ApplicationController
 
     authorize user
 
-    user.transfer_ownership
-    # user.destroy
+    User.transaction do
+      user.transfer_ownership
+      user.destroy
+    end
 
     redirect_to root_path, notice: "User was successfully deleted."
   end
