@@ -2,8 +2,10 @@ class Team < ApplicationRecord
   belongs_to :owner, class_name: "User", foreign_key: "owner_id"
   has_many :memberships, dependent: :destroy
   has_many :members, through: :memberships
+  has_many :active_members, class_name: "User", inverse_of: :active_team, foreign_key: "active_team_id", dependent: :nullify
   has_many :documents, dependent: :destroy
   has_one_attached :cover
+
 
   validates :name, presence: true
 
@@ -17,5 +19,11 @@ class Team < ApplicationRecord
 
   def already_member?(user)
     members.exists?(user.id)
+  end
+
+  def remove_member(member)
+    return if member.id == owner.id
+    member.set_current_team(member.owned_teams.first) if member.active_team == self
+    memberships.find_by(member: member).destroy!
   end
 end

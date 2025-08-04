@@ -50,13 +50,20 @@
     DropdownMenuTrigger,
   } from '$lib/components/ui/dropdown-menu'
   import { cn } from '$lib/utils'
+  import type { TeamType } from '$pages/Team/types'
+  import TeamPreferences from './team-preferences.svelte'
+  import MembersSettings from './members-settings.svelte'
+  import AppearanceSettings from './appearance-settings.svelte'
+  import { page } from '@inertiajs/svelte'
+  import { TeamRole, type UserInvitationType } from '$pages/Users/types'
 
-  type GroupItem = {
+  export type GroupItem = {
     slug: string
     label: string
     icon: typeof Icon
     isActive?: boolean
     tooltip?: string
+    isHidden?: boolean
   }
 
   type Group = {
@@ -68,7 +75,12 @@
     open: boolean
     item: NavSecondaryItem
     triggerProps: ComponentProps<typeof SidebarMenuButton>
+    active_team: TeamType
+    user_invitations: UserInvitationType[]
+    team_members: UserInvitationType[]
   }
+
+  const user = $page.props.user
 
   let groups: Group[] = $state<Group[]>([
     {
@@ -113,6 +125,7 @@
           icon: Users,
           isActive: false,
           tooltip: 'Gerencie seus membros e permissões',
+          isHidden: user.role !== TeamRole.OWNER,
         },
       ],
     },
@@ -120,7 +133,14 @@
 
   let activeItem = $state<GroupItem>(null!)
   let profileView = $state(true)
-  let { open = $bindable(false), item, triggerProps }: Props = $props()
+  let {
+    open = $bindable(false),
+    item,
+    triggerProps,
+    active_team,
+    user_invitations,
+    team_members,
+  }: Props = $props()
 
   function setActiveMenu(groupIndex: number, itemIndex: number) {
     groups = groups.map((group) => ({
@@ -158,34 +178,28 @@
   }
 </script>
 
-{#snippet appearenceContent(item: GroupItem)}
+{#snippet appearenceContent()}
+  <AppearanceSettings />
+{/snippet}
+
+{#snippet paymentsContent()}
   <div>
-    <h1>{item.label}</h1>
+    <h1>Pagamentos</h1>
   </div>
 {/snippet}
 
-{#snippet paymentsContent(item: GroupItem)}
+{#snippet plansContent()}
   <div>
-    <h1>{item.label}</h1>
+    <h1>Planos</h1>
   </div>
 {/snippet}
 
-{#snippet plansContent(item: GroupItem)}
-  <div>
-    <h1>{item.label}</h1>
-  </div>
+{#snippet preferencesContent()}
+  <TeamPreferences {active_team} />
 {/snippet}
 
-{#snippet preferencesContent(item: GroupItem)}
-  <div>
-    <h1>{item.label}</h1>
-  </div>
-{/snippet}
-
-{#snippet membersContent(item: GroupItem)}
-  <div>
-    <h1>{item.label}</h1>
-  </div>
+{#snippet membersContent()}
+  <MembersSettings {user_invitations} {team_members} {active_team} />
 {/snippet}
 
 <Dialog bind:open>
@@ -224,25 +238,27 @@
               <SidebarGroupContent>
                 <SidebarMenu>
                   {#each group.items as item, itemIndex (item.label)}
-                    <SidebarMenuItem>
-                      <SidebarMenuButton
-                        onclick={() => setActiveMenu(groupIndex, itemIndex)}
-                        tooltipContentProps={{
-                          class: 'bg-tooltip',
-                        }}
-                        class="[&>svg]:size-4"
-                        isActive={item.isActive}
-                      >
-                        {#snippet tooltipContent()}
-                          {item.tooltip}
-                        {/snippet}
-                        <item.icon class="stroke-2" />
-                        <span
-                          class="text-sm font-medium text-sidebar-accent-foreground"
-                          >{item.label}</span
+                    {#if !item.isHidden}
+                      <SidebarMenuItem>
+                        <SidebarMenuButton
+                          onclick={() => setActiveMenu(groupIndex, itemIndex)}
+                          tooltipContentProps={{
+                            class: 'bg-tooltip',
+                          }}
+                          class="[&>svg]:size-4"
+                          isActive={item.isActive}
                         >
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
+                          {#snippet tooltipContent()}
+                            {item.tooltip}
+                          {/snippet}
+                          <item.icon class="stroke-2" />
+                          <span
+                            class="text-sm font-medium text-sidebar-accent-foreground"
+                            >{item.label}</span
+                          >
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    {/if}
                   {/each}
                 </SidebarMenu>
               </SidebarGroupContent>
@@ -253,7 +269,7 @@
       <SettingsDialogInset>
         <SettingsDialogInsetHeader>
           <div class="flex items-center gap-2 px-4">
-            <Breadcrumb>
+            <Breadcrumb class="px-4">
               <BreadcrumbList>
                 <BreadcrumbItem class="hidden md:block">
                   <BreadcrumbLink>
@@ -284,26 +300,28 @@
                             class="min-w-[160px]"
                           >
                             {#each group.items as item (item.slug)}
-                              <DropdownMenuItem
-                                class={cn(
-                                  'flex items-center gap-2 px-2 py-2 text-sm cursor-pointer',
-                                  item.slug === activeItem.slug &&
-                                    'bg-accent text-accent-foreground font-semibold'
-                                )}
-                                onclick={() =>
-                                  setActiveMenu(
-                                    groupIndex,
-                                    group.items.findIndex(
-                                      (i) => i.slug === item.slug
-                                    )
+                              {#if !item.isHidden}
+                                <DropdownMenuItem
+                                  class={cn(
+                                    'flex items-center gap-2 px-2 py-2 text-sm cursor-pointer',
+                                    item.slug === activeItem.slug &&
+                                      'bg-accent text-accent-foreground font-semibold'
                                   )}
-                                aria-selected={item.slug === activeItem.slug}
-                              >
-                                {#if item.icon}
-                                  <item.icon class="stroke-2 w-4 h-4" />
-                                {/if}
-                                <span>{item.label}</span>
-                              </DropdownMenuItem>
+                                  onclick={() =>
+                                    setActiveMenu(
+                                      groupIndex,
+                                      group.items.findIndex(
+                                        (i) => i.slug === item.slug
+                                      )
+                                    )}
+                                  aria-selected={item.slug === activeItem.slug}
+                                >
+                                  {#if item.icon}
+                                    <item.icon class="stroke-2 w-4 h-4" />
+                                  {/if}
+                                  <span>{item.label}</span>
+                                </DropdownMenuItem>
+                              {/if}
                             {/each}
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -321,7 +339,7 @@
         </SettingsDialogInsetHeader>
         <div class="flex flex-1 flex-col gap-4 overflow-y-auto py-4 px-8 pt-0">
           {#if activeItem && !profileView}
-            {@render menuOptionsContent[activeItem.slug](activeItem)}
+            {@render menuOptionsContent[activeItem.slug]()}
           {:else}
             <ProfileSettingsContent />
           {/if}

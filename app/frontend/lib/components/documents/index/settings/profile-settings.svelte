@@ -20,25 +20,22 @@
 
 <button
   class={cn(
-    'flex items-center gap-2 px-2 cursor-pointer transition-colors hover:bg-sidebar-accent py-2 rounded-2xl mx-2',
+    'flex items-center gap-1 px-2 cursor-pointer transition-colors hover:bg-sidebar-accent py-2 rounded-2xl mx-2',
     isActive && 'bg-sidebar-accent'
   )}
   onclick={onProfileClick}
 >
-  <Avatar>
+  <Avatar class="size-6">
     <AvatarImage src={user.avatar} alt={user.name} />
     <AvatarFallback>
       {userNameFallback(user.name)}
     </AvatarFallback>
   </Avatar>
 
-  <div class="flex flex-col gap-1">
-    <div class="flex items-center gap-2">
-      <span class="text-sm font-brand font-medium truncate">{user.name}</span>
-      <Badge class="rounded-full font-brand py-px">Grátis</Badge>
-    </div>
-    <span class="text-xs w-fit text-muted-foreground truncate"
-      >{user.email}</span
+  <div class="flex items-center gap-1">
+    <span class="text-sm font-brand font-medium truncate">{user.name}</span>
+    <Badge class="rounded-full font-brand py-px text-xs h-4" variant="default"
+      >Pemium</Badge
     >
   </div>
 </button>
