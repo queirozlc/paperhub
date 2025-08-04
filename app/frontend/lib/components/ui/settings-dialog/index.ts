@@ -1,2 +1,7 @@
+export { default as SettingsDialogContent } from './content.svelte'
+export { default as SettingsDialogDescription } from './description.svelte'
+export { default as SettingsDialogGroup } from './group.svelte'
+export { default as SettingsDialogHeader } from './header.svelte'
 export { default as SettingsDialogInsetHeader } from './inset-header.svelte'
 export { default as SettingsDialogInset } from './inset.svelte'
+export { default as SettingsDialogTitle } from './title.svelte'

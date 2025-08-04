@@ -1,4 +1,8 @@
 class User < ApplicationRecord
+  include OwnershipTransferable
+
+  INVITATIONS_FIELDS = %i[ invited_by invited_team invitation_role invitation_token invitation_sent_at invitation_created_at invitation_accepted_at ].freeze
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :invitable, :magic_link_authenticatable, :rememberable, :validatable,
@@ -13,11 +17,23 @@ class User < ApplicationRecord
   has_many :memberships, dependent: :destroy, inverse_of: :member
   has_many :teams, through: :memberships
   has_one_attached :avatar
-  acts_as_tenant :active_team, class_name: "Team", foreign_key: "active_team_id", optional: true
+  acts_as_tenant :active_team, class_name: "Team", optional: true
 
   validates :name, length: { minimum: 3 }, allow_blank: true
 
   after_invitation_accepted :join_invited_team
+
+  scope :unaccepted_invitations, ->(user) { with_attached_avatar.invitation_not_accepted.where(invited_by: user, invited_team_id: user.active_team_id) }
+
+  scope :with_role, -> { select("memberships.role, users.*").joins(:memberships) } do
+    def with_team(team)
+      where(memberships: { team_id: team.id })
+    end
+
+    def without_me(user)
+      where.not(id: user.id)
+    end
+  end
 
   def self.find_for_authentication(warden_conditions)
     conditions = warden_conditions.dup
@@ -57,8 +73,19 @@ class User < ApplicationRecord
     end
   end
 
+  def role_in(team)
+    memberships.find_by(team:)&.role
+  end
+
+  def revoke_invitation!(user_invitation)
+    INVITATIONS_FIELDS.each do |field|
+      user_invitation.send("#{field}=", nil)
+    end
+    user_invitation.save!
+  end
 
   private
+
     def join_invited_team
       return unless invited_team.present?
 

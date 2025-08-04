@@ -1,9 +1,11 @@
 class UserPolicy < ApplicationPolicy
+  def destroy?
+    record == user
+  end
+
   def switch_team?
-    if record.nil?
-      false
-    else
-      user.teams.include?(record)
-    end
+    return false if record.nil?
+
+    user.teams.include?(record)
   end
 end

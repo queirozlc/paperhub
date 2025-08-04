@@ -11,12 +11,24 @@
   import { Link } from '@inertiajs/svelte'
   import { SettingsDialog } from './index'
   import { type ComponentProps } from 'svelte'
+  import type { TeamType } from '$pages/Team/types'
+  import type { UserInvitationType } from '$pages/Users/types'
 
   type Props = {
     items: NavSecondaryItem[]
+    user_invitations: UserInvitationType[]
+    team_members: UserInvitationType[]
+    active_team: TeamType
   } & ComponentProps<typeof SidebarGroup>
 
-  let { ref = $bindable(null), items, ...restProps }: Props = $props()
+  let {
+    ref = $bindable(null),
+    items,
+    user_invitations,
+    team_members,
+    active_team,
+    ...restProps
+  }: Props = $props()
 
   let settingsOpen = $state(false)
 
@@ -29,7 +41,14 @@
   item: NavSecondaryItem,
   props: ComponentProps<typeof SidebarMenuButton>
 )}
-  <SettingsDialog bind:open={settingsOpen} {item} triggerProps={props} />
+  <SettingsDialog
+    bind:open={settingsOpen}
+    {item}
+    {active_team}
+    {user_invitations}
+    {team_members}
+    triggerProps={props}
+  />
 {/snippet}
 
 <SidebarGroup {...restProps} bind:ref>

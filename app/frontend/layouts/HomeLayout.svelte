@@ -70,10 +70,14 @@
   import { InvitationDialog } from '$lib/components/documents/index'
   import { toast } from 'svelte-sonner'
   import { page } from '@inertiajs/svelte'
+  import type { UserInvitationType } from '$pages/Users/types'
 
   type Props = {
     teams: TeamType[]
     children: Snippet
+    user_invitations: UserInvitationType[]
+    team_members: UserInvitationType[]
+    active_team: TeamType
   }
 
   const sidebarSections: {
@@ -129,7 +133,8 @@
     folders: [],
   }
 
-  let { teams, children }: Props = $props()
+  let { teams, children, user_invitations, team_members, active_team }: Props =
+    $props()
 
   let openInvitationDialog = $state(false)
 
@@ -165,12 +170,18 @@
 <SidebarProvider>
   <Sidebar>
     <SidebarHeader>
-      <TeamSwitcher {teams} />
+      <TeamSwitcher {teams} {active_team} />
       <NavMain items={sidebarSections.navMain} />
     </SidebarHeader>
     <SidebarContent>
       <NavFolders folders={sidebarSections.folders} />
-      <NavSecondary class="mt-auto" items={sidebarSections.navSecondary} />
+      <NavSecondary
+        class="mt-auto"
+        items={sidebarSections.navSecondary}
+        {active_team}
+        {user_invitations}
+        {team_members}
+      />
       <SidebarGroup class="pb-4">
         <InvitationDialog
           bind:form={$form}

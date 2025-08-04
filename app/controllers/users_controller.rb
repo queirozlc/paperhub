@@ -9,6 +9,17 @@ class UsersController < ApplicationController
     redirect_to documents_path, notice: "Team was successfully updated."
   end
 
+  def destroy
+    user = current_user
+
+    authorize user
+
+    user.transfer_ownership
+    # user.destroy
+
+    redirect_to root_path, notice: "User was successfully deleted."
+  end
+
   private
 
     def set_team

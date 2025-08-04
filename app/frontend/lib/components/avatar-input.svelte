@@ -45,12 +45,12 @@
   let image = $state(initialImage)
   let fileInput: HTMLInputElement
 
-  function handleFileChange(event: Event, onFileChange: (file: File) => void) {
+  function handleFileChange(event: Event, onFileChange?: (file: File) => void) {
     const target = event.target as HTMLInputElement
     const file = target.files?.[0]
     if (file) {
       selectedImage = file
-      onFileChange(file)
+      onFileChange?.(file)
       const reader = new FileReader()
       reader.onload = (e) => {
         image = e.target?.result as string
