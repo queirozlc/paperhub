@@ -74,8 +74,6 @@ group :development, :test do
   gem "factory_bot_rails"
 
   ### ========== Debugging ==========
-  # Bullet is a tool to help reduce N+ queries and unused eager loading (https://github.com/flyerhzm/bullet)
-  # gem "bullet"
   gem "prosopite"
   gem "pg_query"
   gem "pry-rails"
