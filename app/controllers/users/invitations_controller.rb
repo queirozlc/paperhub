@@ -30,6 +30,21 @@ module Users
       end
     end
 
+    def destroy
+      ActsAsTenant.without_tenant do
+        @user_invitation = User.find_by_email(params[:email])
+      end
+
+      if @user_invitation
+        authorize @user_invitation, policy_class: Users::InvitationPolicy
+        current_user.revoke_invitation!(@user_invitation)
+        redirect_to documents_path, notice: "Invitation canceled."
+      else
+        redirect_to documents_path, alert: "Invitation not found."
+      end
+    end
+
+
     private
 
       def invite_params

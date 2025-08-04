@@ -51,6 +51,9 @@ gem "pundit"
 #### ========== Tenant ==========
 gem "acts_as_tenant"
 
+### ========== Notification ==========
+gem "noticed"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
@@ -70,13 +73,13 @@ group :development, :test do
 
   gem "factory_bot_rails"
 
-  # Bullet is a tool to help reduce N+ queries and unused eager loading (https://github.com/flyerhzm/bullet)
-  gem "bullet"
-
+  ### ========== Debugging ==========
+  gem "prosopite"
+  gem "pg_query"
   gem "pry-rails"
-
   gem "pry-stack_explorer", "~> 0.6.0"
 
+  ### ========== Development ==========
   gem "foreman"
 end
 
