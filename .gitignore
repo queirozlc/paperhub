@@ -43,6 +43,7 @@ node_modules
 .npmrc
 .idea/**
 .idea
+vite.config.ts.timestamp-*.mjs
 
 # Test Coverage Reports
 /coverage
