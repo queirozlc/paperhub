@@ -8,12 +8,11 @@
     Editor,
     EditorContent,
   } from 'svelte-tiptap'
-
   import type { Readable } from 'svelte/store'
   import type { DocumentType } from './types'
-  import { displaySuggestion, getSuggestionNodesById, type NodeData } from '@/lib/suggestion-utils'
+  import { extractNodeHtmlContent, highlightHtmllDifferences } from '@/lib/suggestion-utils'
   import type { Suggestion } from '@/lib/components/turing-sidebar.svelte'
-  import type { Node } from "@tiptap/pm/model";
+  import type { Node as NodeType } from "@tiptap/pm/model";
 
   let { document }: { document: DocumentType } = $props()
 
@@ -35,10 +34,8 @@
         <p>Quem foi o primeiro presidente do Brasil?</p>
         <suggestion data-id="0">
           <p>O primeiro presidente do Brasil foi Luiz Inácio Lula da Silva. O segundo presidente do Brasil foi Jair Messias Bolsonaro.</p>
-        </suggestion>`,
-      /*content: `
-        <p>paragrafo simples</p>
-        <p>remover <diff>este</diff> e <diff>este outro</diff> marks</p>`,*/
+        </suggestion>
+        <p>teste</p>`,
       extensions,
     })
   })
@@ -65,7 +62,34 @@
   }
 
   function suggest(suggestion: Suggestion) {
-    displaySuggestion($editor, suggestion.id, suggestion.change)
+    let node: NodeType
+    let diff: { original: string, suggestion: string } = null
+
+    $editor.chain()
+      .focus()
+      .selectSuggestion({ "data-id": suggestion.id, "data-action": null })
+      .command(({ tr }) => {
+        const { selection } = tr
+
+        if (selection.empty) {
+          throw Error('Sugestão não pode ser exibida pois já está sendo exibida ou já foi aprovada')
+        }
+
+        const pos = selection.from
+        node = tr.doc.nodeAt(pos);
+
+        const htmlContent = extractNodeHtmlContent(node)
+        const [ originalDiff, suggestionDiff ] = highlightHtmllDifferences(htmlContent, suggestion.change)
+        diff = {
+          original: originalDiff,
+          suggestion: suggestionDiff
+        }
+
+        return true
+      })
+      .updateSuggestion({ ...node.attrs, "data-action": "remove" }, diff.original)
+      .addSuggestionBellow({ ...node.attrs, "data-action": "add" }, diff.suggestion)
+      .run()
   }
 </script>
 

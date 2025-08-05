@@ -21,7 +21,7 @@
       .deleteSelection() // Deletes "remove" suggestion
       .selectSuggestion({ "data-id": suggestionId, "data-action": "add" })
       .removeDiffsFromSelected()
-      .removeSelectedSuggestionContainer()
+      .removeSelectedSuggestionContainer() // Removes all the suggestion container. This prevents a suggestion from being displayed again.
       .run()
   }
 
@@ -31,7 +31,7 @@
       .focus()
       .selectSuggestion({ "data-id": suggestionId, "data-action": "remove" })
       .removeDiffsFromSelected()
-      .removeSelectedSuggestionContainer()
+      .removeActionFromSelected() // Just remove "action" property. This allows a suggestion to be displayed again. 
       .selectSuggestion({ "data-id": suggestionId, "data-action": "add" })
       .removeDiffsFromSelected()
       .deleteSelection() // Deletes "add" suggestion
@@ -56,7 +56,7 @@
   data-suggestion
   {...node.attrs}
   class="relative data-[action=add]:bg-green-900 data-[action=remove]:bg-red-900 px-0.5 rounded data-action:border-2"
-  onmouseenter={() => { isHovered = true; console.log(node.attrs["data-action"]) } }
+  onmouseenter={() => isHovered = true }
   onmouseleave={() => isHovered = false}
 >
   {#if !!node.attrs["data-action"] && isHovered}

@@ -1,8 +1,10 @@
-import { mergeAttributes, Node } from '@tiptap/core'
+import { Editor, mergeAttributes, Node } from '@tiptap/core'
 import type { Node as NodeType } from '@tiptap/pm/model'
-import { NodeSelection } from '@tiptap/pm/state'
+import { NodeSelection, TextSelection } from '@tiptap/pm/state'
 import { SvelteNodeViewRenderer } from 'svelte-tiptap'
 import SuggestionView from './view.svelte'
+import { generateJSON } from '@tiptap/core'
+import { editorExtensions as extensions } from '..'
 
 export interface SuggestionOptions {
   HTMLAttributes: Record<string, any>
@@ -47,10 +49,27 @@ declare module '@tiptap/core' {
        * Removes all "diff" marks from a selected node
        */
       removeDiffsFromSelected: () => ReturnType
-
-      //removeActionFromSelected: () => ReturnType
-
+      /**
+       * Remove "action" attribute from selected "suggestion" node
+       */
+      removeActionFromSelected: () => ReturnType
+      /**
+       * Removes the selected "suggestion" node, but keeps all its contents
+       */
       removeSelectedSuggestionContainer: () => ReturnType
+      /**
+       * Replaces the selected "suggestion" node, updating its attributes and content
+       * @param attributes New node attributes
+       * @param content Node content as HTML (string)
+       */
+      updateSuggestion: (attributes: SuggestionAttributes, content: string) => ReturnType
+      /**
+       * Adds a "suggestion" node after/below the selected node\
+       * **Note:** A node must be selected (NodeSelection)
+       * @param attributes Attributes of the new node
+       * @param content Content of new node in HTML string format
+       */
+      addSuggestionBellow: (attributes: SuggestionAttributes, content: string) => ReturnType
     }
   }
 }
@@ -171,15 +190,22 @@ export const Suggestion = Node.create<SuggestionOptions>({
           
           //TODO: Implementar validação de dispatch
 
+          let founded = false
+
           tr.doc.descendants((node, pos) => {
             if (node.type.name === 'suggestion' && attributesMatch(node, attributes)) {
               const selection = NodeSelection.create(tr.doc, pos)
               tr.setSelection(selection)
+              founded = true
               return false // Stops searching
             }
 
             return true // Continues searching
           })
+
+          if (!founded) {
+            tr.deleteSelection()
+          }
 
           return true
         },
@@ -220,7 +246,7 @@ export const Suggestion = Node.create<SuggestionOptions>({
           return true
         },
 
-      /*removeActionFromSelected: () =>
+      removeActionFromSelected: () =>
         ({ state, tr }) => {
           const pos = tr.selection.from
           const node = state.doc.nodeAt(pos);
@@ -228,7 +254,7 @@ export const Suggestion = Node.create<SuggestionOptions>({
           delete attrs["data-action"]
           tr.setNodeMarkup(pos, null, attrs)
           return true
-        },*/
+        },
         
       removeSelectedSuggestionContainer: () =>
         ({ tr }) => {
@@ -249,9 +275,59 @@ export const Suggestion = Node.create<SuggestionOptions>({
           }
 
           return true;
-        }
+        },
+
+      updateSuggestion: (attributes: SuggestionAttributes, content: string) =>
+        ({ tr, state }) => {
+          const { selection } = tr
+          const json = generateJSON(content, extensions)
+          const fragment = state.schema.nodeFromJSON(json).content
+
+          const node = state.schema.nodes.suggestion.create(
+            attributes,
+            fragment // state.schema.text('Novo parágrafo')
+          );
+
+          tr.replaceSelectionWith(node)
+          tr.setSelection(NodeSelection.create(tr.doc, selection.from)) // TODO: Avaliar melhoria
+          
+          return true
+        },
+
+      addSuggestionBellow: (attributes: SuggestionAttributes, content: string) =>
+        ({ tr, state }) => {
+
+          if ( ! (tr.selection instanceof NodeSelection)) {
+            throw Error('Seleção precisa ser do tipo NodeSelection')
+          }
+
+          const node = tr.selection.node;
+          const pos = tr.selection.from;
+
+          const json = generateJSON(content, extensions)
+          const fragment = state.schema.nodeFromJSON(json).content
+
+          const suggestionAdd = state.schema.nodes.suggestion.create(
+            attributes,
+            fragment // state.schema.text('Novo parágrafo')
+          );
+
+          const afterNodePos = pos + node.nodeSize;
+          tr.insert(afterNodePos, suggestionAdd)
+
+          return true
+        },
     }
   },
+
+  addKeyboardShortcuts() {
+    return {
+      'Enter': escapeSuggestionNodeIfCursorAtEnd,
+      // Preserve default behavior for Shift+Enter and Ctrl+Enter:
+      'Shift-Enter': () => false,
+      'Mod-Enter': () => false,
+    }
+  }
 })
 
 /**
@@ -275,4 +351,108 @@ function attributeMatch(node: NodeType, attributes: SuggestionAttributes, attr: 
   return attributes[attr] === undefined
     || ( attributes[attr] === null && node.attrs[attr] === null )
     || ( attributes[attr] === node.attrs[attr] )
+}
+
+/**
+ * Function for use in addKeyboardShortcuts.
+ * 
+ * Checks if the cursor is at the end of the suggestion node. If so, adds a new empty paragraph after/below/outside it.
+ * 
+ * @param editor Tiptap Editor 
+ * @returns `true` to prevent default behavior. `falte` to keep default behavior
+ */
+function escapeSuggestionNodeIfCursorAtEnd({ editor }: { editor: Editor }) {
+  const { state, schema, view } = editor
+  const { selection, doc } = state
+  const { $from } = selection
+
+  const suggestionType = 'suggestion'
+
+  /**
+   * Search node suggestion where the cursor is.
+   * 
+   * Imagine the cursor is inside a diff node that is inside a paragraph that is inside a suggestion node.
+   * This function, starting from the diff node, regresses until it finds the suggestion node and returns it.
+   * 
+   * If the cursor is not within a suggestion node, even indirectly, it returns `null`.
+   * 
+   * @returns Suggestion node or `null` if the cursor is not within a suggestion node.
+   */
+  function findSuggestionContainer(): NodeType {
+    let depth = $from.depth
+    let currentNode: NodeType
+
+    do {
+      currentNode = $from.node(depth--)
+    } while (
+      currentNode.type.name !== suggestionType &&
+      currentNode.type.name !== 'doc'
+    )
+
+    if (currentNode === doc) {
+      return null
+    }
+
+    return currentNode
+  }
+
+  /**
+   * Checks if cursor is inside and at the end of the node.
+   * 
+   * @param node Node
+   * @param nodePos `node` position
+   * @returns `true` if cursor is inside and at the end of the node. `false` otherwise.
+   */
+  function isCursorInTheEndOfTheNode(node: NodeType, nodePos: number) {
+    const nodeEndPos = nodePos + node.nodeSize - 2
+    const cursorPos = $from.pos
+
+    const isCursorInTheEnd = nodeEndPos === cursorPos
+    return isCursorInTheEnd
+  }
+
+  /**
+   * 
+   * 
+   * @param targetNode 
+   * @returns 
+   */
+  function getNodePos(targetNode: NodeType): number {
+    let nodePos = -1
+    doc.descendants((node, pos) => {
+      if (node === targetNode) {
+        nodePos = pos
+        return false
+      }
+      return true
+    })
+    return nodePos
+  }
+
+  /**
+   * Creates a new empty paragraph node below/after a node
+   * @param node Node that will receive the paragraph after/below/outside it
+   * @param nodePos `node` position
+   */
+  function createParagraphBelow(node: NodeType, nodePos: number): void {
+    const paragraph = schema.nodes.paragraph.create();
+
+    const afterNodePos = nodePos + node.nodeSize;
+
+    const tr = view.state.tr
+    tr.insert(afterNodePos, paragraph)
+    tr.setSelection(TextSelection.create(tr.doc, afterNodePos + 1))
+    view.dispatch(tr)
+  }
+
+  const suggestionNode = findSuggestionContainer()
+  if (suggestionNode === null) {
+    return false
+  }
+  const suggestionNodePos = getNodePos(suggestionNode)
+  if (!isCursorInTheEndOfTheNode(suggestionNode, suggestionNodePos)) {
+    return false
+  }
+  createParagraphBelow(suggestionNode, suggestionNodePos)
+  return true // Prevent default
 }
