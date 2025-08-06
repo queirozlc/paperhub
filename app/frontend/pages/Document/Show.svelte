@@ -29,13 +29,7 @@
           class: 'prose dark:prose-invert focus:outline-none',
         },
       },
-      //content: '',
-      content: `
-        <p>Quem foi o primeiro presidente do Brasil?</p>
-        <suggestion data-id="0">
-          <p>O primeiro presidente do Brasil foi Luiz Inácio Lula da Silva. O segundo presidente do Brasil foi Jair Messias Bolsonaro.</p>
-        </suggestion>
-        <p>teste</p>`,
+      content: '',
       extensions,
     })
   })
@@ -72,7 +66,7 @@
         const { selection } = tr
 
         if (selection.empty) {
-          throw Error('Sugestão não pode ser exibida pois já está sendo exibida ou já foi aprovada')
+          throw 'Sugestão não pode ser exibida pois já está sendo exibida ou já foi aprovada'
         }
 
         const pos = selection.from
@@ -87,8 +81,24 @@
 
         return true
       })
-      .updateSuggestion({ ...node.attrs, "data-action": "remove" }, diff.original)
-      .addSuggestionBellow({ ...node.attrs, "data-action": "add" }, diff.suggestion)
+      .updateSuggestion(
+        {
+          ...node.attrs,
+          "data-action": "remove",
+          "data-empty": diff.original.length === 0,
+          "data-empty-brother": diff.suggestion.length === 0
+        },
+        diff.original
+      )
+      .addSuggestionBellow(
+        {
+          ...node.attrs,
+          "data-action": "add",
+          "data-empty": diff.suggestion.length === 0,
+          "data-empty-brother": diff.original.length === 0
+        },
+        diff.suggestion
+      )
       .run()
   }
 </script>

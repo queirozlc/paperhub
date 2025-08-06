@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { cn } from "@/lib/utils"
   import type { Editor } from "@tiptap/core"
   import type { Node } from "@tiptap/pm/model"
   import { NodeViewContent, NodeViewWrapper } from "svelte-tiptap"
@@ -55,8 +56,12 @@
 <NodeViewWrapper
   data-suggestion
   {...node.attrs}
-  class="relative data-[action=add]:bg-green-900 data-[action=remove]:bg-red-900 px-0.5 rounded data-action:border-2"
-  onmouseenter={() => isHovered = true }
+  class={cn(
+    "relative data-[action=add]:bg-green-900 data-[action=remove]:bg-red-900 data-[action]:px-0.5 rounded data-action:border-2",
+    node.attrs['data-empty'] ? "hidden" : "",
+    node.attrs['data-empty-brother'] ? "my-5" : ( node.attrs['data-action'] === 'add' ? "mb-5" : "mt-5" )
+  )}
+  onmouseenter={() => isHovered = true}
   onmouseleave={() => isHovered = false}
 >
   {#if !!node.attrs["data-action"] && isHovered}

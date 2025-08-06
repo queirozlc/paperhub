@@ -1,5 +1,5 @@
 import { Editor, mergeAttributes, Node } from '@tiptap/core'
-import type { Node as NodeType } from '@tiptap/pm/model'
+import type { Fragment, Node as NodeType } from '@tiptap/pm/model'
 import { NodeSelection, TextSelection } from '@tiptap/pm/state'
 import { SvelteNodeViewRenderer } from 'svelte-tiptap'
 import SuggestionView from './view.svelte'
@@ -16,6 +16,9 @@ export interface SuggestionAttributes {
   'data-action'?: Action
   'data-idx'?: number
   'data-id'?: number
+
+  'data-empty'?: boolean
+  'data-empty-brother'?: boolean
 }
 
 declare module '@tiptap/core' {
@@ -85,9 +88,9 @@ export const Suggestion = Node.create<SuggestionOptions>({
 
   group: 'block',
 
-  content: 'block+',
+  content: 'block*',
 
-  defining: true,
+  defining: true, // TODO: ver pra que serve
 
   addAttributes() {
     return {
@@ -130,6 +133,30 @@ export const Suggestion = Node.create<SuggestionOptions>({
           }
           return {
             'data-id': attributes['data-id'],
+          }
+        },
+      },
+      'data-empty': {
+        default: false,
+        parseHTML: element => element.getAttribute('data-empty'),
+        renderHTML: attributes => {
+          if (!attributes['data-empty']) {
+            return {}
+          }
+          return {
+            'data-empty': attributes['data-empty'],
+          }
+        },
+      },
+      'data-empty-brother': {
+        default: false,
+        parseHTML: element => element.getAttribute('data-empty-brother'),
+        renderHTML: attributes => {
+          if (!attributes['data-empty-brother']) {
+            return {}
+          }
+          return {
+            'data-empty-brother': attributes['data-empty-brother'],
           }
         },
       },
@@ -280,8 +307,12 @@ export const Suggestion = Node.create<SuggestionOptions>({
       updateSuggestion: (attributes: SuggestionAttributes, content: string) =>
         ({ tr, state }) => {
           const { selection } = tr
-          const json = generateJSON(content, extensions)
-          const fragment = state.schema.nodeFromJSON(json).content
+
+          let fragment: Fragment = null
+          if (content.length > 0) {
+            const json = generateJSON(content, extensions)
+            fragment = state.schema.nodeFromJSON(json).content
+          }
 
           const node = state.schema.nodes.suggestion.create(
             attributes,
@@ -298,7 +329,7 @@ export const Suggestion = Node.create<SuggestionOptions>({
         ({ tr, state }) => {
 
           if ( ! (tr.selection instanceof NodeSelection)) {
-            throw Error('Seleção precisa ser do tipo NodeSelection')
+            throw 'Seleção precisa ser do tipo NodeSelection'
           }
 
           const node = tr.selection.node;
