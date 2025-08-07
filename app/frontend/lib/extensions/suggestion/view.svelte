@@ -85,13 +85,15 @@
       >
         Recusar
       </button>
-      <button
-        on:click={keepBothFromSuggestion}
-        contenteditable="false"
-        class="text-orange-400 px-1 cursor-pointer transition hover:bg-white/5"
-      >
-        Manter ambas
-      </button>
+      {#if node.attrs['data-empty'] || node.attrs['data-empty-brother']}
+        <button
+          on:click={keepBothFromSuggestion}
+          contenteditable="false"
+          class="text-orange-400 px-1 cursor-pointer transition hover:bg-white/5"
+        >
+          Manter ambas
+        </button>
+      {/if}
     </div>
   {/if}
   

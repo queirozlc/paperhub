@@ -56,13 +56,7 @@
   let question = $state('Corrija as informações do texto')
   let loading = $state(false)
   //let conversation = $state<ConversationPart[]>([])
-  let conversation = $state<ConversationPart[]>([
-    { type: "question", question: "Quem foi o primeiro presidente do Brasil?" },
-    { type: "answer", answer: [
-      { type: "text", text: "Aqui está:" },
-      { type: "suggestion", suggestion: { id: 0, change: "<p>O primeiro presidente do Brasil foi Deodoro da Fonseca. O segundo presidente do Brasil foi Floriano Peixoto.</p>", explanation: "" } },
-    ]}
-  ])
+  let conversation = $state<ConversationPart[]>([])
   let nextSuggestionIndex = $state(0)
   let suggestions = $state<Suggestion[]>([])
 
