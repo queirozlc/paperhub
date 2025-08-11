@@ -8,7 +8,7 @@
     Plus,
     Send01,
     Translate01,
-    Loading02 as Loading
+    Loading02 as Loading,
   } from '@voolt_technologies/untitledui-svelte'
   import Button from './ui/button/button.svelte'
   import Textarea from './ui/textarea/textarea.svelte'
@@ -29,31 +29,35 @@
     suggestions: Suggestion[]
   }
 
-  type ConversationPart = {
-    type: "question"
-    question: string
-  } | {
-    type: "answer"
-    answer: AnswerPart[]
-  }
+  type ConversationPart =
+    | {
+        type: 'question'
+        question: string
+      }
+    | {
+        type: 'answer'
+        answer: AnswerPart[] | 'error'
+      }
 
-  type AnswerPart = {
-    type: "text"
-    text: string
-  } | {
-    type: "suggestion"
-    suggestion: Suggestion
-  }
+  type AnswerPart =
+    | {
+        type: 'text'
+        text: string
+      }
+    | {
+        type: 'suggestion'
+        suggestion: Suggestion
+      }
 
   type Props = {
-    getContent: () => string,
+    getContent: () => string
     replaceEditorContent: (modifiedDocument: string) => void
     suggest: (suggestion: Suggestion) => void
   }
 
   let { getContent, replaceEditorContent, suggest }: Props = $props()
 
-  let question = $state('Corrija as informações do texto')
+  let question = $state('')
   let loading = $state(false)
   //let conversation = $state<ConversationPart[]>([])
   let conversation = $state<ConversationPart[]>([])
@@ -99,7 +103,7 @@
 
     loading = true
     conversation.push({
-      type: "question",
+      type: 'question',
       question,
     })
 
@@ -114,16 +118,21 @@
       const res = await aiApiService.post('/ask', body)
       const data = res.data as TuringResponse
 
-      const answerParts: AnswerPart[] = splitResponse(data.answer, data.suggestions)
+      const answerParts: AnswerPart[] = splitResponse(
+        data.answer,
+        data.suggestions
+      )
 
-      loading = false
       conversation.push({
-        type: "answer",
-        answer: answerParts
+        type: 'answer',
+        answer: answerParts,
       })
 
       if (data.modifiedDocument) {
-        const newDocumentContent = setIdsToNewSuggestions(data.modifiedDocument, nextSuggestionIndex)
+        const newDocumentContent = setIdsToNewSuggestions(
+          data.modifiedDocument,
+          nextSuggestionIndex
+        )
         replaceEditorContent(newDocumentContent)
       }
 
@@ -132,9 +141,14 @@
       })
       suggestions = data.suggestions
       nextSuggestionIndex += suggestions.length
-
     } catch (e) {
       console.error('Error:', e)
+      conversation.push({
+        type: 'answer',
+        answer: 'error'
+      })
+    } finally {
+      loading = false
     }
   }
 
@@ -150,27 +164,27 @@
       if (match.index > lastIndex) {
         parts.push({
           type: 'text',
-          text: response.slice(lastIndex, match.index)
-        });
+          text: response.slice(lastIndex, match.index),
+        })
       }
 
       const suggestionIdx = match[1]
-      
+
       // Adiciona o padrão {{n}} como um objeto span
       parts.push({
         type: 'suggestion',
-        suggestion: suggestions[suggestionIdx]
-      });
-      
-      lastIndex = regex.lastIndex;
+        suggestion: suggestions[suggestionIdx],
+      })
+
+      lastIndex = regex.lastIndex
     }
-    
+
     // Adiciona o texto restante após o último padrão
     if (lastIndex < response.length) {
       parts.push({
         type: 'text',
-        text: response.slice(lastIndex)
-      });
+        text: response.slice(lastIndex),
+      })
     }
 
     return parts
@@ -195,32 +209,37 @@
       </div>
     </Sidebar.Group>
 
-    <Sidebar.Group bind:ref={chatRef} class="block items-center h-full justify-center gap-5 overflow-y-auto">
-
+    <Sidebar.Group
+      bind:ref={chatRef}
+      class="block items-center h-full justify-center gap-5 overflow-y-auto"
+    >
       {#if conversation.length !== 0}
-
         <div class="flex flex-col gap-4 w-full">
           {#each conversation as statement}
-            {#if statement.type === "question"}
+            {#if statement.type === 'question'}
               <div class="ml-4 self-end">
                 <span class="block opacity-50 text-xs text-right">você</span>
-                { statement.question }
+                {statement.question}
               </div>
             {:else}
               <div class="mr-4">
                 <span class="block opacity-50 text-xs">Turing</span>
-                {#each statement.answer as part}
-                  {#if part.type === 'text'}
-                    <p class="w-full m-0">{ part.text }</p>
-                  {:else if part.type === 'suggestion'}
-                    <button
-                      class="w-full m-0 bg-white/4 hover:bg-white/8 p-1 text-sm border rounded-xs text-left cursor-pointer transition"
-                      onclick={() => suggest(part.suggestion)}
-                    >
-                      {@html part.suggestion.change }
-                    </button>
-                  {/if}
-                {/each}
+                {#if statement.answer === 'error'}
+                  <p class="w-full m-0 text-red-400 text-sm">Desculpe. Não estou funcionando corretamente agora. Tente de novo mais tarde.</p>
+                {:else}
+                  {#each statement.answer as part}
+                    {#if part.type === 'text'}
+                      <p class="w-full m-0">{part.text}</p>
+                    {:else if part.type === 'suggestion'}
+                      <button
+                        class="w-full m-0 bg-white/4 hover:bg-white/8 p-1 text-sm border rounded-xs text-left cursor-pointer transition"
+                        onclick={() => suggest(part.suggestion)}
+                      >
+                        {@html part.suggestion.change}
+                      </button>
+                    {/if}
+                  {/each}
+                {/if}
               </div>
             {/if}
           {/each}
@@ -232,9 +251,7 @@
             </div>
           {/if}
         </div>
-
       {:else}
-
         <div class="flex flex-col items-center justify-center gap-4">
           <div
             class="shadow-md rounded-md bg-popover p-2 w-fit flex items-center justify-center"
@@ -274,16 +291,12 @@
             >
           </li>
         </ul>
-
       {/if}
-
     </Sidebar.Group>
   </Sidebar.Content>
 
   <Sidebar.Footer class="px-2">
     <div class="flex flex-col justify-center gap-4">
-      
-
       <div class="relative">
         <Textarea
           bind:ref={textareaRef}
@@ -291,7 +304,7 @@
           class="resize-none pb-10 no-scrollbar"
           bind:value={question}
           oninput={resize}
-          onkeydown={e => {
+          onkeydown={(e) => {
             if (e.ctrlKey && e.key === 'Enter') {
               e.preventDefault()
               submitQuestion()
@@ -309,13 +322,13 @@
           >
             <Plus />
           </Button>
-          
+
           <Button
             title="Limpar tudo"
             variant="ghost"
             size="icon"
             class="size-6 text-muted-foreground hover:text-accent-foreground"
-            onclick={() => question = ''}
+            onclick={() => (question = '')}
           >
             <Icon name="broom" />
           </Button>

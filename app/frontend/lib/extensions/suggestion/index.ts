@@ -27,7 +27,10 @@ declare module '@tiptap/core' {
       /**
        * Inserts a suggestion element
        */
-      setSuggestion: (attributes?: SuggestionAttributes, content?: string) => ReturnType
+      setSuggestion: (
+        attributes?: SuggestionAttributes,
+        content?: string
+      ) => ReturnType
       /**
        * Removes the suggestion element
        */
@@ -41,7 +44,7 @@ declare module '@tiptap/core' {
        * - If you do not want to filter the search by a certain attribute, do not specify it or specify it as `undefined`
        * - If you want a certain attribute to not exist in the node, specify it as `null`
        * - If you want to select a node that has a certain value in its attribute, specify it
-       * 
+       *
        * Examples:
        * - `{ "data-id": 1 }` Selects the node whose "data-id" attribute value is "1"
        * - `{ "data-id": null }` Selects the node that does not have a "data-id"
@@ -65,14 +68,20 @@ declare module '@tiptap/core' {
        * @param attributes New node attributes
        * @param content Node content as HTML (string)
        */
-      updateSuggestion: (attributes: SuggestionAttributes, content: string) => ReturnType
+      updateSuggestion: (
+        attributes: SuggestionAttributes,
+        content: string
+      ) => ReturnType
       /**
        * Adds a "suggestion" node after/below the selected node\
        * **Note:** A node must be selected (NodeSelection)
        * @param attributes Attributes of the new node
        * @param content Content of new node in HTML string format
        */
-      addSuggestionBellow: (attributes: SuggestionAttributes, content: string) => ReturnType
+      addSuggestionBellow: (
+        attributes: SuggestionAttributes,
+        content: string
+      ) => ReturnType
     }
   }
 }
@@ -90,14 +99,14 @@ export const Suggestion = Node.create<SuggestionOptions>({
 
   content: 'block*',
 
-  defining: true, // TODO: ver pra que serve
+  defining: true,
 
   addAttributes() {
     return {
       'data-action': {
         default: null,
-        parseHTML: element => element.getAttribute('data-action'),
-        renderHTML: attributes => {
+        parseHTML: (element) => element.getAttribute('data-action'),
+        renderHTML: (attributes) => {
           if (!attributes['data-action']) {
             return {}
           }
@@ -108,12 +117,15 @@ export const Suggestion = Node.create<SuggestionOptions>({
       },
       'data-idx': {
         default: null,
-        parseHTML: element => {
+        parseHTML: (element) => {
           const value = element.getAttribute('data-idx')
           return value ? parseInt(value, 10) : null
         },
-        renderHTML: attributes => {
-          if (attributes['data-idx'] === null || attributes['data-idx'] === undefined) {
+        renderHTML: (attributes) => {
+          if (
+            attributes['data-idx'] === null ||
+            attributes['data-idx'] === undefined
+          ) {
             return {}
           }
           return {
@@ -123,12 +135,15 @@ export const Suggestion = Node.create<SuggestionOptions>({
       },
       'data-id': {
         default: null,
-        parseHTML: element => {
+        parseHTML: (element) => {
           const value = element.getAttribute('data-id')
           return value ? parseInt(value, 10) : null
         },
-        renderHTML: attributes => {
-          if (attributes['data-id'] === null || attributes['data-id'] === undefined) {
+        renderHTML: (attributes) => {
+          if (
+            attributes['data-id'] === null ||
+            attributes['data-id'] === undefined
+          ) {
             return {}
           }
           return {
@@ -138,8 +153,8 @@ export const Suggestion = Node.create<SuggestionOptions>({
       },
       'data-empty': {
         default: false,
-        parseHTML: element => element.getAttribute('data-empty'),
-        renderHTML: attributes => {
+        parseHTML: (element) => element.getAttribute('data-empty'),
+        renderHTML: (attributes) => {
           if (!attributes['data-empty']) {
             return {}
           }
@@ -150,8 +165,8 @@ export const Suggestion = Node.create<SuggestionOptions>({
       },
       'data-empty-brother': {
         default: false,
-        parseHTML: element => element.getAttribute('data-empty-brother'),
-        renderHTML: attributes => {
+        parseHTML: (element) => element.getAttribute('data-empty-brother'),
+        renderHTML: (attributes) => {
           if (!attributes['data-empty-brother']) {
             return {}
           }
@@ -169,8 +184,8 @@ export const Suggestion = Node.create<SuggestionOptions>({
         tag: 'div[data-suggestion]',
       },
       {
-        tag: 'suggestion'
-      }
+        tag: 'suggestion',
+      },
     ]
   },
 
@@ -196,31 +211,36 @@ export const Suggestion = Node.create<SuggestionOptions>({
 
   addCommands() {
     return {
-
-      setSuggestion: (attributes) =>
+      setSuggestion:
+        (attributes) =>
         ({ commands }) => {
           return commands.wrapIn(this.name, attributes)
         },
 
-      unsetSuggestion: () =>
+      unsetSuggestion:
+        () =>
         ({ commands }) => {
           return commands.lift(this.name)
         },
 
-      toggleSuggestion: (attributes) =>
+      toggleSuggestion:
+        (attributes) =>
         ({ commands }) => {
           return commands.toggleWrap(this.name, attributes)
         },
 
-      selectSuggestion: (attributes) =>
+      selectSuggestion:
+        (attributes) =>
         ({ tr }) => {
-          
           //TODO: Implementar validação de dispatch
 
           let founded = false
 
           tr.doc.descendants((node, pos) => {
-            if (node.type.name === 'suggestion' && attributesMatch(node, attributes)) {
+            if (
+              node.type.name === 'suggestion' &&
+              attributesMatch(node, attributes)
+            ) {
               const selection = NodeSelection.create(tr.doc, pos)
               tr.setSelection(selection)
               founded = true
@@ -237,74 +257,81 @@ export const Suggestion = Node.create<SuggestionOptions>({
           return true
         },
 
-      removeDiffsFromSelected: () =>
+      removeDiffsFromSelected:
+        () =>
         ({ state, tr }) => {
           const pos = tr.selection.from
-          const node = tr.doc.nodeAt(pos);
-          const diffType = state.schema.marks.diff;
+          const node = tr.doc.nodeAt(pos)
+          const diffType = state.schema.marks.diff
 
           //TODO: Implementar validação de dispatch
 
           if (!node) {
-            return false;
+            return false
           }
-          
+
           // Função recursiva para percorrer todos os nós filhos
           function traverseNode(currentNode: NodeType, currentPos: number) {
             if (currentNode.isText) {
               // Para nós de texto, verificar e remover marks "diff"
-              if (currentNode.marks.some(mark => mark.type === diffType)) {
-                  tr.removeMark(currentPos, currentPos + currentNode.nodeSize, diffType);
+              if (currentNode.marks.some((mark) => mark.type === diffType)) {
+                tr.removeMark(
+                  currentPos,
+                  currentPos + currentNode.nodeSize,
+                  diffType
+                )
               }
             } else {
               // Para nós não-texto, percorrer recursivamente todos os filhos
-              let childPos = currentPos + 1; // +1 para entrar no nó
-              
+              let childPos = currentPos + 1 // +1 para entrar no nó
+
               currentNode.forEach((child, offset) => {
-                  const absoluteChildPos = childPos + offset;
-                  traverseNode(child, absoluteChildPos);
-              });
+                const absoluteChildPos = childPos + offset
+                traverseNode(child, absoluteChildPos)
+              })
             }
           }
 
           // Iniciar a traversal a partir do nó na posição especificada
-          traverseNode(node, pos);
+          traverseNode(node, pos)
 
           return true
         },
 
-      removeActionFromSelected: () =>
+      removeActionFromSelected:
+        () =>
         ({ state, tr }) => {
           const pos = tr.selection.from
-          const node = state.doc.nodeAt(pos);
+          const node = state.doc.nodeAt(pos)
           const attrs = { ...node.attrs }
-          delete attrs["data-action"]
+          delete attrs['data-action']
           tr.setNodeMarkup(pos, null, attrs)
           return true
         },
-        
-      removeSelectedSuggestionContainer: () =>
-        ({ tr }) => {
 
+      removeSelectedSuggestionContainer:
+        () =>
+        ({ tr }) => {
           //TODO: Implementar validação de dispatch
 
           // 1. Obtém o nó na posição especificada.
           const pos = tr.selection.from
-          const node = tr.doc.nodeAt(pos);
+          const node = tr.doc.nodeAt(pos)
 
           // 2. Verifica se é um nó de bloco.
           if (node && node.isBlock) {
             // 3. Obtém o conteúdo do nó.
-            const content = node.content;
+            const content = node.content
 
             // 4. Cria uma nova transação para substituir o nó.
-            tr.replaceWith(pos, pos + node.nodeSize, content);
+            tr.replaceWith(pos, pos + node.nodeSize, content)
           }
 
-          return true;
+          return true
         },
 
-      updateSuggestion: (attributes: SuggestionAttributes, content: string) =>
+      updateSuggestion:
+        (attributes: SuggestionAttributes, content: string) =>
         ({ tr, state }) => {
           const { selection } = tr
 
@@ -317,23 +344,23 @@ export const Suggestion = Node.create<SuggestionOptions>({
           const node = state.schema.nodes.suggestion.create(
             attributes,
             fragment // state.schema.text('Novo parágrafo')
-          );
+          )
 
           tr.replaceSelectionWith(node)
-          tr.setSelection(NodeSelection.create(tr.doc, selection.from)) // TODO: Avaliar melhoria
-          
+          tr.setSelection(NodeSelection.create(tr.doc, selection.from))
+
           return true
         },
 
-      addSuggestionBellow: (attributes: SuggestionAttributes, content: string) =>
+      addSuggestionBellow:
+        (attributes: SuggestionAttributes, content: string) =>
         ({ tr, state }) => {
-
-          if ( ! (tr.selection instanceof NodeSelection)) {
+          if (!(tr.selection instanceof NodeSelection)) {
             throw 'Seleção precisa ser do tipo NodeSelection'
           }
 
-          const node = tr.selection.node;
-          const pos = tr.selection.from;
+          const node = tr.selection.node
+          const pos = tr.selection.from
 
           const json = generateJSON(content, extensions)
           const fragment = state.schema.nodeFromJSON(json).content
@@ -341,9 +368,9 @@ export const Suggestion = Node.create<SuggestionOptions>({
           const suggestionAdd = state.schema.nodes.suggestion.create(
             attributes,
             fragment // state.schema.text('Novo parágrafo')
-          );
+          )
 
-          const afterNodePos = pos + node.nodeSize;
+          const afterNodePos = pos + node.nodeSize
           tr.insert(afterNodePos, suggestionAdd)
 
           return true
@@ -353,12 +380,12 @@ export const Suggestion = Node.create<SuggestionOptions>({
 
   addKeyboardShortcuts() {
     return {
-      'Enter': escapeSuggestionNodeIfCursorAtEnd,
+      Enter: escapeSuggestionNodeIfCursorAtEnd,
       // Preserve default behavior for Shift+Enter and Ctrl+Enter:
       'Shift-Enter': () => false,
       'Mod-Enter': () => false,
     }
-  }
+  },
 })
 
 /**
@@ -369,7 +396,7 @@ export const Suggestion = Node.create<SuggestionOptions>({
  */
 function attributesMatch(node: NodeType, attributes: SuggestionAttributes) {
   let check = true
-  Object.keys(attributes).forEach(attr => {
+  Object.keys(attributes).forEach((attr) => {
     if (!attributeMatch(node, attributes, attr)) {
       check = false
       return false //TODO: Verificar se isso interrompe iteração
@@ -378,18 +405,24 @@ function attributesMatch(node: NodeType, attributes: SuggestionAttributes) {
   return check
 }
 
-function attributeMatch(node: NodeType, attributes: SuggestionAttributes, attr: string) {
-  return attributes[attr] === undefined
-    || ( attributes[attr] === null && node.attrs[attr] === null )
-    || ( attributes[attr] === node.attrs[attr] )
+function attributeMatch(
+  node: NodeType,
+  attributes: SuggestionAttributes,
+  attr: string
+) {
+  return (
+    attributes[attr] === undefined ||
+    (attributes[attr] === null && node.attrs[attr] === null) ||
+    attributes[attr] === node.attrs[attr]
+  )
 }
 
 /**
  * Function for use in addKeyboardShortcuts.
- * 
+ *
  * Checks if the cursor is at the end of the suggestion node. If so, adds a new empty paragraph after/below/outside it.
- * 
- * @param editor Tiptap Editor 
+ *
+ * @param editor Tiptap Editor
  * @returns `true` to prevent default behavior. `falte` to keep default behavior
  */
 function escapeSuggestionNodeIfCursorAtEnd({ editor }: { editor: Editor }) {
@@ -401,12 +434,12 @@ function escapeSuggestionNodeIfCursorAtEnd({ editor }: { editor: Editor }) {
 
   /**
    * Search node suggestion where the cursor is.
-   * 
+   *
    * Imagine the cursor is inside a diff node that is inside a paragraph that is inside a suggestion node.
    * This function, starting from the diff node, regresses until it finds the suggestion node and returns it.
-   * 
+   *
    * If the cursor is not within a suggestion node, even indirectly, it returns `null`.
-   * 
+   *
    * @returns Suggestion node or `null` if the cursor is not within a suggestion node.
    */
   function findSuggestionContainer(): NodeType {
@@ -429,7 +462,7 @@ function escapeSuggestionNodeIfCursorAtEnd({ editor }: { editor: Editor }) {
 
   /**
    * Checks if cursor is inside and at the end of the node.
-   * 
+   *
    * @param node Node
    * @param nodePos `node` position
    * @returns `true` if cursor is inside and at the end of the node. `false` otherwise.
@@ -443,10 +476,10 @@ function escapeSuggestionNodeIfCursorAtEnd({ editor }: { editor: Editor }) {
   }
 
   /**
-   * 
-   * 
-   * @param targetNode 
-   * @returns 
+   *
+   *
+   * @param targetNode
+   * @returns
    */
   function getNodePos(targetNode: NodeType): number {
     let nodePos = -1
@@ -466,9 +499,9 @@ function escapeSuggestionNodeIfCursorAtEnd({ editor }: { editor: Editor }) {
    * @param nodePos `node` position
    */
   function createParagraphBelow(node: NodeType, nodePos: number): void {
-    const paragraph = schema.nodes.paragraph.create();
+    const paragraph = schema.nodes.paragraph.create()
 
-    const afterNodePos = nodePos + node.nodeSize;
+    const afterNodePos = nodePos + node.nodeSize
 
     const tr = view.state.tr
     tr.insert(afterNodePos, paragraph)

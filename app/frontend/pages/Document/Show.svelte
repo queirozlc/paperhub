@@ -10,9 +10,12 @@
   } from 'svelte-tiptap'
   import type { Readable } from 'svelte/store'
   import type { DocumentType } from './types'
-  import { extractNodeHtmlContent, highlightHtmllDifferences } from '@/lib/suggestion-utils'
+  import {
+    extractNodeHtmlContent,
+    highlightHtmllDifferences,
+  } from '@/lib/suggestion-utils'
   import type { Suggestion } from '@/lib/components/turing-sidebar.svelte'
-  import type { Node as NodeType } from "@tiptap/pm/model";
+  import type { Node as NodeType } from '@tiptap/pm/model'
 
   let { document }: { document: DocumentType } = $props()
 
@@ -48,20 +51,17 @@
   }
 
   function replaceEditorContent(modifiedDocument: string) {
-    $editor.chain()
-      .focus()
-      .clearContent()
-      .setContent(modifiedDocument)
-      .run()
+    $editor.chain().focus().clearContent().setContent(modifiedDocument).run()
   }
 
   function suggest(suggestion: Suggestion) {
     let node: NodeType
-    let diff: { original: string, suggestion: string } = null
+    let diff: { original: string; suggestion: string } = null
 
-    $editor.chain()
+    $editor
+      .chain()
       .focus()
-      .selectSuggestion({ "data-id": suggestion.id, "data-action": null })
+      .selectSuggestion({ 'data-id': suggestion.id, 'data-action': null })
       .command(({ tr }) => {
         const { selection } = tr
 
@@ -70,13 +70,16 @@
         }
 
         const pos = selection.from
-        node = tr.doc.nodeAt(pos);
+        node = tr.doc.nodeAt(pos)
 
         const htmlContent = extractNodeHtmlContent(node)
-        const [ originalDiff, suggestionDiff ] = highlightHtmllDifferences(htmlContent, suggestion.change)
+        const [originalDiff, suggestionDiff] = highlightHtmllDifferences(
+          htmlContent,
+          suggestion.change
+        )
         diff = {
           original: originalDiff,
-          suggestion: suggestionDiff
+          suggestion: suggestionDiff,
         }
 
         return true
@@ -84,18 +87,18 @@
       .updateSuggestion(
         {
           ...node.attrs,
-          "data-action": "remove",
-          "data-empty": diff.original.length === 0,
-          "data-empty-brother": diff.suggestion.length === 0
+          'data-action': 'remove',
+          'data-empty': diff.original.length === 0,
+          'data-empty-brother': diff.suggestion.length === 0,
         },
         diff.original
       )
       .addSuggestionBellow(
         {
           ...node.attrs,
-          "data-action": "add",
-          "data-empty": diff.suggestion.length === 0,
-          "data-empty-brother": diff.original.length === 0
+          'data-action': 'add',
+          'data-empty': diff.suggestion.length === 0,
+          'data-empty-brother': diff.original.length === 0,
         },
         diff.suggestion
       )

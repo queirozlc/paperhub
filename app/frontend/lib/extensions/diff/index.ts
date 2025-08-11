@@ -48,8 +48,8 @@ export const Diff = Mark.create<DiffOptions>({
     return {
       'data-action': {
         default: null,
-        parseHTML: element => element.getAttribute('data-action'),
-        renderHTML: attributes => {
+        parseHTML: (element) => element.getAttribute('data-action'),
+        renderHTML: (attributes) => {
           if (!attributes['data-action']) {
             return {}
           }
@@ -67,8 +67,8 @@ export const Diff = Mark.create<DiffOptions>({
         tag: 'span[data-diff]',
       },
       {
-        tag: 'diff'
-      }
+        tag: 'diff',
+      },
     ]
   },
 

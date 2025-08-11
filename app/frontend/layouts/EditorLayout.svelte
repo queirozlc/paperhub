@@ -1,7 +1,9 @@
 <script lang="ts">
   import EditorSidebarHeader from '@/lib/components/editor-sidebar-header.svelte'
   import TableOfContents from '@/lib/components/table-of-contents.svelte'
-  import TuringSidebar, { type Suggestion } from '@/lib/components/turing-sidebar.svelte'
+  import TuringSidebar, {
+    type Suggestion,
+  } from '@/lib/components/turing-sidebar.svelte'
   import * as Sidebar from '@/lib/components/ui/sidebar'
   import type { DocumentType } from '@/pages/Document/types'
   import { type Snippet } from 'svelte'
@@ -14,7 +16,8 @@
     children: Snippet
   }
 
-  let { children, document, getContent, replaceEditorContent, suggest }: Props = $props()
+  let { children, document, getContent, replaceEditorContent, suggest }: Props =
+    $props()
 
   let documentTitle = $state(document.title || 'Sem título')
 
