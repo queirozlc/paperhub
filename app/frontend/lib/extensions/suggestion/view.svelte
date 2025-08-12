@@ -94,7 +94,7 @@
       >
         Recusar
       </button>
-      {#if ! node.attrs['data-empty'] && ! node.attrs['data-empty-brother']}
+      {#if !node.attrs['data-empty'] && !node.attrs['data-empty-brother']}
         <button
           on:click={keepBothFromSuggestion}
           contenteditable="false"

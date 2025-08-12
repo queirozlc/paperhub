@@ -145,7 +145,7 @@
       console.error('Error:', e)
       conversation.push({
         type: 'answer',
-        answer: 'error'
+        answer: 'error',
       })
     } finally {
       loading = false
@@ -225,7 +225,10 @@
               <div class="mr-4">
                 <span class="block opacity-50 text-xs">Turing</span>
                 {#if statement.answer === 'error'}
-                  <p class="w-full m-0 text-red-400 text-sm">Desculpe. Não estou funcionando corretamente agora. Tente de novo mais tarde.</p>
+                  <p class="w-full m-0 text-red-400 text-sm">
+                    Desculpe. Não estou funcionando corretamente agora. Tente de
+                    novo mais tarde.
+                  </p>
                 {:else}
                   {#each statement.answer as part}
                     {#if part.type === 'text'}
@@ -235,6 +238,7 @@
                         class="w-full m-0 bg-white/4 hover:bg-white/8 p-1 text-sm border rounded-xs text-left cursor-pointer transition"
                         onclick={() => suggest(part.suggestion)}
                       >
+                        <!-- svelte-ignore a11y_no_static_element_interactions -->
                         {@html part.suggestion.change}
                       </button>
                     {/if}
