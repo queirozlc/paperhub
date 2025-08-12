@@ -5,12 +5,10 @@
   import { NodeViewContent, NodeViewWrapper } from 'svelte-tiptap'
   import { twMerge } from 'tailwind-merge'
 
-  // Props passadas automaticamente pelo SvelteNodeViewRenderer
   export let node: Node
   export let editor: Editor
   export let getPos
 
-  // Em Svelte, uma variável 'let' já é reativa dentro do componente.
   let isHovered = false
 
   function acceptSuggestion() {

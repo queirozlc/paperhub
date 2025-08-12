@@ -36,14 +36,6 @@ export const Diff = Mark.create<DiffOptions>({
     }
   },
 
-  // group: 'inline',
-
-  // content: 'text*',
-
-  // inline: true,
-
-  // defining: true,
-
   addAttributes() {
     return {
       'data-action': {

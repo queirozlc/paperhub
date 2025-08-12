@@ -343,7 +343,7 @@ export const Suggestion = Node.create<SuggestionOptions>({
 
           const node = state.schema.nodes.suggestion.create(
             attributes,
-            fragment // state.schema.text('Novo parágrafo')
+            fragment
           )
 
           tr.replaceSelectionWith(node)
@@ -367,7 +367,7 @@ export const Suggestion = Node.create<SuggestionOptions>({
 
           const suggestionAdd = state.schema.nodes.suggestion.create(
             attributes,
-            fragment // state.schema.text('Novo parágrafo')
+            fragment
           )
 
           const afterNodePos = pos + node.nodeSize
@@ -476,10 +476,10 @@ function escapeSuggestionNodeIfCursorAtEnd({ editor }: { editor: Editor }) {
   }
 
   /**
-   *
-   *
-   * @param targetNode
-   * @returns
+   * Returns the Node position from a Node element
+   * 
+   * @param targetNode Node you want to find position
+   * @returns Position
    */
   function getNodePos(targetNode: NodeType): number {
     let nodePos = -1

@@ -120,7 +120,3 @@
     </div>
   </div>
 </EditorLayout>
-
-<button onclick={() => console.log($editor.getJSON())}>Nodes</button>
-
-<button onclick={() => console.log($editor.getHTML())}>HTML</button>
