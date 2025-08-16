@@ -4,7 +4,7 @@
 </script>
 
 <script lang="ts">
-  import MostRecents from '$lib/components/most-recents.svelte'
+  import { MostRecents } from '$lib/components/documents/index'
   import Button from '$lib/components/ui/button/button.svelte'
   import {
     DropdownMenu,
@@ -19,13 +19,18 @@
   import type { DocumentType } from './types'
   import type { TeamType } from '../Team/types'
   import HomeLayout from '$layouts/HomeLayout.svelte'
+  import type { UserInvitationType } from '$pages/Users/types'
 
   type Props = {
     documents: DocumentType[]
     teams: TeamType[]
+    active_team: TeamType
+    user_invitations: UserInvitationType[]
+    team_members: UserInvitationType[]
   }
 
-  let { documents, teams }: Props = $props()
+  let { documents, teams, user_invitations, team_members, active_team }: Props =
+    $props()
 
   function newDocument(params = { title: '', description: '' }) {
     router.post('/documents', {
@@ -34,7 +39,7 @@
   }
 </script>
 
-<HomeLayout {teams}>
+<HomeLayout {teams} {user_invitations} {team_members} {active_team}>
   <MostRecents />
 
   <div class="flex items-center justify-between px-4">

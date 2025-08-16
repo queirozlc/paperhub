@@ -7,5 +7,9 @@ module Users
     def edit?
       record.id == user.id
     end
+
+    def destroy?
+      record.invited_by_id == user.id
+    end
   end
 end

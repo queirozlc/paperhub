@@ -89,7 +89,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_15_192757) do
     t.datetime "invitation_sent_at"
     t.datetime "invitation_accepted_at"
     t.integer "invitation_limit"
-    t.string "invited_by_type"
     t.bigint "invited_by_id"
     t.bigint "invited_team_id"
     t.integer "invitation_role"
@@ -98,7 +97,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_15_192757) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
-    t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by"
     t.index ["invited_team_id"], name: "index_users_on_invited_team_id"
   end
 
@@ -110,4 +108,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_15_192757) do
   add_foreign_key "teams", "users", column: "owner_id"
   add_foreign_key "users", "teams", column: "active_team_id"
   add_foreign_key "users", "teams", column: "invited_team_id"
+  add_foreign_key "users", "users", column: "invited_by_id"
 end

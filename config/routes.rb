@@ -18,9 +18,20 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :teams, only: %i[create]
+  resources :teams, only: %i[create update destroy] do
+    collection do
+      delete "members/:member_id" => "teams#destroy_member", as: :destroy_member
+    end
+  end
+
+  resources :users, only: [ :destroy ] do
+    member do
+      patch "switch_team" => "users#switch_team"
+    end
+  end
+
   namespace :users do
-    resources :teams, only: %i[update], controller: "profile"
+    patch "profile" => "profile#update"
   end
 
 

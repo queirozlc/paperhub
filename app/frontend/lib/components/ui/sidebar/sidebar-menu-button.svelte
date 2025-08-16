@@ -88,7 +88,7 @@
 {#if !tooltipContent}
   {@render Button({})}
 {:else}
-  <Tooltip.Root>
+  <Tooltip.Root disableHoverableContent>
     <Tooltip.Trigger>
       {#snippet child({ props })}
         {@render Button({ props })}

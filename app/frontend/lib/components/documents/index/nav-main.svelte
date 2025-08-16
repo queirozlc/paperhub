@@ -2,22 +2,11 @@
   import * as Sidebar from '$lib/components/ui/sidebar'
   import { Link } from '@inertiajs/svelte'
   import { SearchSm } from '@voolt_technologies/untitledui-svelte'
-  import { getOS } from '../utils'
+  import { getOS } from '$lib/utils'
 
-  let {
-    items,
-  }: {
-    items: {
-      title: string
-      url: string
-      tooltip: string
-      // This should be `Component` after @lucide/svelte updates types
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      icon: any
-      isActive?: boolean
-      badge?: number
-    }[]
-  } = $props()
+  import type { NavMainItem } from '$layouts/HomeLayout.svelte'
+
+  let { items }: { items: NavMainItem[] } = $props()
 
   const os = getOS()
 </script>
