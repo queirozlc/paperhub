@@ -6,7 +6,6 @@
     SettingsDialogHeader,
     SettingsDialogTitle,
   } from '$lib/components/ui/settings-dialog'
-  import type { GroupItem } from './settings-dialog.svelte'
   import type { TeamType } from '$pages/Team/types'
   import { page, router, useForm } from '@inertiajs/svelte'
   import AvatarInput from '$lib/components/avatar-input.svelte'
@@ -80,28 +79,28 @@
       </p>
 
       <form
+        bind:this={formRef}
         class="flex items-center gap-4 mt-4"
         onsubmit={submit}
-        bind:this={formRef}
       >
         <AvatarInput
-          size="sm"
-          initialImage={active_team.cover}
           bind:selectedImage={$form.cover}
+          initialImage={active_team.cover}
           onFileChange={() => {
             if (formRef) {
               formRef.requestSubmit()
             }
           }}
+          size="sm"
         />
         <div class="flex flex-col gap-2">
-          <Label for="name" class="text-xs font-medium text-muted-foreground">
+          <Label class="text-xs font-medium text-muted-foreground" for="name">
             Nome do Time
           </Label>
           <Input
-            id="name"
             bind:ref={nameInput}
             bind:value={$form.name}
+            id="name"
             onfocusout={() => {
               if (formRef) {
                 formRef.requestSubmit()

@@ -5,7 +5,7 @@
   import * as Avatar from '$lib/components/ui/avatar'
   import TeamForm from '$pages/Team/Form.svelte'
   import type { TeamType } from '$pages/Team/types'
-  import { page, router } from '@inertiajs/svelte'
+  import { router } from '@inertiajs/svelte'
   import { ChevronDown, Plus } from '@lucide/svelte'
   import { defaultAvatar } from '../utils'
   import { Check } from '@voolt_technologies/untitledui-svelte'
@@ -17,10 +17,6 @@
 
   function logout() {
     router.delete('/sign_out')
-  }
-
-  function cancel() {
-    open = false
   }
 
   function switchTeam(team: TeamType) {

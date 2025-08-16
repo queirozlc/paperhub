@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Monitor, Moon, Sun } from '@lucide/svelte'
-  import { setMode, userPrefersMode } from 'mode-watcher'
+  import { setMode } from 'mode-watcher'
   import { cubicOut } from 'svelte/easing'
   import { Tween } from 'svelte/motion'
   import {
