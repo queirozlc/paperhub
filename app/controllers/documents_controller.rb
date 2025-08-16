@@ -11,7 +11,7 @@ class DocumentsController < ApplicationController
       user_invitations: InertiaRails.optional { User.unscoped.unaccepted_invitations(current_user).map { |user| serialize_user_invitation(user) } },
       team_members: InertiaRails.optional do
         ActsAsTenant.without_tenant do
-          User.with_role.with_team(current_user.active_team).without_me(current_user).map { |user| serialize_user_member(user) }
+          User.with_role.with_team(current_user.active_team).where.not(id: current_user.id).map { |user| serialize_user_member(user) }
         end
       end
     }

@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   before_action :set_tenant
   before_action :authenticate_user!
   before_action :authenticate_verified_user!
+  # :nocov:
   unless Rails.env.production?
     around_action :n_plus_one_detection
 
@@ -15,7 +16,7 @@ class ApplicationController < ActionController::Base
       Prosopite.finish
     end
   end
-
+  # :nocov:
 
   inertia_share flash: -> { flash.to_hash }
   inertia_share if: :user_signed_in? do

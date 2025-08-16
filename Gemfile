@@ -68,6 +68,8 @@ group :development, :test do
 
   gem "rubocop-rspec_rails", require: false
 
+  gem "ruby-lsp-rspec", require: false
+
   # Code style checking for factory_bot files (https://github.com/rubocop/rubocop-factory_bot)
   gem "rubocop-factory_bot", require: false
 

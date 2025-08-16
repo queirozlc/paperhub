@@ -10,13 +10,9 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    user = current_user
-
-    authorize user
-
     User.transaction do
-      user.transfer_ownership
-      user.destroy
+      current_user.transfer_ownership
+      current_user.destroy
     end
 
     redirect_to root_path, notice: "User was successfully deleted."

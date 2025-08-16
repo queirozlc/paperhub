@@ -1,12 +1,13 @@
 module Users
   class ProfileController < ApplicationController
     def update
-      if user_params[:avatar].present?
-        current_user.update(user_params)
+      current_user.avatar.attach(user_params[:avatar]) if user_params[:avatar].present?
+
+      if current_user.update(user_params.except(:avatar))
+        redirect_to documents_path, notice: "Profile was successfully updated."
       else
-        current_user.update(user_params.except(:avatar))
+        redirect_to documents_path, inertia: { errors: current_user.errors }
       end
-      redirect_to documents_path, notice: "Profile was successfully updated."
     end
 
     private

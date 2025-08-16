@@ -24,6 +24,22 @@ RSpec.describe Users::ProfileController, :inertia do
       end
     end
 
+    context "when fails to update user" do
+      subject { response }
+
+      before { patch users_profile_path, params: { user: { name: "a" } } }
+
+      it "does not update the user's name" do
+        expect(user.reload.name).to eq(user.name)
+      end
+
+      it "shows errors" do
+        expect(user.errors).to be_present
+      end
+
+      it { is_expected.to redirect_to(documents_path) }
+    end
+
     context "when user updates avatar" do
       let(:valid_params) { { user: { avatar: fixture_file_upload("test.png") } } }
 

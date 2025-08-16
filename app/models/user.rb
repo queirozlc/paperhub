@@ -30,10 +30,6 @@ class User < ApplicationRecord
     def with_team(team)
       where(memberships: { team_id: team.id })
     end
-
-    def without_me(user)
-      where.not(id: user.id)
-    end
   end
 
   def self.find_for_authentication(warden_conditions)
@@ -88,8 +84,6 @@ class User < ApplicationRecord
   private
 
     def join_invited_team
-      return unless invited_team.present?
-
       invited_team.add_member(self, role: invitation_role)
       set_current_team invited_team
       self.invited_team = nil

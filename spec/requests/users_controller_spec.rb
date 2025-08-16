@@ -1,9 +1,9 @@
 RSpec.describe UsersController, :inertia do
+  let(:user) { create(:user_verified) }
+
+  before { sign_in user, scope: :user }
+
   describe "PATCH #switch_team" do
-    let(:user) { create(:user_verified) }
-
-    before { sign_in user, scope: :user }
-
     context "when team is not found" do
       subject(:switch_team) { patch switch_team_user_path(id: 0) }
 
@@ -37,6 +37,19 @@ RSpec.describe UsersController, :inertia do
       it "updates the current team" do
         expect(user.active_team).to eq(team)
       end
+    end
+  end
+
+  describe "DELETE #destroy" do
+    subject(:destroy_user) { delete user_path(user) }
+
+    it "deletes the user" do
+      expect { destroy_user }.to change(User, :count).by(-1)
+    end
+
+    it "redirects to the root path" do
+      destroy_user
+      expect(response).to redirect_to(root_path)
     end
   end
 end

@@ -13,7 +13,7 @@ class Team < ApplicationRecord
     memberships.exists?(member: user, role: :owner)
   end
 
-  def add_member(user, role:)
+  def add_member(user, role: :member)
     memberships.create!(member: user, role:) unless already_member? user
   end
 
@@ -22,8 +22,8 @@ class Team < ApplicationRecord
   end
 
   def remove_member(member)
-    return if member.id == owner.id
+    return false if member.id == owner.id
     member.set_current_team(member.owned_teams.first) if member.active_team == self
-    memberships.find_by(member: member).destroy!
+    memberships.find_by(member: member).destroy
   end
 end

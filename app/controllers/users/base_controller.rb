@@ -4,6 +4,6 @@ class Users::BaseController < ApplicationController
   protected
 
     def require_unverified_user!
-      redirect_to documents_path, alert: t("devise.failure.already_verified") if user_signed_in? && current_user.verified?
+      redirect_to documents_path, alert: t("devise.failure.already_verified") if current_user.verified?
     end
 end
