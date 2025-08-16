@@ -16,5 +16,5 @@ export type DocumentFormType = Omit<
 
 export type InvitationForm = {
   email: string
-  role: string
+  role: 'owner' | 'member' | ''
 }

@@ -1,4 +1,8 @@
 class User < ApplicationRecord
+  include OwnershipTransferable
+
+  INVITATIONS_FIELDS = %i[ invited_by invited_team invitation_role invitation_token invitation_sent_at invitation_created_at invitation_accepted_at ].freeze
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :invitable, :magic_link_authenticatable, :rememberable, :validatable,
@@ -8,16 +12,25 @@ class User < ApplicationRecord
 
   enum :invitation_role, [ :owner, :member ], validate: { allow_nil: true }
 
-  belongs_to :invited_team, class_name: "Team", foreign_key: "invited_team_id", optional: true
+  belongs_to :invited_team, class_name: "Team", optional: true
   has_many :owned_teams, class_name: "Team", foreign_key: :owner_id, inverse_of: :owner, dependent: :destroy
   has_many :memberships, dependent: :destroy, inverse_of: :member
   has_many :teams, through: :memberships
+  has_many :invitations, class_name: self.to_s, inverse_of: :invited_by, dependent: :nullify
   has_one_attached :avatar
-  acts_as_tenant :active_team, class_name: "Team", foreign_key: "active_team_id", optional: true
+  acts_as_tenant :active_team, class_name: "Team", optional: true
 
   validates :name, length: { minimum: 3 }, allow_blank: true
 
   after_invitation_accepted :join_invited_team
+
+  scope :unaccepted_invitations, ->(user) { with_attached_avatar.invitation_not_accepted.where(invited_by: user, invited_team_id: user.active_team_id) }
+
+  scope :with_role, -> { select("memberships.role, users.*").joins(:memberships) } do
+    def with_team(team)
+      where(memberships: { team_id: team.id })
+    end
+  end
 
   def self.find_for_authentication(warden_conditions)
     conditions = warden_conditions.dup
@@ -57,11 +70,20 @@ class User < ApplicationRecord
     end
   end
 
+  def role_in(team)
+    memberships.find_by(team:)&.role
+  end
+
+  def revoke_invitation!(user_invitation)
+    INVITATIONS_FIELDS.each do |field|
+      user_invitation.send("#{field}=", nil)
+    end
+    user_invitation.save!
+  end
 
   private
-    def join_invited_team
-      return unless invited_team.present?
 
+    def join_invited_team
       invited_team.add_member(self, role: invitation_role)
       set_current_team invited_team
       self.invited_team = nil

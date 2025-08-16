@@ -3,16 +3,19 @@
   import { Icon } from '$lib/components/ui/icon'
   import { Separator } from '$lib/components/ui/separator'
   import { Tabs, TabsList, TabsTrigger } from '$lib/components/ui/tabs'
-  import { Tooltip, TooltipContent, TooltipProvider } from '$lib/components/ui/tooltip'
-  import type { UserType } from '$pages/Users/types'
-  import { DotsHorizontal, } from '@voolt_technologies/untitledui-svelte'
+  import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+  } from '$lib/components/ui/tooltip'
+  import { DotsHorizontal } from '@voolt_technologies/untitledui-svelte'
 
   import { SidebarTrigger } from '$lib/components/ui/sidebar'
   import type { DocumentType } from '$pages/Document/types'
   import { page, router } from '@inertiajs/svelte'
   import AvatarStack from './avatar-stack.svelte'
 
-  const user = $page.props.user as UserType
+  const user = $page.props.user
 
   type Props = {
     documentTitleInput: HTMLHeadingElement

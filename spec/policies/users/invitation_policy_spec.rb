@@ -4,7 +4,7 @@ RSpec.describe Users::InvitationPolicy do
   let(:user) { create(:user_verified) }
   let(:invited_user) { build(:user_verified) }
 
-  describe ".create?" do
+  describe "#create?" do
     context "when user is the owner" do
       it { is_expected.to permit_action(:create) }
     end
@@ -33,7 +33,7 @@ RSpec.describe Users::InvitationPolicy do
     end
   end
 
-  describe ".edit?" do
+  describe "#edit?" do
     context "when invited user is the current user" do
       subject { described_class.new(invited_user, invited_user) }
 
@@ -42,6 +42,18 @@ RSpec.describe Users::InvitationPolicy do
 
     context "when invited user is different from current user" do
       it { is_expected.to forbid_action(:edit) }
+    end
+  end
+
+  describe "#destroy?" do
+    context "when user is not invited by the current user" do
+      it { is_expected.to forbid_action(:destroy) }
+    end
+
+    context "when user is invited by the current user" do
+      subject { described_class.new(invited_user, user) }
+
+      it { is_expected.to permit_action(:destroy) }
     end
   end
 end
