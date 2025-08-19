@@ -49,6 +49,7 @@
     "@voolt_technologies/untitledui-svelte": "^0.0.1",
     "date-fns": "^4.1.0",
     "diff": "^8.0.2",
+    "htmldiff-js": "^1.0.5",
     "mode-watcher": "^0.5.1",
     "svelte": "^5.25.7",
     "svelte-check": "^4.1.5",

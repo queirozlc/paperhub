@@ -1,23 +1,19 @@
 <script lang="ts">
   import EditorSidebarHeader from '@/lib/components/editor-sidebar-header.svelte'
   import TableOfContents from '@/lib/components/table-of-contents.svelte'
-  import TuringSidebar, {
-    type Suggestion,
-  } from '@/lib/components/turing-sidebar.svelte'
+  import TuringSidebar from '@/lib/components/turing-sidebar.svelte'
   import * as Sidebar from '@/lib/components/ui/sidebar'
   import type { DocumentType } from '@/pages/Document/types'
   import { type Snippet } from 'svelte'
+  import type { Editor } from '@tiptap/core'
 
   type Props = {
     document: DocumentType
-    getContent: () => string
-    replaceEditorContent: (modifiedDocument: string) => void
-    suggest: (suggestion: Suggestion) => void
+    editor: Editor
     children: Snippet
   }
 
-  let { children, document, getContent, replaceEditorContent, suggest }: Props =
-    $props()
+  let { children, document, editor }: Props = $props()
 
   let documentTitle = $state(document.title || 'Sem título')
 
@@ -59,6 +55,6 @@
     style="--sidebar-width: 18rem;"
     class="w-fit overflow-hidden max-h-dvh"
   >
-    <TuringSidebar {getContent} {replaceEditorContent} {suggest} />
+    <TuringSidebar {editor} />
   </Sidebar.Provider>
 </div>

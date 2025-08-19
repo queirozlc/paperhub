@@ -477,7 +477,7 @@ function escapeSuggestionNodeIfCursorAtEnd({ editor }: { editor: Editor }) {
 
   /**
    * Returns the Node position from a Node element
-   * 
+   *
    * @param targetNode Node you want to find position
    * @returns Position
    */

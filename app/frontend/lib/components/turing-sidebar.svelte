@@ -15,7 +15,13 @@
   import Icon from './ui/icon/Icon.svelte'
   import turingSvg from '@/assets/turing.svg'
   import { aiApiService } from '@/services/ai-api-service'
-  import { setIdsToNewSuggestions } from '../suggestion-utils'
+  import {
+    extractNodeHtmlContent,
+    highlightHtmlDifferences,
+    setIdsToNewSuggestions,
+  } from '../suggestion-utils'
+  import type { Editor } from '@tiptap/core'
+  import type { Node as NodeType } from '@tiptap/pm/model'
 
   export type Suggestion = {
     id?: number
@@ -50,16 +56,13 @@
       }
 
   type Props = {
-    getContent: () => string
-    replaceEditorContent: (modifiedDocument: string) => void
-    suggest: (suggestion: Suggestion) => void
+    editor: Editor
   }
 
-  let { getContent, replaceEditorContent, suggest }: Props = $props()
+  let { editor }: Props = $props()
 
   let question = $state('')
   let loading = $state(false)
-  //let conversation = $state<ConversationPart[]>([])
   let conversation = $state<ConversationPart[]>([])
   let nextSuggestionIndex = $state(0)
   let suggestions = $state<Suggestion[]>([])
@@ -108,7 +111,7 @@
     })
 
     const body = {
-      document: getContent(),
+      document: editor.getHTML(),
       question,
     }
 
@@ -188,6 +191,61 @@
     }
 
     return parts
+  }
+
+  function replaceEditorContent(modifiedDocument: string) {
+    editor.chain().focus().clearContent().setContent(modifiedDocument).run()
+  }
+
+  function suggest(suggestion: Suggestion) {
+    let node: NodeType
+    let diff: { original: string; suggestion: string } = null
+
+    editor
+      .chain()
+      .focus()
+      .selectSuggestion({ 'data-id': suggestion.id, 'data-action': null })
+      .command(({ tr }) => {
+        const { selection } = tr
+
+        if (selection.empty) {
+          throw 'Sugestão não pode ser exibida pois já está sendo exibida ou já foi aprovada'
+        }
+
+        const pos = selection.from
+        node = tr.doc.nodeAt(pos)
+
+        const htmlContent = extractNodeHtmlContent(node)
+        const [originalDiff, suggestionDiff] = highlightHtmlDifferences(
+          htmlContent,
+          suggestion.change
+        )
+        diff = {
+          original: originalDiff,
+          suggestion: suggestionDiff,
+        }
+
+        return true
+      })
+      .updateSuggestion(
+        {
+          ...node.attrs,
+          'data-action': 'remove',
+          'data-empty': diff.original.length === 0,
+          'data-empty-brother': diff.suggestion.length === 0,
+        },
+        diff.original
+      )
+      .addSuggestionBellow(
+        {
+          ...node.attrs,
+          'data-action': 'add',
+          'data-empty': diff.suggestion.length === 0,
+          'data-empty-brother': diff.original.length === 0,
+        },
+        diff.suggestion
+      )
+      .run()
   }
 </script>
 
