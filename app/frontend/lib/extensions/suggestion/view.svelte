@@ -54,11 +54,11 @@
   data-suggestion
   {...node.attrs}
   class={cn(
-    'relative data-[action=add]:bg-green-900 data-[action=remove]:bg-red-900 data-[action]:px-0.5 rounded data-action:border-2',
+    'relative data-[action=add]:bg-suggestion-accept-background data-[action=remove]:bg-suggestion-reject-background data-[action]:px-0.5 rounded data-action:border-2',
     { 'hidden': node.attrs['data-empty'] },
     { 'my-5': node.attrs['data-empty-brother'] },
-    { 'mb-5': node.attrs['data-action'] === 'add' },
-    { 'mt-5': node.attrs['data-action'] === 'remove' }
+    { 'mb-5 not-dark:border-green-500 dark:border-green-900': node.attrs['data-action'] === 'add' },
+    { 'mt-5 not-dark:border-red-400 dark:border-red-900': node.attrs['data-action'] === 'remove' }
   )}
   onmouseenter={() => (isHovered = true)}
   onmouseleave={() => (isHovered = false)}
@@ -75,14 +75,14 @@
       <button
         onclick={acceptSuggestion}
         contenteditable="false"
-        class="text-green-500 px-1 cursor-pointer transition hover:bg-white/5"
+        class="text-suggestion-accept-foreground px-1 cursor-pointer transition hover:bg-white/5"
       >
         Aceitar
       </button>
       <button
         onclick={refuseSuggestion}
         contenteditable="false"
-        class="text-red-500 px-1 cursor-pointer transition hover:bg-white/5"
+        class="text-suggestion-reject-foreground px-1 cursor-pointer transition hover:bg-white/5"
       >
         Recusar
       </button>
@@ -90,7 +90,7 @@
         <button
           onclick={keepBothFromSuggestion}
           contenteditable="false"
-          class="text-orange-400 px-1 cursor-pointer transition hover:bg-white/5"
+          class="text-suggestion-both-foreground px-1 cursor-pointer transition hover:bg-white/5"
         >
           Manter ambas
         </button>
@@ -110,9 +110,9 @@
   }
 
   :global(*[data-suggestion][data-action='add'] *[data-diff]) {
-    background: rgba(0, 128, 0, 0.75);
+    background: var(--color-diff-accept-background);
   }
   :global(*[data-suggestion][data-action='remove'] *[data-diff]) {
-    background: rgba(255, 0, 0, 0.75);
+    background: var(--color-diff-reject-background);
   }
 </style>
