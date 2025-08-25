@@ -1,7 +1,7 @@
-import * as Diff from 'diff'
 import { generateHTML } from '@tiptap/html'
-import { editorExtensions } from './extensions/index'
 import type { Node } from '@tiptap/pm/model'
+import * as Diff from 'diff'
+import { editorExtensions } from './extensions/index'
 
 /**
  * Loops through HTML (as a string) adding the "data-id" attribute to all <suggestion> elements.

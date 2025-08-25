@@ -1,20 +1,19 @@
 <script module>
-  import scribbleDark from '@/assets/images/scribble-dark.svg'
-  import scribble from '@/assets/images/scribble.svg'
-  import reading from '@/assets/images/reading.png'
-  import readingDark from '@/assets/images/reading-dark.png'
-  import documents from '@/assets/images/documents.png'
-  import documentsDark from '@/assets/images/documents-dark.png'
+  import scribbleDark from '$assets/images/scribble-dark.svg'
+  import scribble from '$assets/images/scribble.svg'
+  import reading from '$assets/images/reading.png'
+  import readingDark from '$assets/images/reading-dark.png'
+  import documents from '$assets/images/documents.png'
+  import documentsDark from '$assets/images/documents-dark.png'
 </script>
 
 <script lang="ts">
-  import { Button } from '@/lib/components/ui/button'
+  import { Button } from '$lib/components/ui/button'
   import { ArrowRight, LoaderIcon } from '@lucide/svelte'
-  import Logo from '@/lib/components/logo.svelte'
-  import { Input } from '@/lib/components/ui/input'
+  import { Logo } from '$lib/components/shared'
+  import { Input } from '$lib/components/ui/input'
   import { page, useForm } from '@inertiajs/svelte'
-  import { capitalize } from '@/lib/utils'
-  import type { UserType } from './types'
+  import { capitalize } from '$lib/utils'
 
   const form = useForm({
     name: '',
@@ -29,7 +28,7 @@
       .patch('/onboarding')
   }
 
-  const user = $page.props.user as UserType
+  const user = $page.props.user
 
   const placeholder = capitalize(user.email.split('@')[0])
 </script>

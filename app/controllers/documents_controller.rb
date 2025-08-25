@@ -5,53 +5,47 @@ class DocumentsController < ApplicationController
   def index
     @documents = Document.all
     render inertia: "Document/Index", props: {
-      documents: -> { @documents.map do |document|
-          serialize_document(document)
+      documents: -> { @documents.map { |document| document.as_json(methods: :sqid) } },
+      active_team: -> { serialize_team(current_user.active_team) },
+      teams: InertiaRails.optional { current_user.teams.where.not(id: current_user.active_team_id).with_attached_cover.map { |team| serialize_team(team) } },
+      user_invitations: InertiaRails.optional { User.unscoped.unaccepted_invitations(current_user).map { |user| serialize_user_invitation(user) } },
+      team_members: InertiaRails.optional do
+        ActsAsTenant.without_tenant do
+          User.with_role.with_team(current_user.active_team).where.not(id: current_user.id).map { |user| serialize_user_member(user) }
         end
-      },
-      teams: -> { current_user.teams.includes(:cover_attachment).map do |team|
-        serialize_team(team)
-      end }
+      end
     }
   end
 
   # GET /documents/:sqid
   def show
     render inertia: "Document/Show", props: {
-      document: -> { serialize_document(@document) }
+      document: -> { @document.as_json(methods: :sqid) }
     }
   end
 
   # POST /documents
   def create
-    @document = Document.new(document_params)
-
-    if @document.save
-      redirect_to document_path(@document), notice: "document was successfully created."
-    else
-      redirect_to new_document_url, inertia: { errors: @document.errors }
-    end
+    @document = Document.create!(document_params)
+    redirect_to document_path(@document), notice: "document was successfully created."
   end
 
   # PATCH/PUT /documents/1
   def update
-    if @document.update(document_params)
-      redirect_to @document, notice: "Document was successfully updated."
-    else
-      redirect_to edit_document_url(@document), inertia: { errors: @document.errors }
-    end
+    @document.update!(document_params)
+    redirect_to @document, notice: "Document was successfully updated."
   end
 
   # DELETE /documents/1
   def destroy
     @document.destroy!
-    redirect_to authenticated_root_url, notice: "document was successfully destroyed."
+    redirect_to documents_url, notice: "document was successfully destroyed."
   end
 
   # DELETE /documents
   def destroy_all
     Document.where(id: document_id_params).destroy_all
-    redirect_to authenticated_root_url, notice: "documents were successfully destroyed."
+    redirect_to documents_url, notice: "documents were successfully destroyed."
   end
 
 
@@ -70,15 +64,19 @@ class DocumentsController < ApplicationController
       params.expect(ids: [])
     end
 
-    def serialize_document(document)
-      document.as_json(methods: :sqid)
-    end
-
     def serialize_team(team)
       team.as_json.merge("cover" => team_cover(team))
     end
 
     def team_cover(team)
       url_for(team.cover) if team.cover.attached?
+    end
+
+    def serialize_user_invitation(user)
+      user.as_json(only: %i[id email name invitation_sent_at]).merge(avatar: user_avatar(user))
+    end
+
+    def serialize_user_member(user)
+      user.as_json(only: %i[id email name role]).merge(avatar: user_avatar(user))
     end
 end

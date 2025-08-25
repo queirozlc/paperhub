@@ -1,11 +1,10 @@
 <script lang="ts">
-  import * as Tooltip from '@/lib/components/ui/tooltip'
-  import * as Avatar from '@/lib/components/ui/avatar'
+  import * as Tooltip from '$lib/components/ui/tooltip'
+  import * as Avatar from '$lib/components/ui/avatar'
   import { page } from '@inertiajs/svelte'
-  import type { UserType } from '@/pages/Users/types'
   import { defaultAvatar } from '../utils'
 
-  const user = $page.props.user as UserType
+  const user = $page.props.user
 </script>
 
 <div class="flex -space-x-3 rtl:space-x-reverse">

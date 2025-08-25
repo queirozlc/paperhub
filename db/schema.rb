@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_13_135826) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_15_192757) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -84,8 +84,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_13_135826) do
     t.datetime "updated_at", null: false
     t.string "name"
     t.bigint "active_team_id"
+    t.string "invitation_token"
+    t.datetime "invitation_created_at"
+    t.datetime "invitation_sent_at"
+    t.datetime "invitation_accepted_at"
+    t.integer "invitation_limit"
+    t.bigint "invited_by_id"
+    t.bigint "invited_team_id"
+    t.integer "invitation_role"
+    t.integer "invitations_count", default: 0
     t.index ["active_team_id"], name: "index_users_on_active_team_id"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
+    t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
+    t.index ["invited_team_id"], name: "index_users_on_invited_team_id"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
@@ -95,4 +107,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_13_135826) do
   add_foreign_key "memberships", "users", column: "member_id"
   add_foreign_key "teams", "users", column: "owner_id"
   add_foreign_key "users", "teams", column: "active_team_id"
+  add_foreign_key "users", "teams", column: "invited_team_id"
+  add_foreign_key "users", "users", column: "invited_by_id"
 end

@@ -6,7 +6,7 @@ FactoryBot.define do
   factory :user_verified, parent: :user do
     name { "John Doe" }
 
-    after (:create) do |user|
+    after(:create) do |user|
       user.new_personal_team({ name: user.name })
     end
   end

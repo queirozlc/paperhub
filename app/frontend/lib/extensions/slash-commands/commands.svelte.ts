@@ -82,8 +82,16 @@ export const SlashCommands = Extension.create({
             ...group,
             commands: group.commands
               .filter((item) => {
-                const labelNormalized = item.label.toLowerCase().trim()
-                const queryNormalized = query.toLowerCase().trim()
+                const labelNormalized = item.label
+                  .normalize('NFD')
+                  .replace(/[^\w\s]/gi, '')
+                  .toLowerCase()
+                  .trim()
+                const queryNormalized = query
+                  .normalize('NFD')
+                  .replace(/[^\w\s]/gi, '')
+                  .toLowerCase()
+                  .trim()
 
                 if (item.aliases) {
                   const aliases = item.aliases.map((alias) =>

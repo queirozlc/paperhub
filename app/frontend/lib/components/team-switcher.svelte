@@ -1,50 +1,47 @@
 <script lang="ts">
-  import * as DropdownMenu from '@/lib/components/ui/dropdown-menu'
-  import * as Sidebar from '@/lib/components/ui/sidebar'
-  import * as Dialog from '@/lib/components/ui/dialog'
-  import * as Avatar from '@/lib/components/ui/avatar'
-  import TeamForm from '@/pages/Team/Form.svelte'
-  import type { TeamType } from '@/pages/Team/types'
-  import { page, router } from '@inertiajs/svelte'
+  import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
+  import * as Sidebar from '$lib/components/ui/sidebar'
+  import * as Dialog from '$lib/components/ui/dialog'
+  import * as Avatar from '$lib/components/ui/avatar'
+  import TeamForm from '$pages/Team/Form.svelte'
+  import type { TeamType } from '$pages/Team/types'
+  import { router } from '@inertiajs/svelte'
   import { ChevronDown, Plus } from '@lucide/svelte'
   import { defaultAvatar } from '../utils'
   import { Check } from '@voolt_technologies/untitledui-svelte'
-  import type { UserType } from '@/pages/Users/types'
 
-  let { teams }: { teams: TeamType[] } = $props()
+  let { teams, active_team }: { teams: TeamType[]; active_team: TeamType } =
+    $props()
 
-  const user = $page.props.user as UserType
-
-  let activeTeam = $state(teams.find((team) => team.id === user.active_team_id))
   let open = $state(false)
 
   function logout() {
     router.delete('/sign_out')
   }
 
-  function cancel() {
-    open = false
-  }
-
   function switchTeam(team: TeamType) {
     router.patch(
-      `/users/teams/${user.id}`,
-      {
-        user: { active_team_id: team.id },
-      },
+      `/users/${team.id}/switch_team`,
+      {},
       {
         preserveState: false,
-        preserveUrl: false,
-        preserveScroll: false,
       }
     )
+  }
+
+  function fetchTeams() {
+    if (!teams) {
+      router.reload({
+        only: ['teams'],
+      })
+    }
   }
 </script>
 
 <Sidebar.Menu>
   <Sidebar.MenuItem>
-    <Dialog.Root {open} onOpenChange={(value) => (open = value)}
-      ><DropdownMenu.Root>
+    <Dialog.Root bind:open>
+      <DropdownMenu.Root onOpenChange={fetchTeams}>
         <DropdownMenu.Trigger>
           {#snippet child({ props })}
             <Sidebar.MenuButton {...props} class="w-fit px-1.5">
@@ -52,19 +49,19 @@
                 class="text-sidebar-primary-foreground flex aspect-square size-6 items-center justify-center rounded-md"
               >
                 <Avatar.Image
-                  src={activeTeam.cover}
+                  src={active_team.cover}
                   class="aspect-square object-cover size-6 rounded"
                 />
                 <Avatar.Fallback>
                   <img
                     alt="fallback active team cover"
-                    src={defaultAvatar(activeTeam.id).toDataUri()}
+                    src={defaultAvatar(active_team.id).toDataUri()}
                     class="size-5 rounded"
                   />
                 </Avatar.Fallback>
               </Avatar.Root>
               <span class="truncate font-semibold font-brand"
-                >Time {activeTeam.name}</span
+                >Time {active_team.name}</span
               >
               <ChevronDown class="opacity-50" />
             </Sidebar.MenuButton>
@@ -81,40 +78,42 @@
             class="text-muted-foreground font-brand pointer-events-none text-xs"
             >Times</DropdownMenu.Label
           >
-          {#each teams as team, index (team.id)}
-            <DropdownMenu.Item
-              onSelect={() => switchTeam(team)}
-              class="gap-2 p-2"
-            >
-              <Avatar.Root
-                class="flex size-6 items-center justify-center rounded-sm border"
+          {#if teams && teams.length}
+            {#each [active_team, ...teams] as team, index (team.id)}
+              <DropdownMenu.Item
+                onSelect={() => switchTeam(team)}
+                class="gap-2 p-2"
               >
-                <Avatar.Image
-                  src={team.cover}
-                  alt="team cover"
-                  class="object-cover size-5 rounded-sm shrink-0"
-                />
-
-                <Avatar.Fallback>
-                  <img
-                    alt="fallback team cover"
-                    src={defaultAvatar(team.id).toDataUri()}
-                    class="size-5 shrink-0 rounded-sm"
+                <Avatar.Root
+                  class="flex size-6 items-center justify-center rounded-sm border"
+                >
+                  <Avatar.Image
+                    src={team.cover}
+                    alt="team cover"
+                    class="object-cover size-5 rounded-sm shrink-0"
                   />
-                </Avatar.Fallback>
-              </Avatar.Root>
-              <span
-                class="truncate grow font-medium font-brand text-sm text-muted-foreground"
-                >{team.name}</span
-              >
-              <div class="flex items-center gap-2">
-                <DropdownMenu.Shortcut>⌘{index + 1}</DropdownMenu.Shortcut>
-                {#if team.id === activeTeam.id}
-                  <Check class="size-4 text-muted-foreground" />
-                {/if}
-              </div>
-            </DropdownMenu.Item>
-          {/each}
+
+                  <Avatar.Fallback>
+                    <img
+                      alt="fallback team cover"
+                      src={defaultAvatar(team.id).toDataUri()}
+                      class="size-5 shrink-0 rounded-sm"
+                    />
+                  </Avatar.Fallback>
+                </Avatar.Root>
+                <span
+                  class="truncate grow font-medium font-brand text-sm text-muted-foreground"
+                  >{team.name}</span
+                >
+                <div class="flex items-center gap-2">
+                  <DropdownMenu.Shortcut>⌘{index + 1}</DropdownMenu.Shortcut>
+                  {#if team.id === active_team.id}
+                    <Check class="size-4 text-muted-foreground" />
+                  {/if}
+                </div>
+              </DropdownMenu.Item>
+            {/each}
+          {/if}
 
           <DropdownMenu.Separator />
 
@@ -139,7 +138,7 @@
         </DropdownMenu.Content>
       </DropdownMenu.Root>
 
-      <TeamForm {cancel} />
+      <TeamForm bind:open />
     </Dialog.Root>
   </Sidebar.MenuItem>
 </Sidebar.Menu>

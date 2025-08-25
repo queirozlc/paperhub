@@ -1,15 +1,92 @@
 <script lang="ts" module>
-  import { Blocks, MessageCircleQuestion, Sparkles } from '@lucide/svelte'
+  import {
+    Blocks,
+    Icon,
+    MessageCircleQuestion,
+    Settings,
+    Sparkles,
+  } from '@lucide/svelte'
 
   import {
     FilterLines,
     Home05 as Home,
     Inbox01 as Inbox,
-    Settings01,
-    UserPlus01,
   } from '@voolt_technologies/untitledui-svelte'
 
-  const data = {
+  import type { InvitationForm } from '$pages/Document/types'
+
+  export type NavMainItem = {
+    title: string
+    url: string
+    // Eslint disabled because we need to use any to pass the icon to the component
+    // the lib untitledui-svelte is not typed yet
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    icon: any
+    isActive?: boolean
+    tooltip: string
+    badge?: number
+  }
+
+  export type NavSecondaryItem = {
+    name: string
+    title: string
+    url?: string
+    icon: typeof Icon
+    badge?: string
+  }
+
+  export { default as layout } from './HomeLayout.svelte'
+</script>
+
+<script lang="ts">
+  import {
+    Sidebar,
+    SidebarInset,
+    SidebarHeader,
+    SidebarProvider,
+    SidebarTrigger,
+    SidebarContent,
+    SidebarGroup,
+  } from '$lib/components/ui/sidebar'
+
+  import {
+    NavFolders,
+    NavMain,
+    NavSecondary,
+  } from '$lib/components/documents/index'
+  import TeamSwitcher from '$lib/components/team-switcher.svelte'
+  import {
+    Avatar,
+    AvatarFallback,
+    AvatarImage,
+  } from '$lib/components/ui/avatar'
+  import Button from '$lib/components/ui/button/button.svelte'
+  import Separator from '$lib/components/ui/separator/separator.svelte'
+  import { Tabs, TabsList, TabsTrigger } from '$lib/components/ui/tabs'
+  import type { TeamType } from '$pages/Team/types'
+  import { Send } from '@lucide/svelte'
+  import type { Snippet } from 'svelte'
+  import { useForm } from '@inertiajs/svelte'
+  import { InvitationDialog } from '$lib/components/documents/index'
+  import { toast } from 'svelte-sonner'
+  import { page } from '@inertiajs/svelte'
+  import type { UserInvitationType } from '$pages/Users/types'
+
+  type Props = {
+    teams: TeamType[]
+    children: Snippet
+    user_invitations: UserInvitationType[]
+    team_members: UserInvitationType[]
+    active_team: TeamType
+  }
+
+  const sidebarSections: {
+    navMain: NavMainItem[]
+    navSecondary: NavSecondaryItem[]
+    // Just for a while
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    folders: any[]
+  } = {
     navMain: [
       {
         title: 'Pergunte ao Turing ✨',
@@ -36,16 +113,18 @@
     ],
     navSecondary: [
       {
+        name: 'settings',
         title: 'Configurações',
-        url: '#',
-        icon: Settings01,
+        icon: Settings,
       },
       {
+        name: 'templates',
         title: 'Modelos',
         url: '#',
         icon: Blocks,
       },
       {
+        name: 'help',
         title: 'Ajuda',
         url: '#',
         icon: MessageCircleQuestion,
@@ -54,69 +133,71 @@
     folders: [],
   }
 
-  export { default as layout } from './HomeLayout.svelte'
-</script>
+  let { teams, children, user_invitations, team_members, active_team }: Props =
+    $props()
 
-<script lang="ts">
-  import * as Sidebar from '@/lib/components/ui/sidebar'
+  let openInvitationDialog = $state(false)
 
-  import NavFolders from '@/lib/components/nav-folders.svelte'
-  import NavMain from '@/lib/components/nav-main.svelte'
-  import NavSecondary from '@/lib/components/nav-secondary.svelte'
-  import TeamSwitcher from '@/lib/components/team-switcher.svelte'
-  import {
-    Avatar,
-    AvatarFallback,
-    AvatarImage,
-  } from '@/lib/components/ui/avatar'
-  import Button from '@/lib/components/ui/button/button.svelte'
-  import Separator from '@/lib/components/ui/separator/separator.svelte'
-  import { Tabs, TabsList, TabsTrigger } from '@/lib/components/ui/tabs'
-  import { Send } from '@lucide/svelte'
-  import type { ComponentProps } from 'svelte'
-  import type { TeamType } from '@/pages/Team/types'
-  import type { DocumentType } from '@/pages/Document/types'
+  const form = useForm<InvitationForm>({
+    email: '',
+    role: '',
+  })
 
-  type Props = {
-    documents: DocumentType[]
-    teams: TeamType[]
-  } & ComponentProps<typeof Sidebar.Root>
-
-  let { teams, ref = $bindable(null), children, ...restProps }: Props = $props()
+  function sendInvite(e: SubmitEvent) {
+    e.preventDefault()
+    $form
+      .transform(({ email, role }) => ({
+        user: { email, invitation_role: role },
+      }))
+      .post('/invitation', {
+        preserveState: false,
+        onSuccess: () => {
+          openInvitationDialog = false
+          toast.success('Convite enviado com sucesso')
+        },
+      })
+  }
 </script>
 
 <svelte:head>
   <title>Home | Seus Documentos</title>
   <meta
-    name="description"
     content="Seus Documentos - Dashboard de gerenciamento de documentos"
+    name="description"
   />
 </svelte:head>
 
-<Sidebar.Provider>
-  <Sidebar.Root bind:ref {...restProps}>
-    <Sidebar.Header>
-      <TeamSwitcher {teams} />
-      <NavMain items={data.navMain} />
-    </Sidebar.Header>
-    <Sidebar.Content>
-      <NavFolders folders={data.folders} />
-      <NavSecondary items={data.navSecondary} class="mt-auto" />
-      <Sidebar.Group class="pb-4">
-        <Button variant="outline" size="sm">
-          <UserPlus01 />
-          Convidar novos membros
-        </Button>
-      </Sidebar.Group>
-    </Sidebar.Content>
-  </Sidebar.Root>
+<SidebarProvider>
+  <Sidebar>
+    <SidebarHeader>
+      <TeamSwitcher {teams} {active_team} />
+      <NavMain items={sidebarSections.navMain} />
+    </SidebarHeader>
+    <SidebarContent>
+      <NavFolders folders={sidebarSections.folders} />
+      <NavSecondary
+        class="mt-auto"
+        items={sidebarSections.navSecondary}
+        {active_team}
+        {user_invitations}
+        {team_members}
+      />
+      <SidebarGroup class="pb-4">
+        <InvitationDialog
+          bind:form={$form}
+          bind:open={openInvitationDialog}
+          {sendInvite}
+        />
+      </SidebarGroup>
+    </SidebarContent>
+  </Sidebar>
 
-  <Sidebar.Inset>
+  <SidebarInset>
     <header class="flex h-14 items-center px-4 justify-between">
       <div class="flex items-center gap-2">
-        <Sidebar.Trigger />
-        <Separator orientation="vertical" class="mr-2 h-4" />
-        <Button class="gap-2 h-7 shadow-none" variant="outline" size="sm">
+        <SidebarTrigger />
+        <Separator class="mr-2 h-4" orientation="vertical" />
+        <Button class="gap-2 h-7 shadow-none" size="sm" variant="outline">
           <div class="rounded-full border border-accent-foreground p-0.5">
             <FilterLines class="size-2 text-accent-foreground" />
           </div>
@@ -133,11 +214,20 @@
       </div>
       <div class="flex items-center gap-5">
         <Avatar class="size-8">
-          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarImage
+            alt={$page.props.user.name}
+            src={$page.props.user.avatar}
+          />
+          <AvatarFallback>
+            {$page.props.user.name.slice(0, 2).toUpperCase()}
+          </AvatarFallback>
         </Avatar>
 
-        <Button class="font-brand font-semibold rounded-lg px-6" size="sm">
+        <Button
+          class="font-brand font-semibold rounded-lg px-6"
+          onclick={() => (openInvitationDialog = true)}
+          size="sm"
+        >
           <Send />
           Convidar
         </Button>
@@ -146,5 +236,5 @@
     <div class="flex flex-1 relative flex-col gap-2 py-10">
       {@render children()}
     </div>
-  </Sidebar.Inset>
-</Sidebar.Provider>
+  </SidebarInset>
+</SidebarProvider>

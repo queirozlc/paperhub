@@ -1,4 +1,4 @@
-import type { HashableModel } from '@/lib/utils'
+import type { HashableModel } from '$lib/utils'
 
 export interface DocumentType extends HashableModel {
   id: number
@@ -13,3 +13,8 @@ export type DocumentFormType = Omit<
   DocumentType,
   'id' | 'team_id' | 'created_at' | 'updated_at' | 'sqid'
 >
+
+export type InvitationForm = {
+  email: string
+  role: 'owner' | 'member' | ''
+}

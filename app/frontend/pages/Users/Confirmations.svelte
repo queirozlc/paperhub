@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Logo from '@/lib/components/logo.svelte'
-  import { Button } from '@/lib/components/ui/button'
+  import { Logo } from '$lib/components/shared'
+  import { Button } from '$lib/components/ui/button'
   import { Link } from '@inertiajs/svelte'
   import { ArrowLeft, ArrowUpRight } from '@lucide/svelte'
 

@@ -1,21 +1,21 @@
 <script lang="ts">
-  import Button from '@/lib/components/ui/button/button.svelte'
-  import { Icon } from '@/lib/components/ui/icon'
-  import { Separator } from '@/lib/components/ui/separator'
-  import * as Tabs from '@/lib/components/ui/tabs'
-  import * as Tooltip from '@/lib/components/ui/tooltip'
-  import type { UserType } from '@/pages/Users/types'
+  import Button from '$lib/components/ui/button/button.svelte'
+  import { Icon } from '$lib/components/ui/icon'
+  import { Separator } from '$lib/components/ui/separator'
+  import { Tabs, TabsList, TabsTrigger } from '$lib/components/ui/tabs'
   import {
-    DotsHorizontal,
-    Share01,
-  } from '@voolt_technologies/untitledui-svelte'
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+  } from '$lib/components/ui/tooltip'
+  import { DotsHorizontal } from '@voolt_technologies/untitledui-svelte'
 
-  import * as Sidebar from '@/lib/components/ui/sidebar'
-  import type { DocumentType } from '@/pages/Document/types'
+  import { SidebarTrigger } from '$lib/components/ui/sidebar'
+  import type { DocumentType } from '$pages/Document/types'
   import { page, router } from '@inertiajs/svelte'
   import AvatarStack from './avatar-stack.svelte'
 
-  const user = $page.props.user as UserType
+  const user = $page.props.user
 
   type Props = {
     documentTitleInput: HTMLHeadingElement
@@ -36,13 +36,9 @@
     }
 
     if (documentTitle !== document.title) {
-      router.patch(
-        `/documents/${document.sqid}`,
-        {
-          document: { title: documentTitle },
-        },
-        { preserveState: false }
-      )
+      router.patch(`/documents/${document.sqid}`, {
+        document: { title: documentTitle },
+      })
     }
   }
 
@@ -57,7 +53,6 @@
     if (event.key === 'Enter') {
       event.preventDefault()
       updateTitle(target)
-      // unfocus input
       documentTitleInput.blur()
     }
 
@@ -71,49 +66,49 @@
 <header
   class="flex min-h-14 border-sidebar-border border-b items-center px-4 justify-between"
 >
-  <div class="flex items-center gap-4">
+  <div class="flex items-center gap-2">
     <div class="flex items-center gap-2">
-      <Sidebar.Trigger for="summary" />
-      <Separator orientation="vertical" class="mr-2 h-4" />
+      <SidebarTrigger for="summary" />
+      <Separator class="mr-2 h-4" orientation="vertical" />
     </div>
 
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-2">
       <h5
-        bind:this={documentTitleInput}
-        contenteditable="true"
         bind:innerText={documentTitle}
+        bind:this={documentTitleInput}
+        class="font-brand tracking-tight text-accent-foreground max-w-md text-nowrap truncate overflow-x-auto no-scrollbar"
+        contenteditable="true"
         onfocusout={handleTitleFocusOut}
         onkeydown={handleTitleKeydown}
-        class="font-brand tracking-tight text-accent-foreground max-w-md text-nowrap truncate overflow-x-auto no-scrollbar"
       >
         {document.title || 'Sem título'}
       </h5>
-      <Tabs.Root value="editor">
-        <Tabs.List class="gap-1">
-          <Tabs.Trigger value="editor" class="px-2" preserveState>
-            <Icon name="file" class="size-5" />
-          </Tabs.Trigger>
+      <Tabs value="editor">
+        <TabsList class="gap-1">
+          <TabsTrigger class="px-2" preserveState value="editor">
+            <Icon class="size-5" name="file" />
+          </TabsTrigger>
 
-          <Tabs.Trigger value="git" class="px-2" preserveState>
-            <Icon name="source-control" class="size-5" />
-          </Tabs.Trigger>
-        </Tabs.List>
-      </Tabs.Root>
+          <TabsTrigger class="px-2" preserveState value="git">
+            <Icon class="size-5" name="source-control" />
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
     </div>
 
     <div class="flex items-center gap-2">
       <Button
-        variant="ghost"
-        size="icon"
         class="text-muted-foreground hover:text-accent-foreground"
+        size="icon"
+        variant="ghost"
       >
-        <Icon name="info-circle" strokeWidth={2} class="size-5" />
+        <Icon class="size-5" name="info-circle" strokeWidth={2} />
       </Button>
 
       <Button
-        variant="ghost"
-        size="icon"
         class="text-muted-foreground hover:text-accent-foreground"
+        size="icon"
+        variant="ghost"
       >
         <DotsHorizontal class="size-5" />
       </Button>
@@ -121,13 +116,8 @@
   </div>
 
   <div class="flex items-center gap-4">
-    <Button variant="outline" size="sm" class="shadow-none h-7">
-      <Share01 />
-      <span class="font-medium">Compartilhar</span>
-    </Button>
-
     <div class="flex items-center gap-2">
-      <Separator orientation="vertical" class="mr-2 h-4" />
+      <Separator class="mr-2 h-4" orientation="vertical" />
       <div class="flex items-center gap-1">
         <div class="size-2 rounded-full bg-green-500"></div>
         <span class="font-medium text-muted-foreground text-xs font-brand"
@@ -135,21 +125,21 @@
         >
       </div>
 
-      <Tooltip.Provider>
-        <Tooltip.Root delayDuration={100}>
+      <TooltipProvider>
+        <Tooltip delayDuration={100}>
           <AvatarStack />
 
-          <Tooltip.Content>
+          <TooltipContent>
             <span class="pointer-events-none">{user.name}</span>
-          </Tooltip.Content>
-        </Tooltip.Root>
-      </Tooltip.Provider>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
 
     <div class="flex items-center">
-      <Separator orientation="vertical" class="mr-2 h-4" />
+      <Separator class="mr-2 h-4" orientation="vertical" />
 
-      <Sidebar.Trigger class="-mr-1 ml-auto rotate-180" for="turing" />
+      <SidebarTrigger class="-mr-1 ml-auto rotate-180" for="turing" />
     </div>
   </div>
 </header>

@@ -5,6 +5,7 @@ class Sqids
     mattr_accessor :min_length, default: Sqids::DEFAULT_MIN_LENGTH
     mattr_accessor :generate_sqid_on, default: :initialize
 
+    # :nocov:
     def self.configure
       yield self
     end
@@ -12,5 +13,6 @@ class Sqids
     def self.sqids
       @sqids ||= Sqids.new(alphabet: alphabet, blocklist: blocklist, min_length: min_length)
     end
+    # :nocov:
   end
 end

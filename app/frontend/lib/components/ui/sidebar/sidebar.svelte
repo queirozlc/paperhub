@@ -1,6 +1,6 @@
 <script lang="ts">
-  import * as Sheet from '@/lib/components/ui/sheet'
-  import { cn } from '@/lib/utils'
+  import * as Sheet from '$lib/components/ui/sheet'
+  import { cn } from '$lib/utils'
   import type { WithElementRef } from 'bits-ui'
   import type { HTMLAttributes } from 'svelte/elements'
   import { SIDEBAR_WIDTH_MOBILE } from './constants'

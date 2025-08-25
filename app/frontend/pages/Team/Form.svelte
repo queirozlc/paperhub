@@ -1,17 +1,17 @@
 <script lang="ts">
-  import AvatarInput from '@/lib/components/avatar-input.svelte'
-  import { Button } from '@/lib/components/ui/button'
-  import * as Dialog from '@/lib/components/ui/dialog/index.js'
-  import { Input } from '@/lib/components/ui/input'
-  import { Label } from '@/lib/components/ui/label'
+  import AvatarInput from '$lib/components/avatar-input.svelte'
+  import { Button } from '$lib/components/ui/button'
+  import * as Dialog from '$lib/components/ui/dialog/index.js'
+  import { Input } from '$lib/components/ui/input'
+  import { Label } from '$lib/components/ui/label'
   import { useForm } from '@inertiajs/svelte'
   import type { TeamForm } from './types'
 
   type Props = {
-    cancel: () => void
+    open: boolean
   }
 
-  let { cancel }: Props = $props()
+  let { open = $bindable(false) }: Props = $props()
 
   let form = useForm<TeamForm>({
     name: '',
@@ -63,8 +63,11 @@
     </div>
   </form>
   <Dialog.Footer class="gap-4">
-    <Button size="sm" class="h-7 shadow-none" variant="outline" onclick={cancel}
-      >Cancelar</Button
+    <Button
+      size="sm"
+      class="h-7 shadow-none"
+      variant="outline"
+      onclick={() => (open = false)}>Cancelar</Button
     >
     <Button
       type="submit"

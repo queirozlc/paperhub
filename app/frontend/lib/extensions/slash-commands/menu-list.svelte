@@ -10,13 +10,6 @@
   let itemRefs = $state<HTMLElement[]>([])
 
   $effect(() => {
-    if (items) {
-      selectedGroupIndex = 0
-      selectedCommandIndex = 0
-    }
-  })
-
-  $effect(() => {
     const flatIndex = getFlatIndex(selectedGroupIndex, selectedCommandIndex)
     const activeItem = itemRefs[flatIndex]
 

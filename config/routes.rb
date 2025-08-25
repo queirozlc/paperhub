@@ -1,34 +1,39 @@
 Rails.application.routes.draw do
-  authenticated :user do
-    root to: "documents#index", as: :authenticated_root
-    get "onboarding" => "users/onboarding#edit", as: :user_onboarding
-    patch "onboarding" => "users/onboarding#update", as: :user_onboarding_update
-    resources :documents, except: %i[index new edit]
-    delete "documents" => "documents#destroy_all", as: :destroy_all_documents
-    resources :teams, only: %i[create]
-    namespace :users do
-      resources :teams, only: %i[update], controller: "profile"
-    end
-  end
-
-  root to: redirect("/sign_in")
+  root "welcome#index"
 
   devise_for :users, path: "", controllers: {
     sessions: "users/sessions",
-    verification: "users/onboarding"
+    verification: "users/onboarding",
+    invitations: "users/invitations"
   }, skip: %i[verification]
 
   get "verify_email" => "users/confirmations#show", as: :verify_email
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
+  get "onboarding" => "users/onboarding#show", as: :user_onboarding
+  patch "onboarding" => "users/onboarding#update", as: :user_onboarding_update
+
+  resources :documents, except: %i[new edit] do
+    collection do
+      delete "destroy_all" => "documents#destroy_all"
+    end
+  end
+
+  resources :teams, only: %i[create update destroy] do
+    collection do
+      delete "members/:member_id" => "teams#destroy_member", as: :destroy_member
+    end
+  end
+
+  resources :users, only: [ :destroy ] do
+    member do
+      patch "switch_team" => "users#switch_team"
+    end
+  end
+
+  namespace :users do
+    patch "profile" => "profile#update"
+  end
+
+
   get "up" => "rails/health#show", as: :rails_health_check
-
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
-
-  # Defines the root path route ("/")
-  # root "posts#index"
 end

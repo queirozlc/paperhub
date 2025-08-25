@@ -8,14 +8,16 @@
 :root {
   --background: hsl(0, 0%, 100%);
   --background-off: hsl(30, 20%, 98%);
+  --background-editor: hsl(30, 10%, 98%);
   --foreground: hsl(240, 10%, 3.9%);
+  --link: hsl(240, 100%, 50%);
   --card: hsl(0, 0%, 100%);
   --card-foreground: hsl(240, 10%, 3.9%);
   --popover: hsl(0, 0%, 100%);
   --popover-foreground: hsl(240, 10%, 3.9%);
-  --primary: hsl(82, 82%, 50%);
+  --primary: hsl(82, 80%, 50%);
   --primary-foreground: hsl(82, 15%, 9.5%);
-  --secondary: hsl(240, 4.8%, 95.9%);
+  --secondary: hsl(240, 10%, 74.53%);
   --secondary-foreground: hsl(240, 5.9%, 10%);
   --muted: oklch(0.967 0.001 286.375);
   --muted-foreground: hsl(240, 3.8%, 46.1%);
@@ -55,14 +57,16 @@
 .dark {
   --background: hsl(20, 14.3%, 4.1%);
   --background-off: hsl(223.81, 0%, 12%);
+  --background-editor: hsl(223.81, 0%, 10%);
   --foreground: hsl(0, 0%, 95%);
+  --link: hsl(225, 94.34%, 60%);
   --card: hsl(24, 9.8%, 10%);
   --card-foreground: hsl(0, 0%, 95%);
   --popover: hsl(0, 0%, 9%);
   --popover-foreground: hsl(0, 0%, 95%);
   --primary: hsl(82, 100%, 50%);
   --primary-foreground: hsl(0, 0%, 8.4%);
-  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary: hsl(240, 10%, 20%);
   --secondary-foreground: hsl(0, 0%, 98%);
   --muted: hsl(240, 3.7%, 15.9%);
   --muted-foreground: hsl(240, 5%, 64.9%);
@@ -116,7 +120,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-background-off: var(--background-off);
+  --color-background-editor: var(--background-editor);
   --color-foreground: var(--foreground);
+  --color-link: var(--link);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
@@ -181,9 +187,240 @@
     @apply scroll-m-20 text-xl font-semibold tracking-tight;
   }
 
-  p {
+  /* p {
     @apply leading-7 [&:not(:first-child)]:mt-6;
+  } */
+
+  /* --- Begin editor.css, lists.css, typography.css, placeholder.css --- */
+  [data-theme='slash-command'] {
+    width: 1000vw;
   }
+
+  .ProseMirror {
+    @apply caret-foreground z-0 outline-0;
+
+    .selection {
+      @apply inline;
+    }
+
+    &.resize-cursor {
+      @apply cursor-col-resize;
+    }
+
+    .ProseMirror-gapcursor {
+      @apply relative mx-auto w-full max-w-2xl;
+
+      &:after {
+        @apply border-t-border -top-[1.5em] right-0 left-0 mx-auto w-full max-w-2xl;
+      }
+    }
+
+    /* lists.css */
+    ol {
+      @apply list-decimal;
+    }
+
+    /* ul {
+      @apply list-disc;
+    } */
+
+    ul,
+    ol {
+      @apply my-6 px-8 py-0 first:mt-0 last:mb-0;
+
+      ul,
+      ol,
+      li {
+        @apply my-1;
+      }
+
+      p {
+        @apply mt-0 mb-1;
+      }
+    }
+
+    & > ul,
+    & > ol {
+      @apply my-8 first:mt-0 last:mb-0;
+    }
+
+    ul[data-type='taskList'] {
+      @apply list-none p-0;
+
+      p {
+        @apply m-0;
+      }
+
+      li {
+        @apply flex items-center gap-2;
+
+        > label {
+          @apply flex-auto shrink-0 grow-0 select-none;
+        }
+
+        > div {
+          @apply flex-auto;
+        }
+
+        &[data-checked='true'] {
+          @apply line-through;
+        }
+      }
+    }
+
+    /* typography.css */
+    p {
+      @apply my-0 leading-tight first:mt-0 last:mb-0;
+    }
+
+    & > p {
+      @apply my-0 first:mt-0 last:mb-0;
+    }
+
+    h1 {
+      @apply text-3xl;
+    }
+
+    h2 {
+      @apply text-2xl;
+    }
+
+    h3 {
+      @apply text-xl;
+    }
+
+    h4 {
+      @apply text-lg;
+    }
+
+    h5 {
+      @apply text-base;
+    }
+
+    h6 {
+      @apply text-sm;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      @apply font-bold first:mt-0 last:mb-0;
+    }
+
+    h1,
+    h2,
+    h3 {
+      @apply my-5;
+    }
+
+    h4,
+    h5,
+    h6 {
+      @apply my-4;
+    }
+
+    a.link {
+      @apply font-extrabold text-blue-500 dark:text-blue-400;
+    }
+
+    mark {
+      @apply rounded-sm bg-red-500 decoration-clone px-0 py-1 text-inherit dark:bg-red-400;
+    }
+
+    & img {
+      @apply h-auto w-full max-w-full;
+    }
+
+    [data-type='horizontalRule'] {
+      @apply my-8 cursor-pointer py-4 transition-all duration-100 ease-in-out;
+
+      &.ProseMirror-selectednode {
+        @apply bg-black/5 dark:bg-white/10;
+
+        hr {
+          @apply border-t-black/30 dark:border-t-white/30;
+        }
+      }
+
+      &:hover:not(&.ProseMirror-selectednode) {
+        @apply bg-black/5;
+        @apply dark:bg-white/10;
+      }
+
+      hr {
+        @apply border-0 border-t border-black/20 bg-black/80;
+        @apply dark:border-white/20 dark:bg-white/80;
+      }
+    }
+
+    [data-type='emoji'] {
+      display: inline-block;
+
+      img {
+        width: 1em;
+        height: 1em;
+        object-fit: cover;
+        display: block;
+      }
+    }
+
+    /* placeholder.css */
+    /* Placeholder Styles */
+    .is-empty::before {
+      @apply text-muted-foreground pointer-events-none float-left h-0 w-full;
+    }
+
+    &.ProseMirror-focused {
+      /* Slashmenu Placeholder */
+      > p.has-focus.is-empty::before {
+        content: "Digite '/' para navegar pelas opções";
+      }
+    }
+
+    /* Default Placeholder */
+    & > .is-editor-empty:first-child:last-child::before {
+      content: 'Comece escrevendo algo 🚀';
+    }
+
+    /* Blockquote Placeholder */
+    blockquote.is-editor-empty::before {
+      content: none !important;
+    }
+
+    blockquote .has-focus.is-empty:first-child:last-child::before {
+      content: 'Digite uma citação';
+    }
+
+    [data-placeholder][data-suggestion]::before,
+    [data-placeholder][data-suggestion] *::before {
+      content: none !important;
+    }
+
+    /* Details Placeholder */
+    [data-type='taskList'].is-editor-empty::before {
+      content: none !important;
+    }
+
+    [data-type='taskItem'] .is-empty::before {
+      content: 'Digite uma tarefa';
+    }
+  }
+
+  .tiptap {
+    :first-child {
+      margin-top: 0;
+    }
+
+    blockquote {
+      border-left: 3px solid var(--color-muted-foreground);
+      margin: 1.5rem 0;
+      padding-left: 1rem;
+    }
+  }
+  /* --- End editor.css, lists.css, typography.css, placeholder.css --- */
 }
 
 @layer utilities {
@@ -202,35 +439,5 @@
 
   ::-webkit-scrollbar-thumb {
     @apply rounded-full bg-neutral-500/50;
-  }
-}
-
-@layer components {
-  .ProseMirror .is-empty::before {
-    content: attr(data-placeholder);
-    float: left;
-    height: 0;
-    pointer-events: none;
-
-    @apply text-muted-foreground;
-  }
-  .ProseMirror {
-    @apply caret-foreground z-0 outline-0;
-
-    .selection {
-      @apply inline;
-    }
-
-    &.resize-cursor {
-      @apply cursor-col-resize;
-    }
-
-    .ProseMirror-gapcursor {
-      @apply relative mx-auto w-full max-w-2xl;
-
-      &:after {
-        @apply -top-[1.5em] right-0 left-0 mx-auto w-full max-w-2xl border-t-black/40 dark:border-t-white/40;
-      }
-    }
   }
 }
