@@ -7,9 +7,11 @@
   import type { Editor } from '@tiptap/core'
 
   import { type Snippet } from 'svelte'
+  import type { Editor } from '@tiptap/core'
 
   type Props = {
     document: DocumentType
+    editor: Editor
     children: Snippet
     editor: Editor
   }
@@ -70,6 +72,6 @@
     style="--sidebar-width: 18rem;"
     class="w-fit overflow-hidden max-h-dvh"
   >
-    <TuringSidebar />
+    <TuringSidebar {editor} />
   </Sidebar.Provider>
 </div>
