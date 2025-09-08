@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/libgit2/rugged.git
+  revision: 762fd37e32c14707d017589a7dfa082dae7d9821
+  submodules: true
+  specs:
+    rugged (1.7.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -233,8 +240,6 @@ GEM
       racc (~> 1.4)
     nokogiri (1.18.9-x86_64-linux-musl)
       racc (~> 1.4)
-    noticed (2.8.1)
-      rails (>= 6.1.0)
     orm_adapter (0.5.0)
     ostruct (0.6.2)
     parallel (1.27.0)
@@ -488,7 +493,6 @@ DEPENDENCIES
   jbuilder
   kamal
   letter_opener
-  noticed
   pg (~> 1.6)
   pg_query
   prosopite
@@ -504,6 +508,7 @@ DEPENDENCIES
   rubocop-rspec
   rubocop-rspec_rails
   ruby-lsp-rspec
+  rugged!
   simplecov
   solid_cable
   solid_cache
