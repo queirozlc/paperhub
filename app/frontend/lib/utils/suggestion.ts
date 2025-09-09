@@ -1,7 +1,7 @@
 import { generateHTML } from '@tiptap/html'
 import type { Node } from '@tiptap/pm/model'
 import * as Diff from 'diff'
-import { editorExtensions } from './extensions/index'
+import { editorExtensions as extensions } from '$lib/extensions/extension-kit'
 
 /**
  * Loops through HTML (as a string) adding the "data-id" attribute to all <suggestion> elements.
@@ -42,7 +42,7 @@ export function setIdsToNewSuggestions(
  * @returns HTML as string
  */
 export function extractNodeHtmlContent(node: Node): string {
-  const html = generateHTML(node.toJSON(), editorExtensions)
+  const html = generateHTML(node.toJSON(), extensions)
   return html.replace(/ xmlns="[^"]*"/g, '')
 }
 
@@ -52,7 +52,7 @@ export function extractNodeHtmlContent(node: Node): string {
  * @param html2 HTML string to compare
  * @returns List with two strings. Each has its differences highlighted
  */
-export function highlightHtmllDifferences(
+export function highlightHtmlDifferences(
   html1: string,
   html2: string
 ): string[] {

@@ -13,13 +13,13 @@
   import Button from './ui/button/button.svelte'
   import Textarea from './ui/textarea/textarea.svelte'
   import Icon from './ui/icon/Icon.svelte'
-  import turingSvg from '@/assets/turing.svg'
-  import { aiApiService } from '@/services/ai-api-service'
+  import turingSvg from '$assets/turing.svg'
+  import { aiApiService } from '$lib/services/ai-api-service'
   import {
     extractNodeHtmlContent,
     highlightHtmlDifferences,
     setIdsToNewSuggestions,
-  } from '../suggestion-utils'
+  } from '$lib/utils/suggestion'
   import type { Editor } from '@tiptap/core'
   import type { Node as NodeType } from '@tiptap/pm/model'
 

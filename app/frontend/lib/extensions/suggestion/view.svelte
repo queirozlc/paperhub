@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cn } from '@/lib/utils'
+  import { cn } from '$lib/utils'
   import type { NodeViewProps } from '@tiptap/core'
   import { NodeViewContent, NodeViewWrapper } from 'svelte-tiptap'
 
