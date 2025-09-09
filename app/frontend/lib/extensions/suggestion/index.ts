@@ -2,9 +2,8 @@ import { Editor, mergeAttributes, Node } from '@tiptap/core'
 import type { Fragment, Node as NodeType } from '@tiptap/pm/model'
 import { NodeSelection, TextSelection } from '@tiptap/pm/state'
 import { SvelteNodeViewRenderer } from 'svelte-tiptap'
-import SuggestionView from './view.svelte'
-import { generateJSON } from '@tiptap/core'
-import { editorExtensions as extensions } from '..'
+import SuggestionView from '$lib/extensions/suggestion/view.svelte'
+import { generateJSON } from '@tiptap/html'
 
 export interface SuggestionOptions {
   HTMLAttributes: Record<string, any>
@@ -332,12 +331,12 @@ export const Suggestion = Node.create<SuggestionOptions>({
 
       updateSuggestion:
         (attributes: SuggestionAttributes, content: string) =>
-        ({ tr, state }) => {
+        ({ tr, state, editor }) => {
           const { selection } = tr
 
           let fragment: Fragment = null
           if (content.length > 0) {
-            const json = generateJSON(content, extensions)
+            const json = generateJSON(content, editor.extensionManager.extensions)
             fragment = state.schema.nodeFromJSON(json).content
           }
 
@@ -354,7 +353,7 @@ export const Suggestion = Node.create<SuggestionOptions>({
 
       addSuggestionBellow:
         (attributes: SuggestionAttributes, content: string) =>
-        ({ tr, state }) => {
+        ({ tr, state, editor }) => {
           if (!(tr.selection instanceof NodeSelection)) {
             throw 'Seleção precisa ser do tipo NodeSelection'
           }
@@ -362,7 +361,7 @@ export const Suggestion = Node.create<SuggestionOptions>({
           const node = tr.selection.node
           const pos = tr.selection.from
 
-          const json = generateJSON(content, extensions)
+          const json = generateJSON(content, editor.extensionManager.extensions)
           const fragment = state.schema.nodeFromJSON(json).content
 
           const suggestionAdd = state.schema.nodes.suggestion.create(

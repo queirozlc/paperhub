@@ -4,8 +4,6 @@
   import TuringSidebar from '$lib/components/turing-sidebar.svelte'
   import * as Sidebar from '$lib/components/ui/sidebar'
   import type { DocumentType } from '$pages/Document/types'
-  import type { Editor } from '@tiptap/core'
-
   import { type Snippet } from 'svelte'
   import type { Editor } from '@tiptap/core'
 
@@ -13,7 +11,6 @@
     document: DocumentType
     editor: Editor
     children: Snippet
-    editor: Editor
   }
 
   let { children, document, editor }: Props = $props()
