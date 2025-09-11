@@ -208,7 +208,7 @@
       .chain()
       .focus()
       .selectAiSuggestion({ 'data-id': suggestion.id, 'data-action': null })
-      .command(({ tr }) => {
+      .command(({ editor, tr }) => {
         const { selection } = tr
 
         if (selection.empty) {
@@ -218,7 +218,7 @@
         const pos = selection.from
         node = tr.doc.nodeAt(pos)
 
-        const htmlContent = extractNodeHtmlContent(node)
+        const htmlContent = extractNodeHtmlContent(editor, node)
         const [originalDiff, suggestionDiff] = highlightHtmlDifferences(
           htmlContent,
           suggestion.change

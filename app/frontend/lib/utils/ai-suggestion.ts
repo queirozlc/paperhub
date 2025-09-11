@@ -1,6 +1,6 @@
 import { generateHTML } from '@tiptap/html'
 import type { Node } from '@tiptap/pm/model'
-import { editorExtensions as extensions } from '$lib/extensions/extension-kit'
+import type { Editor } from '@tiptap/core'
 
 /**
  * Loops through HTML (as a string) adding the "data-id" attribute to all <suggestion> elements.
@@ -40,7 +40,7 @@ export function setIdsToNewAiSuggestions(
  * @param node Tiptap Node to extract HTML content from
  * @returns HTML as string
  */
-export function extractNodeHtmlContent(node: Node): string {
-  const html = generateHTML(node.toJSON(), extensions)
+export function extractNodeHtmlContent(editor: Editor, node: Node): string {
+  const html = generateHTML(node.toJSON(), editor.extensionManager.extensions)
   return html.replace(/ xmlns="[^"]*"/g, '')
 }
