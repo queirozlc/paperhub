@@ -74,3 +74,17 @@ bin/dev
 ```
 
 Pronto! Agora você pode acessar a aplicação em `http://localhost:3100`.
+
+### Configurar serviço de IA
+
+Para utilizar as funcionalidades de Inteligência Artificial (IA), apelidadas de Turing AI, são necessários alguns passos.
+
+1. Inicializar serviço
+    
+    1.1. Clone o repositório [paperhub-ai](https://github.com/bruno-remeikis/paperhub-ai)
+
+    1.2. Execute-o com `docker-compose up --build`
+
+2. Configurar variável de ambiente
+
+    2.1. Adicione a variável de ambiente `VITE_AI_SERVICE_URL=http://localhost:8000`. Você pode criar o arquivo de nome "**.env**" ou adicionar às variáveis de ambiente da própria máquina
