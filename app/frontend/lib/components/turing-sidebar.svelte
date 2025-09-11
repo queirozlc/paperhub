@@ -17,13 +17,13 @@
   import { aiApiService } from '$lib/services/ai-api-service'
   import {
     extractNodeHtmlContent,
+    setIdsToNewAiSuggestions,
     highlightHtmlDifferences,
-    setIdsToNewSuggestions,
-  } from '$lib/utils/suggestion'
+  } from '$lib/utils'
   import type { Editor } from '@tiptap/core'
   import type { Node as NodeType } from '@tiptap/pm/model'
 
-  export type Suggestion = {
+  export type AiSuggestion = {
     id?: number
     change: string
     explanation: string
@@ -32,7 +32,7 @@
   type TuringResponse = {
     answer: string
     modifiedDocument: string | null
-    suggestions: Suggestion[]
+    suggestions: AiSuggestion[]
   }
 
   type ConversationPart =
@@ -52,7 +52,7 @@
       }
     | {
         type: 'suggestion'
-        suggestion: Suggestion
+        suggestion: AiSuggestion
       }
 
   type Props = {
@@ -65,7 +65,7 @@
   let loading = $state(false)
   let conversation = $state<ConversationPart[]>([])
   let nextSuggestionIndex = $state(0)
-  let suggestions = $state<Suggestion[]>([])
+  let suggestions = $state<AiSuggestion[]>([])
 
   let chatRef: HTMLDivElement = $state(null)
   let textareaRef: HTMLTextAreaElement = $state(null)
@@ -105,10 +105,7 @@
     }
 
     loading = true
-    conversation.push({
-      type: 'question',
-      question,
-    })
+    appendQuestionToConversation(question)
 
     const body = {
       document: editor.getHTML(),
@@ -120,54 +117,74 @@
     try {
       const res = await aiApiService.post('/ask', body)
       const data = res.data as TuringResponse
-
-      const answerParts: AnswerPart[] = splitResponse(
-        data.answer,
-        data.suggestions
-      )
-
-      conversation.push({
-        type: 'answer',
-        answer: answerParts,
-      })
-
-      if (data.modifiedDocument) {
-        const newDocumentContent = setIdsToNewSuggestions(
-          data.modifiedDocument,
-          nextSuggestionIndex
-        )
-        replaceEditorContent(newDocumentContent)
-      }
-
-      data.suggestions.forEach((s, i) => {
-        s.id = i + nextSuggestionIndex
-      })
-      suggestions = data.suggestions
-      nextSuggestionIndex += suggestions.length
+      processAiResponse(data)
     } catch (e) {
       console.error('Error:', e)
-      conversation.push({
-        type: 'answer',
-        answer: 'error',
-      })
+      appendErrorToConversation()
     } finally {
       loading = false
     }
   }
 
-  function splitResponse(response: string, suggestions: Suggestion[]) {
+  function processAiResponse(data: TuringResponse) {
+    appendAnswerToConversation(data)
+    updateEditorWithConversation(data)
+    recordSuggestions(data)
+  }
+
+  function appendQuestionToConversation(question: string) {
+    conversation.push({
+      type: 'question',
+      question,
+    })
+  }
+
+  function appendAnswerToConversation(data: TuringResponse) {
+    const answerParts: AnswerPart[] = splitAnswer(data.answer, data.suggestions)
+    conversation.push({
+      type: 'answer',
+      answer: answerParts,
+    })
+  }
+
+  function appendErrorToConversation() {
+    conversation.push({
+      type: 'answer',
+      answer: 'error',
+    })
+  }
+
+  function updateEditorWithConversation(data: TuringResponse) {
+    if (data.modifiedDocument) {
+      const newDocumentContent = setIdsToNewAiSuggestions(
+        data.modifiedDocument,
+        nextSuggestionIndex
+      )
+      replaceEditorContent(newDocumentContent)
+    }
+  }
+
+  function recordSuggestions(data: TuringResponse) {
+    data.suggestions.forEach((s, i) => {
+      s.id = i + nextSuggestionIndex
+    })
+    suggestions = data.suggestions
+    nextSuggestionIndex += suggestions.length
+  }
+
+  function splitAnswer(answer: string, suggestions: AiSuggestion[]) {
     const parts: AnswerPart[] = []
     const regex = /\{\{(\d+)\}\}/g
 
     let lastIndex = 0
     let match: RegExpExecArray
 
-    while ((match = regex.exec(response)) !== null) {
+    while ((match = regex.exec(answer)) !== null) {
       // Adiciona o texto antes do padrão {{n}}
       if (match.index > lastIndex) {
         parts.push({
           type: 'text',
-          text: response.slice(lastIndex, match.index),
+          text: answer.slice(lastIndex, match.index),
         })
       }
 
@@ -183,10 +200,10 @@
     }
 
     // Adiciona o texto restante após o último padrão
-    if (lastIndex < response.length) {
+    if (lastIndex < answer.length) {
       parts.push({
         type: 'text',
-        text: response.slice(lastIndex),
+        text: answer.slice(lastIndex),
       })
     }
 
@@ -197,14 +214,14 @@
     editor.chain().focus().clearContent().setContent(modifiedDocument).run()
   }
 
-  function suggest(suggestion: Suggestion) {
+  function suggest(suggestion: AiSuggestion) {
     let node: NodeType
     let diff: { original: string; suggestion: string } = null
 
     editor
       .chain()
       .focus()
-      .selectSuggestion({ 'data-id': suggestion.id, 'data-action': null })
+      .selectAiSuggestion({ 'data-id': suggestion.id, 'data-action': null })
       .command(({ tr }) => {
         const { selection } = tr
 
@@ -227,7 +244,7 @@
 
         return true
       })
-      .updateSuggestion(
+      .updateAiSuggestion(
         {
           ...node.attrs,
           'data-action': 'remove',
@@ -236,7 +253,7 @@
         },
         diff.original
       )
-      .addSuggestionBellow(
+      .addAiSuggestionBellow(
         {
           ...node.attrs,
           'data-action': 'add',

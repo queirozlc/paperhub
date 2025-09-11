@@ -3,7 +3,10 @@ export { isCustomNodeSelected } from './custom-node'
 export { defaultAvatar } from './default-avatar'
 export { highlightHtmlDifferences } from './diff'
 export { getOS } from './os-picker'
-export { setIdsToNewSuggestions, extractNodeHtmlContent } from './suggestion'
+export {
+  setIdsToNewAiSuggestions,
+  extractNodeHtmlContent,
+} from './ai-suggestion'
 export { isTextSelected } from './text-selection'
 
 export type HashableModel = {

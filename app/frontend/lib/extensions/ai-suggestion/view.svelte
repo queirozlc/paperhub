@@ -12,12 +12,12 @@
     editor
       .chain()
       .focus()
-      .selectSuggestion({ 'data-id': suggestionId, 'data-action': 'remove' })
+      .selectAiSuggestion({ 'data-id': suggestionId, 'data-action': 'remove' })
       .removeDiffsFromSelected()
-      .deleteSelection() // Deletes "remove" suggestion
-      .selectSuggestion({ 'data-id': suggestionId, 'data-action': 'add' })
+      .deleteSelection()
+      .selectAiSuggestion({ 'data-id': suggestionId, 'data-action': 'add' })
       .removeDiffsFromSelected()
-      .removeSelectedSuggestionContainer() // Removes all the suggestion container. This prevents a suggestion from being displayed again.
+      .removeSelectedAiSuggestionContainer()
       .run()
   }
 
@@ -26,12 +26,12 @@
     editor
       .chain()
       .focus()
-      .selectSuggestion({ 'data-id': suggestionId, 'data-action': 'remove' })
+      .selectAiSuggestion({ 'data-id': suggestionId, 'data-action': 'remove' })
       .removeDiffsFromSelected()
-      .removeActionFromSelected() // Just remove "action" property. This allows a suggestion to be displayed again.
-      .selectSuggestion({ 'data-id': suggestionId, 'data-action': 'add' })
+      .removeActionFromSelected()
+      .selectAiSuggestion({ 'data-id': suggestionId, 'data-action': 'add' })
       .removeDiffsFromSelected()
-      .deleteSelection() // Deletes "add" suggestion
+      .deleteSelection()
       .run()
   }
 
@@ -40,25 +40,31 @@
     editor
       .chain()
       .focus()
-      .selectSuggestion({ 'data-id': suggestionId, 'data-action': 'remove' })
+      .selectAiSuggestion({ 'data-id': suggestionId, 'data-action': 'remove' })
       .removeDiffsFromSelected()
-      .removeSelectedSuggestionContainer()
-      .selectSuggestion({ 'data-id': suggestionId, 'data-action': 'add' })
+      .removeSelectedAiSuggestionContainer()
+      .selectAiSuggestion({ 'data-id': suggestionId, 'data-action': 'add' })
       .removeDiffsFromSelected()
-      .removeSelectedSuggestionContainer()
+      .removeSelectedAiSuggestionContainer()
       .run()
   }
 </script>
 
 <NodeViewWrapper
-  data-suggestion
+  data-ai-suggestion
   {...node.attrs}
   class={cn(
     'relative data-[action=add]:bg-suggestion-accept-background data-[action=remove]:bg-suggestion-reject-background data-[action]:px-0.5 rounded data-action:border-2',
-    { 'hidden': node.attrs['data-empty'] },
+    { hidden: node.attrs['data-empty'] },
     { 'my-5': node.attrs['data-empty-brother'] },
-    { 'mb-5 not-dark:border-green-500 dark:border-green-900': node.attrs['data-action'] === 'add' },
-    { 'mt-5 not-dark:border-red-400 dark:border-red-900': node.attrs['data-action'] === 'remove' }
+    {
+      'mb-5 not-dark:border-green-500 dark:border-green-900':
+        node.attrs['data-action'] === 'add',
+    },
+    {
+      'mt-5 not-dark:border-red-400 dark:border-red-900':
+        node.attrs['data-action'] === 'remove',
+    }
   )}
   onmouseenter={() => (isHovered = true)}
   onmouseleave={() => (isHovered = false)}
@@ -102,17 +108,17 @@
 </NodeViewWrapper>
 
 <style>
-  :global(*[data-suggestion] :first-child) {
+  :global(*[data-ai-suggestion] :first-child) {
     margin-top: 0;
   }
-  :global(*[data-suggestion] :last-child) {
+  :global(*[data-ai-suggestion] :last-child) {
     margin-bottom: 0;
   }
 
-  :global(*[data-suggestion][data-action='add'] *[data-diff]) {
+  :global(*[data-ai-suggestion][data-action='add'] *[data-diff]) {
     background: var(--color-diff-accept-background);
   }
-  :global(*[data-suggestion][data-action='remove'] *[data-diff]) {
+  :global(*[data-ai-suggestion][data-action='remove'] *[data-diff]) {
     background: var(--color-diff-reject-background);
   }
 </style>

@@ -11,7 +11,7 @@ import {
   StarterKit,
   TableOfContents,
   TableOfContentsNode,
-  Suggestion,
+  AiSuggestion,
   Diff,
   TaskItem,
   TaskList,
@@ -58,7 +58,7 @@ export const editorExtensions = [
   Color,
   TableOfContents,
   TableOfContentsNode,
-  Suggestion,
+  AiSuggestion,
   Diff,
   Underline,
   UniqueID.configure({

@@ -11,14 +11,14 @@ import { editorExtensions as extensions } from '$lib/extensions/extension-kit'
  * @param nextSuggestionIndex index of the last suggestion made by AI + 1
  * @returns HTML as string with all suggestions having a "data-id" attribute
  */
-export function setIdsToNewSuggestions(
+export function setIdsToNewAiSuggestions(
   modifiedDocumentContent: string,
   nextSuggestionIndex: number
 ): string {
   const parser = new DOMParser()
   const doc = parser.parseFromString(modifiedDocumentContent, 'text/html')
 
-  const selector = 'suggestion:not([data-id])'
+  const selector = 'ai-suggestion:not([data-id])'
   const suggestions: NodeListOf<HTMLSpanElement> =
     doc.querySelectorAll(selector)
 

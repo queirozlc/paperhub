@@ -45,7 +45,7 @@
   --border: oklch(0.95 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
   --ring: hsl(240, 5.9%, 10%);
-  
+
   --radius: 0.6rem;
   --font-family:
     'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
@@ -94,7 +94,6 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: hsl(240, 4.9%, 83.9%);
-  
 }
 
 @theme {

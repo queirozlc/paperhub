@@ -43,7 +43,3 @@
     </div>
   </div>
 </EditorLayout>
-
-<button onclick={() => {
-  $editor.chain().focus().selectSuggestion({ 'data-action': 'add' }).run()
-}}>Teste</button>

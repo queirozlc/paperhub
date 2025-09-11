@@ -2,16 +2,16 @@ import { Editor, mergeAttributes, Node } from '@tiptap/core'
 import type { Fragment, Node as NodeType } from '@tiptap/pm/model'
 import { NodeSelection, TextSelection } from '@tiptap/pm/state'
 import { SvelteNodeViewRenderer } from 'svelte-tiptap'
-import SuggestionView from '$lib/extensions/suggestion/view.svelte'
+import AiSuggestionView from '$lib/extensions/ai-suggestion/view.svelte'
 import { generateJSON } from '@tiptap/html'
 
-export interface SuggestionOptions {
+export interface AiSuggestionOptions {
   HTMLAttributes: Record<string, any>
 }
 
 export type Action = 'add' | 'remove'
 
-export interface SuggestionAttributes {
+export interface AiSuggestionAttributes {
   'data-action'?: Action
   'data-idx'?: number
   'data-id'?: number
@@ -22,24 +22,24 @@ export interface SuggestionAttributes {
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
-    suggestion: {
+    aiSuggestion: {
       /**
-       * Inserts a suggestion element
+       * Inserts a aiSuggestion element
        */
-      setSuggestion: (
-        attributes?: SuggestionAttributes,
+      setAiSuggestion: (
+        attributes?: AiSuggestionAttributes,
         content?: string
       ) => ReturnType
       /**
-       * Removes the suggestion element
+       * Removes the aiSuggestion element
        */
-      unsetSuggestion: () => ReturnType
+      unsetAiSuggestion: () => ReturnType
       /**
-       * Toggles the suggestion element
+       * Toggles the aiSuggestion element
        */
-      toggleSuggestion: (attributes?: SuggestionAttributes) => ReturnType
+      toggleAiSuggestion: (attributes?: AiSuggestionAttributes) => ReturnType
       /**
-       * Searches for and selects a node of type "suggestion" that has the specified attributes.
+       * Searches for and selects a node of type "aiSuggestion" that has the specified attributes.
        * - If you do not want to filter the search by a certain attribute, do not specify it or specify it as `undefined`
        * - If you want a certain attribute to not exist in the node, specify it as `null`
        * - If you want to select a node that has a certain value in its attribute, specify it
@@ -49,44 +49,44 @@ declare module '@tiptap/core' {
        * - `{ "data-id": null }` Selects the node that does not have a "data-id"
        * - `{ "data-id": undefined }` It doesn't matter if "data-id" exists. It is not considered in the search.
        */
-      selectSuggestion: (attributes: SuggestionAttributes) => ReturnType
+      selectAiSuggestion: (attributes: AiSuggestionAttributes) => ReturnType
       /**
        * Removes all "diff" marks from a selected node
        */
       removeDiffsFromSelected: () => ReturnType
       /**
-       * Remove "action" attribute from selected "suggestion" node
+       * Remove "action" attribute from selected "aiSuggestion" node
        */
       removeActionFromSelected: () => ReturnType
       /**
-       * Removes the selected "suggestion" node, but keeps all its contents
+       * Removes the selected "aiSuggestion" node, but keeps all its contents
        */
-      removeSelectedSuggestionContainer: () => ReturnType
+      removeSelectedAiSuggestionContainer: () => ReturnType
       /**
-       * Replaces the selected "suggestion" node, updating its attributes and content
+       * Replaces the selected "aiSuggestion" node, updating its attributes and content
        * @param attributes New node attributes
        * @param content Node content as HTML (string)
        */
-      updateSuggestion: (
-        attributes: SuggestionAttributes,
+      updateAiSuggestion: (
+        attributes: AiSuggestionAttributes,
         content: string
       ) => ReturnType
       /**
-       * Adds a "suggestion" node after/below the selected node\
+       * Adds a "aiSuggestion" node after/below the selected node\
        * **Note:** A node must be selected (NodeSelection)
        * @param attributes Attributes of the new node
        * @param content Content of new node in HTML string format
        */
-      addSuggestionBellow: (
-        attributes: SuggestionAttributes,
+      addAiSuggestionBellow: (
+        attributes: AiSuggestionAttributes,
         content: string
       ) => ReturnType
     }
   }
 }
 
-export const Suggestion = Node.create<SuggestionOptions>({
-  name: 'suggestion',
+export const AiSuggestion = Node.create<AiSuggestionOptions>({
+  name: 'aiSuggestion',
 
   addOptions() {
     return {
@@ -180,10 +180,10 @@ export const Suggestion = Node.create<SuggestionOptions>({
   parseHTML() {
     return [
       {
-        tag: 'div[data-suggestion]',
+        tag: 'div[data-ai-suggestion]',
       },
       {
-        tag: 'suggestion',
+        tag: 'ai-suggestion',
       },
     ]
   },
@@ -194,8 +194,8 @@ export const Suggestion = Node.create<SuggestionOptions>({
       'div',
       mergeAttributes(
         {
-          'data-suggestion': '',
-          contenteditable: !attrs['data-action'], // <- Block editing if suggestion has action
+          'data-ai-suggestion': '',
+          contenteditable: !attrs['data-action'], // <- Block editing if aiSuggestion has action
         },
         this.options.HTMLAttributes,
         HTMLAttributes
@@ -205,30 +205,30 @@ export const Suggestion = Node.create<SuggestionOptions>({
   },
 
   addNodeView() {
-    return SvelteNodeViewRenderer(SuggestionView)
+    return SvelteNodeViewRenderer(AiSuggestionView)
   },
 
   addCommands() {
     return {
-      setSuggestion:
+      setAiSuggestion:
         (attributes) =>
         ({ commands }) => {
           return commands.wrapIn(this.name, attributes)
         },
 
-      unsetSuggestion:
+      unsetAiSuggestion:
         () =>
         ({ commands }) => {
           return commands.lift(this.name)
         },
 
-      toggleSuggestion:
+      toggleAiSuggestion:
         (attributes) =>
         ({ commands }) => {
           return commands.toggleWrap(this.name, attributes)
         },
 
-      selectSuggestion:
+      selectAiSuggestion:
         (attributes) =>
         ({ tr }) => {
           //TODO: Implementar validação de dispatch
@@ -237,7 +237,7 @@ export const Suggestion = Node.create<SuggestionOptions>({
 
           tr.doc.descendants((node, pos) => {
             if (
-              node.type.name === 'suggestion' &&
+              node.type.name === 'aiSuggestion' &&
               attributesMatch(node, attributes)
             ) {
               const selection = NodeSelection.create(tr.doc, pos)
@@ -269,10 +269,12 @@ export const Suggestion = Node.create<SuggestionOptions>({
             return false
           }
 
-          // Função recursiva para percorrer todos os nós filhos
+          /**
+           * Recursive function to traverse all child nodes
+           */
           function traverseNode(currentNode: NodeType, currentPos: number) {
             if (currentNode.isText) {
-              // Para nós de texto, verificar e remover marks "diff"
+              // For text nodes, check and remove "diff" marks
               if (currentNode.marks.some((mark) => mark.type === diffType)) {
                 tr.removeMark(
                   currentPos,
@@ -281,8 +283,8 @@ export const Suggestion = Node.create<SuggestionOptions>({
                 )
               }
             } else {
-              // Para nós não-texto, percorrer recursivamente todos os filhos
-              let childPos = currentPos + 1 // +1 para entrar no nó
+              // For non-text nodes, recursively traverse all children
+              let childPos = currentPos + 1 // +1 to enter the node
 
               currentNode.forEach((child, offset) => {
                 const absoluteChildPos = childPos + offset
@@ -291,7 +293,6 @@ export const Suggestion = Node.create<SuggestionOptions>({
             }
           }
 
-          // Iniciar a traversal a partir do nó na posição especificada
           traverseNode(node, pos)
 
           return true
@@ -308,39 +309,37 @@ export const Suggestion = Node.create<SuggestionOptions>({
           return true
         },
 
-      removeSelectedSuggestionContainer:
+      removeSelectedAiSuggestionContainer:
         () =>
         ({ tr }) => {
           //TODO: Implementar validação de dispatch
 
-          // 1. Obtém o nó na posição especificada.
           const pos = tr.selection.from
           const node = tr.doc.nodeAt(pos)
 
-          // 2. Verifica se é um nó de bloco.
           if (node && node.isBlock) {
-            // 3. Obtém o conteúdo do nó.
             const content = node.content
-
-            // 4. Cria uma nova transação para substituir o nó.
             tr.replaceWith(pos, pos + node.nodeSize, content)
           }
 
           return true
         },
 
-      updateSuggestion:
-        (attributes: SuggestionAttributes, content: string) =>
+      updateAiSuggestion:
+        (attributes: AiSuggestionAttributes, content: string) =>
         ({ tr, state, editor }) => {
           const { selection } = tr
 
           let fragment: Fragment = null
           if (content.length > 0) {
-            const json = generateJSON(content, editor.extensionManager.extensions)
+            const json = generateJSON(
+              content,
+              editor.extensionManager.extensions
+            )
             fragment = state.schema.nodeFromJSON(json).content
           }
 
-          const node = state.schema.nodes.suggestion.create(
+          const node = state.schema.nodes.aiSuggestion.create(
             attributes,
             fragment
           )
@@ -351,8 +350,8 @@ export const Suggestion = Node.create<SuggestionOptions>({
           return true
         },
 
-      addSuggestionBellow:
-        (attributes: SuggestionAttributes, content: string) =>
+      addAiSuggestionBellow:
+        (attributes: AiSuggestionAttributes, content: string) =>
         ({ tr, state, editor }) => {
           if (!(tr.selection instanceof NodeSelection)) {
             throw 'Seleção precisa ser do tipo NodeSelection'
@@ -364,7 +363,7 @@ export const Suggestion = Node.create<SuggestionOptions>({
           const json = generateJSON(content, editor.extensionManager.extensions)
           const fragment = state.schema.nodeFromJSON(json).content
 
-          const suggestionAdd = state.schema.nodes.suggestion.create(
+          const suggestionAdd = state.schema.nodes.aiSuggestion.create(
             attributes,
             fragment
           )
@@ -379,7 +378,7 @@ export const Suggestion = Node.create<SuggestionOptions>({
 
   addKeyboardShortcuts() {
     return {
-      Enter: escapeSuggestionNodeIfCursorAtEnd,
+      Enter: escapeAiSuggestionNodeIfCursorAtEnd,
       // Preserve default behavior for Shift+Enter and Ctrl+Enter:
       'Shift-Enter': () => false,
       'Mod-Enter': () => false,
@@ -393,7 +392,7 @@ export const Suggestion = Node.create<SuggestionOptions>({
  * @param attributes Expected attributes in the node
  * @returns `true` if the expected attributes exist on the node and their values are equal. `false` otherwise
  */
-function attributesMatch(node: NodeType, attributes: SuggestionAttributes) {
+function attributesMatch(node: NodeType, attributes: AiSuggestionAttributes) {
   let check = true
   Object.keys(attributes).forEach((attr) => {
     if (!attributeMatch(node, attributes, attr)) {
@@ -406,7 +405,7 @@ function attributesMatch(node: NodeType, attributes: SuggestionAttributes) {
 
 function attributeMatch(
   node: NodeType,
-  attributes: SuggestionAttributes,
+  attributes: AiSuggestionAttributes,
   attr: string
 ) {
   return (
@@ -419,29 +418,29 @@ function attributeMatch(
 /**
  * Function for use in addKeyboardShortcuts.
  *
- * Checks if the cursor is at the end of the suggestion node. If so, adds a new empty paragraph after/below/outside it.
+ * Checks if the cursor is at the end of the aiSuggestion node. If so, adds a new empty paragraph after/below/outside it.
  *
  * @param editor Tiptap Editor
  * @returns `true` to prevent default behavior. `falte` to keep default behavior
  */
-function escapeSuggestionNodeIfCursorAtEnd({ editor }: { editor: Editor }) {
+function escapeAiSuggestionNodeIfCursorAtEnd({ editor }: { editor: Editor }) {
   const { state, schema, view } = editor
   const { selection, doc } = state
   const { $from } = selection
 
-  const suggestionType = 'suggestion'
+  const suggestionType = 'aiSuggestion'
 
   /**
-   * Search node suggestion where the cursor is.
+   * Search node aiSuggestion where the cursor is.
    *
-   * Imagine the cursor is inside a diff node that is inside a paragraph that is inside a suggestion node.
-   * This function, starting from the diff node, regresses until it finds the suggestion node and returns it.
+   * Imagine the cursor is inside a diff node that is inside a paragraph that is inside a aiSuggestion node.
+   * This function, starting from the diff node, regresses until it finds the aiSuggestion node and returns it.
    *
-   * If the cursor is not within a suggestion node, even indirectly, it returns `null`.
+   * If the cursor is not within a aiSuggestion node, even indirectly, it returns `null`.
    *
-   * @returns Suggestion node or `null` if the cursor is not within a suggestion node.
+   * @returns AiSuggestion node or `null` if the cursor is not within a aiSuggestion node.
    */
-  function findSuggestionContainer(): NodeType {
+  function findAiSuggestionContainer(): NodeType {
     let depth = $from.depth
     let currentNode: NodeType
 
@@ -508,7 +507,7 @@ function escapeSuggestionNodeIfCursorAtEnd({ editor }: { editor: Editor }) {
     view.dispatch(tr)
   }
 
-  const suggestionNode = findSuggestionContainer()
+  const suggestionNode = findAiSuggestionContainer()
   if (suggestionNode === null) {
     return false
   }
