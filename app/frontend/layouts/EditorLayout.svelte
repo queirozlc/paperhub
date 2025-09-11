@@ -4,14 +4,13 @@
   import TuringSidebar from '$lib/components/turing-sidebar.svelte'
   import * as Sidebar from '$lib/components/ui/sidebar'
   import type { DocumentType } from '$pages/Document/types'
-  import type { Editor } from '@tiptap/core'
-
   import { type Snippet } from 'svelte'
+  import type { Editor } from '@tiptap/core'
 
   type Props = {
     document: DocumentType
-    children: Snippet
     editor: Editor
+    children: Snippet
   }
 
   let { children, document, editor }: Props = $props()
@@ -70,6 +69,6 @@
     style="--sidebar-width: 18rem;"
     class="w-fit overflow-hidden max-h-dvh"
   >
-    <TuringSidebar />
+    <TuringSidebar {editor} />
   </Sidebar.Provider>
 </div>
