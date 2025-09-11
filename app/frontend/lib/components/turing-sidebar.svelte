@@ -20,8 +20,10 @@
     setIdsToNewAiSuggestions,
     highlightHtmlDifferences,
   } from '$lib/utils'
+  import AiChatMessage from './ai-chat/chat-message.svelte'
   import type { Editor } from '@tiptap/core'
   import type { Node as NodeType } from '@tiptap/pm/model'
+  import type { AnswerPart, ConversationPart } from './ai-chat/types'
 
   export type AiSuggestion = {
     id?: number
@@ -34,26 +36,6 @@
     modifiedDocument: string | null
     suggestions: AiSuggestion[]
   }
-
-  type ConversationPart =
-    | {
-        type: 'question'
-        question: string
-      }
-    | {
-        type: 'answer'
-        answer: AnswerPart[] | 'error'
-      }
-
-  type AnswerPart =
-    | {
-        type: 'text'
-        text: string
-      }
-    | {
-        type: 'suggestion'
-        suggestion: AiSuggestion
-      }
 
   type Props = {
     editor: Editor
@@ -98,7 +80,9 @@
     }
   })
 
-  async function submitQuestion() {
+  async function submitQuestion(e?: Event) {
+    e?.preventDefault()
+
     question = question.trim()
     if (question === '') {
       return
@@ -172,7 +156,12 @@
     nextSuggestionIndex += suggestions.length
   }
 
-  function splitAnswer(answer: string, suggestions: AiSuggestion[]) {
+  /**
+   * 
+   * @param answer
+   * @param suggestions
+   */
+  function splitAnswer(answer: string, suggestions: AiSuggestion[]): AnswerPart[] {
     const parts: AnswerPart[] = []
     const regex = /\{\{(\d+)\}\}/g
 
@@ -180,7 +169,6 @@
     let match: RegExpExecArray
 
     while ((match = regex.exec(answer)) !== null) {
-      // Adiciona o texto antes do padrão {{n}}
       if (match.index > lastIndex) {
         parts.push({
           type: 'text',
@@ -190,7 +178,6 @@
 
       const suggestionIdx = match[1]
 
-      // Adiciona o padrão {{n}} como um objeto span
       parts.push({
         type: 'suggestion',
         suggestion: suggestions[suggestionIdx],
@@ -199,7 +186,6 @@
       lastIndex = regex.lastIndex
     }
 
-    // Adiciona o texto restante após o último padrão
     if (lastIndex < answer.length) {
       parts.push({
         type: 'text',
@@ -269,7 +255,7 @@
 <Sidebar.Root side="right" transparent>
   <Sidebar.Header class="border-sidebar-border h-14 border-b"></Sidebar.Header>
   <Sidebar.Content class="px-2">
-    <Sidebar.Group class="border-b border-white/4">
+    <Sidebar.Group class="border-b border-sidebar-border">
       <div class="flex items-center justify-between">
         <span class="text-muted-foreground text-sm font-semibold font-brand"
           >Turing AI</span
@@ -291,36 +277,7 @@
       {#if conversation.length !== 0}
         <div class="flex flex-col gap-4 w-full">
           {#each conversation as statement}
-            {#if statement.type === 'question'}
-              <div class="ml-4 self-end">
-                <span class="block opacity-50 text-xs text-right">você</span>
-                {statement.question}
-              </div>
-            {:else}
-              <div class="mr-4">
-                <span class="block opacity-50 text-xs">Turing</span>
-                {#if statement.answer === 'error'}
-                  <p class="w-full m-0 text-red-400 text-sm">
-                    Desculpe. Não estou funcionando corretamente agora. Tente de
-                    novo mais tarde.
-                  </p>
-                {:else}
-                  {#each statement.answer as part}
-                    {#if part.type === 'text'}
-                      <p class="w-full m-0">{part.text}</p>
-                    {:else if part.type === 'suggestion'}
-                      <button
-                        class="w-full m-0 bg-white/4 hover:bg-white/8 p-1 text-sm border rounded-xs text-left cursor-pointer transition"
-                        onclick={() => suggest(part.suggestion)}
-                      >
-                        <!-- svelte-ignore a11y_no_static_element_interactions -->
-                        {@html part.suggestion.change}
-                      </button>
-                    {/if}
-                  {/each}
-                {/if}
-              </div>
-            {/if}
+            <AiChatMessage {statement} {suggest} />
           {/each}
 
           {#if loading}
@@ -376,7 +333,10 @@
 
   <Sidebar.Footer class="px-2">
     <div class="flex flex-col justify-center gap-4">
-      <div class="relative">
+      <form
+        class="relative"
+        onsubmit={submitQuestion}  
+      >
         <Textarea
           bind:ref={textareaRef}
           placeholder="Do que você está precisando ?"
@@ -384,10 +344,8 @@
           bind:value={question}
           oninput={resize}
           onkeydown={(e) => {
-            if (e.ctrlKey && e.key === 'Enter') {
-              e.preventDefault()
-              submitQuestion()
-            }
+            if (e.ctrlKey && e.key === 'Enter')
+              submitQuestion(e)
           }}
         />
 
@@ -425,15 +383,15 @@
 
           <Button
             title="Enviar"
+            type="submit"
             variant="outline"
             size="icon"
             class="size-6 text-muted-foreground hover:text-accent-foreground"
-            onclick={submitQuestion}
           >
             <Send01 />
           </Button>
         </div>
-      </div>
+      </form>
 
       <div class="flex items-center text-muted-foreground gap-2">
         <InfoCircle class="size-6" />

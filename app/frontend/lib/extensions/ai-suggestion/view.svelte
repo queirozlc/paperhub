@@ -72,7 +72,7 @@
   {#if !!node.attrs['data-action'] && isHovered}
     <div
       class={cn(
-        'absolute z-10 left-0 flex gap-1 border-b-white/5',
+        'absolute z-10 left-0 flex gap-1 border-b-border',
         node.attrs['data-action'] === 'add'
           ? '-bottom-7 border-b-2'
           : '-top-7 border-t-2'
@@ -81,14 +81,14 @@
       <button
         onclick={acceptSuggestion}
         contenteditable="false"
-        class="text-suggestion-accept-foreground px-1 cursor-pointer transition hover:bg-white/5"
+        class="text-suggestion-accept-foreground px-1 cursor-pointer transition hover:opacity-75"
       >
         Aceitar
       </button>
       <button
         onclick={refuseSuggestion}
         contenteditable="false"
-        class="text-suggestion-reject-foreground px-1 cursor-pointer transition hover:bg-white/5"
+        class="text-suggestion-reject-foreground px-1 cursor-pointer transition hover:opacity-75"
       >
         Recusar
       </button>
@@ -96,7 +96,7 @@
         <button
           onclick={keepBothFromSuggestion}
           contenteditable="false"
-          class="text-suggestion-both-foreground px-1 cursor-pointer transition hover:bg-white/5"
+          class="text-suggestion-both-foreground px-1 cursor-pointer transition hover:opacity-75"
         >
           Manter ambas
         </button>
