@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { id } from 'date-fns/locale'
   import type { AiSuggestion } from '../turing-sidebar.svelte'
   import AnswerMessagePart from './answer-message-part.svelte'
   import type { Answer } from './types'
