@@ -5,15 +5,15 @@
   import type { ConversationPart } from './types'
 
   type Props = {
-    statement: ConversationPart,
-    suggest: (suggestion: AiSuggestion) => void,
+    statement: ConversationPart
+    suggest: (suggestion: AiSuggestion) => void
   }
 
   let { statement, suggest }: Props = $props()
 </script>
 
 {#if statement.type === 'question'}
-    <AiQuestionMessage question={statement.question} />
+  <AiQuestionMessage question={statement.question} />
 {:else}
   <AiAnswerMessage answer={statement.answer} {suggest} />
 {/if}

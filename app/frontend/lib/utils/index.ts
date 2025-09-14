@@ -1,7 +1,7 @@
 export { cn } from './cn'
 export { isCustomNodeSelected } from './custom-node'
 export { defaultAvatar } from './default-avatar'
-export { highlightHtmlDifferences } from './diff'
+export { diffHtml } from './diff'
 export { getOS } from './os-picker'
 export {
   setIdsToNewAiSuggestions,

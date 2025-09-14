@@ -2,7 +2,6 @@
   import EditorLayout from '$layouts/EditorLayout.svelte'
   import { editorExtensions as extensions } from '$lib/extensions/extension-kit'
   import { onMount } from 'svelte'
-
   import ToolsBubbleMenu from '$lib/components/tools-bubble-menu.svelte'
   import { createEditor, Editor, EditorContent } from 'svelte-tiptap'
   import type { Readable } from 'svelte/store'

@@ -5,10 +5,6 @@ import { SvelteNodeViewRenderer } from 'svelte-tiptap'
 import AiSuggestionView from '$lib/extensions/ai-suggestion/view.svelte'
 import { generateJSON } from '@tiptap/html'
 
-export interface AiSuggestionOptions {
-  HTMLAttributes: Record<string, any>
-}
-
 export type Action = 'add' | 'remove'
 
 export interface AiSuggestionAttributes {
@@ -85,306 +81,311 @@ declare module '@tiptap/core' {
   }
 }
 
-export const AiSuggestion = Node.create<AiSuggestionOptions>({
-  name: 'aiSuggestion',
+export const AiSuggestion = Node.create(
+  /*<AiSuggestionOptions>*/ {
+    name: 'aiSuggestion',
 
-  addOptions() {
-    return {
-      HTMLAttributes: {},
-    }
-  },
+    addOptions() {
+      return {
+        HTMLAttributes: {},
+      }
+    },
 
-  group: 'block',
+    group: 'block',
 
-  content: 'block*',
+    content: 'block*',
 
-  defining: true,
+    defining: true,
 
-  addAttributes() {
-    return {
-      'data-action': {
-        default: null,
-        parseHTML: (element) => element.getAttribute('data-action'),
-        renderHTML: (attributes) => {
-          if (!attributes['data-action']) {
-            return {}
-          }
-          return {
-            'data-action': attributes['data-action'],
-          }
+    addAttributes() {
+      return {
+        'data-action': {
+          default: null,
+          parseHTML: (element) => element.getAttribute('data-action'),
+          renderHTML: (attributes) => {
+            if (!attributes['data-action']) {
+              return {}
+            }
+            return {
+              'data-action': attributes['data-action'],
+            }
+          },
         },
-      },
-      'data-idx': {
-        default: null,
-        parseHTML: (element) => {
-          const value = element.getAttribute('data-idx')
-          return value ? parseInt(value, 10) : null
-        },
-        renderHTML: (attributes) => {
-          if (
-            attributes['data-idx'] === null ||
-            attributes['data-idx'] === undefined
-          ) {
-            return {}
-          }
-          return {
-            'data-idx': attributes['data-idx'],
-          }
-        },
-      },
-      'data-id': {
-        default: null,
-        parseHTML: (element) => {
-          const value = element.getAttribute('data-id')
-          return value ? parseInt(value, 10) : null
-        },
-        renderHTML: (attributes) => {
-          if (
-            attributes['data-id'] === null ||
-            attributes['data-id'] === undefined
-          ) {
-            return {}
-          }
-          return {
-            'data-id': attributes['data-id'],
-          }
-        },
-      },
-      'data-empty': {
-        default: false,
-        parseHTML: (element) => element.getAttribute('data-empty'),
-        renderHTML: (attributes) => {
-          if (!attributes['data-empty']) {
-            return {}
-          }
-          return {
-            'data-empty': attributes['data-empty'],
-          }
-        },
-      },
-      'data-empty-brother': {
-        default: false,
-        parseHTML: (element) => element.getAttribute('data-empty-brother'),
-        renderHTML: (attributes) => {
-          if (!attributes['data-empty-brother']) {
-            return {}
-          }
-          return {
-            'data-empty-brother': attributes['data-empty-brother'],
-          }
-        },
-      },
-    }
-  },
-
-  parseHTML() {
-    return [
-      {
-        tag: 'div[data-ai-suggestion]',
-      },
-      {
-        tag: 'ai-suggestion',
-      },
-    ]
-  },
-
-  renderHTML({ HTMLAttributes }) {
-    const attrs = { ...HTMLAttributes }
-    return [
-      'div',
-      mergeAttributes(
-        {
-          'data-ai-suggestion': '',
-          contenteditable: !attrs['data-action'], // <- Block editing if aiSuggestion has action
-        },
-        this.options.HTMLAttributes,
-        HTMLAttributes
-      ),
-      0,
-    ]
-  },
-
-  addNodeView() {
-    return SvelteNodeViewRenderer(AiSuggestionView)
-  },
-
-  addCommands() {
-    return {
-      setAiSuggestion:
-        (attributes) =>
-        ({ commands }) => {
-          return commands.wrapIn(this.name, attributes)
-        },
-
-      unsetAiSuggestion:
-        () =>
-        ({ commands }) => {
-          return commands.lift(this.name)
-        },
-
-      toggleAiSuggestion:
-        (attributes) =>
-        ({ commands }) => {
-          return commands.toggleWrap(this.name, attributes)
-        },
-
-      selectAiSuggestion:
-        (attributes) =>
-        ({ tr }) => {
-          //TODO: Implementar validação de dispatch
-
-          let founded = false
-
-          tr.doc.descendants((node, pos) => {
+        'data-idx': {
+          default: null,
+          parseHTML: (element) => {
+            const value = element.getAttribute('data-idx')
+            return value ? parseInt(value, 10) : null
+          },
+          renderHTML: (attributes) => {
             if (
-              node.type.name === 'aiSuggestion' &&
-              attributesMatch(node, attributes)
+              attributes['data-idx'] === null ||
+              attributes['data-idx'] === undefined
             ) {
-              const selection = NodeSelection.create(tr.doc, pos)
-              tr.setSelection(selection)
-              founded = true
-              return false // Stops searching
+              return {}
             }
-
-            return true // Continues searching
-          })
-
-          if (!founded) {
-            tr.deleteSelection()
-          }
-
-          return true
+            return {
+              'data-idx': attributes['data-idx'],
+            }
+          },
         },
+        'data-id': {
+          default: null,
+          parseHTML: (element) => {
+            const value = element.getAttribute('data-id')
+            return value ? parseInt(value, 10) : null
+          },
+          renderHTML: (attributes) => {
+            if (
+              attributes['data-id'] === null ||
+              attributes['data-id'] === undefined
+            ) {
+              return {}
+            }
+            return {
+              'data-id': attributes['data-id'],
+            }
+          },
+        },
+        'data-empty': {
+          default: false,
+          parseHTML: (element) => element.getAttribute('data-empty'),
+          renderHTML: (attributes) => {
+            if (!attributes['data-empty']) {
+              return {}
+            }
+            return {
+              'data-empty': attributes['data-empty'],
+            }
+          },
+        },
+        'data-empty-brother': {
+          default: false,
+          parseHTML: (element) => element.getAttribute('data-empty-brother'),
+          renderHTML: (attributes) => {
+            if (!attributes['data-empty-brother']) {
+              return {}
+            }
+            return {
+              'data-empty-brother': attributes['data-empty-brother'],
+            }
+          },
+        },
+      }
+    },
 
-      removeDiffsFromSelected:
-        () =>
-        ({ state, tr }) => {
-          const pos = tr.selection.from
-          const node = tr.doc.nodeAt(pos)
-          const diffType = state.schema.marks.diff
+    parseHTML() {
+      return [
+        {
+          tag: 'div[data-ai-suggestion]',
+        },
+        {
+          tag: 'ai-suggestion',
+        },
+      ]
+    },
 
-          //TODO: Implementar validação de dispatch
+    renderHTML({ HTMLAttributes }) {
+      const attrs = { ...HTMLAttributes }
+      return [
+        'div',
+        mergeAttributes(
+          {
+            'data-ai-suggestion': '',
+            contenteditable: !attrs['data-action'], // <- Block editing if aiSuggestion has action
+          },
+          this.options.HTMLAttributes,
+          HTMLAttributes
+        ),
+        0,
+      ]
+    },
 
-          if (!node) {
-            return false
-          }
+    addNodeView() {
+      return SvelteNodeViewRenderer(AiSuggestionView)
+    },
 
-          /**
-           * Recursive function to traverse all child nodes
-           */
-          function traverseNode(currentNode: NodeType, currentPos: number) {
-            if (currentNode.isText) {
-              // For text nodes, check and remove "diff" marks
-              if (currentNode.marks.some((mark) => mark.type === diffType)) {
-                tr.removeMark(
-                  currentPos,
-                  currentPos + currentNode.nodeSize,
-                  diffType
-                )
+    addCommands() {
+      return {
+        setAiSuggestion:
+          (attributes) =>
+          ({ commands }) => {
+            return commands.wrapIn(this.name, attributes)
+          },
+
+        unsetAiSuggestion:
+          () =>
+          ({ commands }) => {
+            return commands.lift(this.name)
+          },
+
+        toggleAiSuggestion:
+          (attributes) =>
+          ({ commands }) => {
+            return commands.toggleWrap(this.name, attributes)
+          },
+
+        selectAiSuggestion:
+          (attributes) =>
+          ({ tr }) => {
+            //TODO: Implementar validação de dispatch
+
+            let founded = false
+
+            tr.doc.descendants((node, pos) => {
+              if (
+                node.type.name === 'aiSuggestion' &&
+                attributesMatch(node, attributes)
+              ) {
+                const selection = NodeSelection.create(tr.doc, pos)
+                tr.setSelection(selection)
+                founded = true
+                return false // Stops searching
               }
-            } else {
-              // For non-text nodes, recursively traverse all children
-              let childPos = currentPos + 1 // +1 to enter the node
 
-              currentNode.forEach((child, offset) => {
-                const absoluteChildPos = childPos + offset
-                traverseNode(child, absoluteChildPos)
-              })
+              return true // Continues searching
+            })
+
+            if (!founded) {
+              tr.deleteSelection()
             }
-          }
 
-          traverseNode(node, pos)
+            return true
+          },
 
-          return true
-        },
+        removeDiffsFromSelected:
+          () =>
+          ({ state, tr }) => {
+            const pos = tr.selection.from
+            const node = tr.doc.nodeAt(pos)
+            const diffType = state.schema.marks.diff
 
-      removeActionFromSelected:
-        () =>
-        ({ state, tr }) => {
-          const pos = tr.selection.from
-          const node = state.doc.nodeAt(pos)
-          const attrs = { ...node.attrs }
-          delete attrs['data-action']
-          tr.setNodeMarkup(pos, null, attrs)
-          return true
-        },
+            //TODO: Implementar validação de dispatch
 
-      removeSelectedAiSuggestionContainer:
-        () =>
-        ({ tr }) => {
-          //TODO: Implementar validação de dispatch
+            if (!node) {
+              return false
+            }
 
-          const pos = tr.selection.from
-          const node = tr.doc.nodeAt(pos)
+            /**
+             * Recursive function to traverse all child nodes
+             */
+            function traverseNode(currentNode: NodeType, currentPos: number) {
+              if (currentNode.isText) {
+                // For text nodes, check and remove "diff" marks
+                if (currentNode.marks.some((mark) => mark.type === diffType)) {
+                  tr.removeMark(
+                    currentPos,
+                    currentPos + currentNode.nodeSize,
+                    diffType
+                  )
+                }
+              } else {
+                // For non-text nodes, recursively traverse all children
+                const childPos = currentPos + 1 // +1 to enter the node
 
-          if (node && node.isBlock) {
-            const content = node.content
-            tr.replaceWith(pos, pos + node.nodeSize, content)
-          }
+                currentNode.forEach((child, offset) => {
+                  const absoluteChildPos = childPos + offset
+                  traverseNode(child, absoluteChildPos)
+                })
+              }
+            }
 
-          return true
-        },
+            traverseNode(node, pos)
 
-      updateAiSuggestion:
-        (attributes: AiSuggestionAttributes, content: string) =>
-        ({ tr, state, editor }) => {
-          const { selection } = tr
+            return true
+          },
 
-          let fragment: Fragment = null
-          if (content.length > 0) {
+        removeActionFromSelected:
+          () =>
+          ({ state, tr }) => {
+            const pos = tr.selection.from
+            const node = state.doc.nodeAt(pos)
+            const attrs = { ...node.attrs }
+            delete attrs['data-action']
+            tr.setNodeMarkup(pos, null, attrs)
+            return true
+          },
+
+        removeSelectedAiSuggestionContainer:
+          () =>
+          ({ tr }) => {
+            //TODO: Implementar validação de dispatch
+
+            const pos = tr.selection.from
+            const node = tr.doc.nodeAt(pos)
+
+            if (node && node.isBlock) {
+              const content = node.content
+              tr.replaceWith(pos, pos + node.nodeSize, content)
+            }
+
+            return true
+          },
+
+        updateAiSuggestion:
+          (attributes: AiSuggestionAttributes, content: string) =>
+          ({ tr, state, editor }) => {
+            const { selection } = tr
+
+            let fragment: Fragment = null
+            if (content.length > 0) {
+              const json = generateJSON(
+                content,
+                editor.extensionManager.extensions
+              )
+              fragment = state.schema.nodeFromJSON(json).content
+            }
+
+            const node = state.schema.nodes.aiSuggestion.create(
+              attributes,
+              fragment
+            )
+
+            tr.replaceSelectionWith(node)
+            tr.setSelection(NodeSelection.create(tr.doc, selection.from))
+
+            return true
+          },
+
+        addAiSuggestionBellow:
+          (attributes: AiSuggestionAttributes, content: string) =>
+          ({ tr, state, editor }) => {
+            if (!(tr.selection instanceof NodeSelection)) {
+              throw 'Seleção precisa ser do tipo NodeSelection'
+            }
+
+            const node = tr.selection.node
+            const pos = tr.selection.from
+
             const json = generateJSON(
               content,
               editor.extensionManager.extensions
             )
-            fragment = state.schema.nodeFromJSON(json).content
-          }
+            const fragment = state.schema.nodeFromJSON(json).content
 
-          const node = state.schema.nodes.aiSuggestion.create(
-            attributes,
-            fragment
-          )
+            const suggestionAdd = state.schema.nodes.aiSuggestion.create(
+              attributes,
+              fragment
+            )
 
-          tr.replaceSelectionWith(node)
-          tr.setSelection(NodeSelection.create(tr.doc, selection.from))
+            const afterNodePos = pos + node.nodeSize
+            tr.insert(afterNodePos, suggestionAdd)
 
-          return true
-        },
+            return true
+          },
+      }
+    },
 
-      addAiSuggestionBellow:
-        (attributes: AiSuggestionAttributes, content: string) =>
-        ({ tr, state, editor }) => {
-          if (!(tr.selection instanceof NodeSelection)) {
-            throw 'Seleção precisa ser do tipo NodeSelection'
-          }
-
-          const node = tr.selection.node
-          const pos = tr.selection.from
-
-          const json = generateJSON(content, editor.extensionManager.extensions)
-          const fragment = state.schema.nodeFromJSON(json).content
-
-          const suggestionAdd = state.schema.nodes.aiSuggestion.create(
-            attributes,
-            fragment
-          )
-
-          const afterNodePos = pos + node.nodeSize
-          tr.insert(afterNodePos, suggestionAdd)
-
-          return true
-        },
-    }
-  },
-
-  addKeyboardShortcuts() {
-    return {
-      Enter: escapeAiSuggestionNodeIfCursorAtEnd,
-      // Preserve default behavior for Shift+Enter and Ctrl+Enter:
-      'Shift-Enter': () => false,
-      'Mod-Enter': () => false,
-    }
-  },
-})
+    addKeyboardShortcuts() {
+      return {
+        Enter: escapeAiSuggestionNodeIfCursorAtEnd,
+        // Preserve default behavior for Shift+Enter and Ctrl+Enter:
+        'Shift-Enter': () => false,
+        'Mod-Enter': () => false,
+      }
+    },
+  }
+)
 
 /**
  * Loops through specified attributes and checks whether the `node` has those attributes

@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { AiSuggestion } from "../turing-sidebar.svelte"
-  import type { AnswerPart } from "./types"
+  import type { AiSuggestion } from '../turing-sidebar.svelte'
+  import type { AnswerPart } from './types'
 
   type Props = {
-    part: AnswerPart,
-    suggest: (suggestion: AiSuggestion) => void,
+    part: AnswerPart
+    suggest: (suggestion: AiSuggestion) => void
   }
 
   let { part, suggest }: Props = $props()

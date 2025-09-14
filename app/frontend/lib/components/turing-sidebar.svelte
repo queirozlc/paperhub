@@ -18,7 +18,7 @@
   import {
     extractNodeHtmlContent,
     setIdsToNewAiSuggestions,
-    highlightHtmlDifferences,
+    diffHtml,
   } from '$lib/utils'
   import AiChatMessage from './ai-chat/chat-message.svelte'
   import type { Editor } from '@tiptap/core'
@@ -157,11 +157,14 @@
   }
 
   /**
-   * 
+   *
    * @param answer
    * @param suggestions
    */
-  function splitAnswer(answer: string, suggestions: AiSuggestion[]): AnswerPart[] {
+  function splitAnswer(
+    answer: string,
+    suggestions: AiSuggestion[]
+  ): AnswerPart[] {
     const parts: AnswerPart[] = []
     const regex = /\{\{(\d+)\}\}/g
 
@@ -219,7 +222,7 @@
         node = tr.doc.nodeAt(pos)
 
         const htmlContent = extractNodeHtmlContent(editor, node)
-        const [originalDiff, suggestionDiff] = highlightHtmlDifferences(
+        const [originalDiff, suggestionDiff] = diffHtml(
           htmlContent,
           suggestion.change
         )
@@ -276,7 +279,7 @@
     >
       {#if conversation.length !== 0}
         <div class="flex flex-col gap-4 w-full">
-          {#each conversation as statement}
+          {#each conversation as statement, index (index)}
             <AiChatMessage {statement} {suggest} />
           {/each}
 
@@ -333,10 +336,7 @@
 
   <Sidebar.Footer class="px-2">
     <div class="flex flex-col justify-center gap-4">
-      <form
-        class="relative"
-        onsubmit={submitQuestion}  
-      >
+      <form class="relative" onsubmit={submitQuestion}>
         <Textarea
           bind:ref={textareaRef}
           placeholder="Do que você está precisando ?"
@@ -344,8 +344,7 @@
           bind:value={question}
           oninput={resize}
           onkeydown={(e) => {
-            if (e.ctrlKey && e.key === 'Enter')
-              submitQuestion(e)
+            if (e.ctrlKey && e.key === 'Enter') submitQuestion(e)
           }}
         />
 

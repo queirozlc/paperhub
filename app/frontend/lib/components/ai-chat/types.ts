@@ -1,23 +1,23 @@
-import { AiSuggestion } from "$lib/components/turing-sidebar.svelte"
+import { AiSuggestion } from '$lib/components/turing-sidebar.svelte'
 
 export type AnswerPart =
   | {
-    type: 'text'
-    text: string
-  }
+      type: 'text'
+      text: string
+    }
   | {
-    type: 'suggestion'
-    suggestion: AiSuggestion
-  }
+      type: 'suggestion'
+      suggestion: AiSuggestion
+    }
 
 export type Answer = AnswerPart[] | 'error'
 
 export type ConversationPart =
   | {
-    type: 'question'
-    question: string
-  }
+      type: 'question'
+      question: string
+    }
   | {
-    type: 'answer'
-    answer: Answer
-  }
+      type: 'answer'
+      answer: Answer
+    }

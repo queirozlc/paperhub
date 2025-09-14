@@ -1,20 +1,12 @@
 import { Mark, mergeAttributes } from '@tiptap/core'
 
-export interface DiffOptions {
-  HTMLAttributes: Record<string, any>
-}
-
-export interface DiffAttributes {
-  //'data-action': 'add' | 'remove'
-}
-
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     diff: {
       /**
        * Insere um elemento diff
        */
-      setDiff: (attributes?: DiffAttributes) => ReturnType
+      setDiff: () => ReturnType
       /**
        * Remove o elemento diff
        */
@@ -22,12 +14,12 @@ declare module '@tiptap/core' {
       /**
        * Alterna o elemento diff
        */
-      toggleDiff: (attributes?: DiffAttributes) => ReturnType
+      toggleDiff: () => ReturnType
     }
   }
 }
 
-export const Diff = Mark.create<DiffOptions>({
+export const Diff = Mark.create({
   name: 'diff',
 
   addOptions() {
@@ -79,9 +71,9 @@ export const Diff = Mark.create<DiffOptions>({
   addCommands() {
     return {
       setDiff:
-        (attributes) =>
+        () =>
         ({ commands }) => {
-          return commands.wrapIn(this.name, attributes)
+          return commands.wrapIn(this.name)
         },
       unsetDiff:
         () =>
@@ -89,9 +81,9 @@ export const Diff = Mark.create<DiffOptions>({
           return commands.lift(this.name)
         },
       toggleDiff:
-        (attributes) =>
+        () =>
         ({ commands }) => {
-          return commands.toggleWrap(this.name, attributes)
+          return commands.toggleWrap(this.name)
         },
     }
   },
