@@ -47,3 +47,6 @@ vite.config.ts.timestamp-*.mjs
 
 # Test Coverage Reports
 /coverage
+
+# IDE
+/.vscode
