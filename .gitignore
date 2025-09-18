@@ -50,6 +50,3 @@ vite.config.ts.timestamp-*.mjs
 
 # IDE
 /.vscode
-
-# Other
-package-lock.json
