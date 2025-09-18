@@ -2,7 +2,6 @@
   import EditorLayout from '$layouts/EditorLayout.svelte'
   import { editorExtensions as extensions } from '$lib/extensions/extension-kit'
   import { onMount } from 'svelte'
-
   import ToolsBubbleMenu from '$lib/components/tools-bubble-menu.svelte'
   import { createEditor, Editor, EditorContent } from 'svelte-tiptap'
   import type { Readable } from 'svelte/store'
@@ -24,16 +23,16 @@
           class: 'min-h-full relative',
         },
       },
-      content: ``,
+      content: '',
       extensions,
     })
   })
 </script>
 
 <EditorLayout {document} editor={$editor}>
-  <div class="flex flex-col min-h-[calc(100svh-theme(spacing.4))] pb-5">
+  <div class="flex flex-col min-h-[calc(100svh-theme(spacing.4))]">
     <div
-      class="border border-border px-20 bg-background-editor py-16 relative size-full max-w-screen-md mx-auto"
+      class="relative border border-border px-20 py-16 size-full max-w-screen-md mx-auto"
     >
       <EditorContent editor={$editor} />
       {#if $editor}

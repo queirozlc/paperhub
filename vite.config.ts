@@ -35,4 +35,36 @@ export default defineConfig({
       $pages: resolve(__dirname, 'app/frontend/pages'),
     },
   },
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./app/frontend/test-setup.ts'],
+    include: [
+      'app/frontend/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'
+    ],
+    exclude: [
+      'node_modules',
+      'dist',
+      '.svelte-kit',
+      'build'
+    ],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      reportsDirectory: './coverage',
+      include: [
+        'app/frontend/lib/**/*.{js,ts,svelte}',
+        'app/frontend/pages/**/*.{js,ts,svelte}',
+        'app/frontend/layouts/**/*.{js,ts,svelte}'
+      ],
+      exclude: [
+        'app/frontend/**/*.test.{js,ts}',
+        'app/frontend/**/*.spec.{js,ts}',
+        'app/frontend/test-setup.ts',
+        'app/frontend/**/*.d.ts'
+      ]
+    },
+
+    testTimeout: 10000
+  }
 })

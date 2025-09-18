@@ -1,11 +1,12 @@
 import { getContext, setContext } from 'svelte'
 import { SIDEBAR_COOKIE_NAME } from './constants'
 import type { SidebarState } from './context.svelte'
+import { SvelteMap } from 'svelte/reactivity'
 
 const SIDEBAR_REGISTRY_KEY = Symbol('sidebar-registry')
 
 export class SidebarRegistry {
-  private registry: Map<string, SidebarState> = new Map()
+  private registry: Map<string, SidebarState> = new SvelteMap()
 
   register(state: SidebarState, key: string = SIDEBAR_COOKIE_NAME) {
     if (this.registry.has(key)) {
