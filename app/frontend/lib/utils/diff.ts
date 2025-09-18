@@ -33,7 +33,6 @@ function processHtmlTags(changes: ChangeObject<string>[]): HtmlChangeObject[] {
   }
 
   const result: HtmlChangeObject[] = []
-  let isTagOpen = false
 
   for (const change of changes) {
     let cursor = 0
@@ -44,8 +43,13 @@ function processHtmlTags(changes: ChangeObject<string>[]): HtmlChangeObject[] {
 
       // There is neither < nor >
       if (notContainAnyTagChar(openTagIdx, closeTagIdx)) {
-        result.push({ ...change, value: currentValue, tag: isTagOpen })
+        result.push({
+          ...change,
+          value: currentValue,
+          tag: isTag(change, currentValue),
+        })
         currentValue = ''
+        //? cursor = 0
       }
       // There is > first
       else if (closeTagIdx < openTagIdx) {
@@ -55,19 +59,43 @@ function processHtmlTags(changes: ChangeObject<string>[]): HtmlChangeObject[] {
         }
         currentValue = currentValue.substring(closeTagIdx + 1)
         cursor = 0
-        isTagOpen = false
       }
       // There is < first
       else {
         const pre = currentValue.substring(0, openTagIdx)
         if (pre.length > 0) {
-          result.push({ ...change, value: pre, tag: isTagOpen })
+          result.push({ ...change, value: pre, tag: isTag(change, pre) })
         }
         currentValue = currentValue.substring(openTagIdx)
         cursor = 1
-        isTagOpen = true
       }
     }
+  }
+
+  function isTag(change: ChangeObject<string>, excerpt: string): boolean {
+    if (excerpt.includes('>') || excerpt.includes('<')) {
+      return true
+    }
+
+    let htmlChange: HtmlChangeObject
+
+    const copy = result.filter(
+      (r) =>
+        (!r.added && !r.removed) ||
+        (change.added && r.added) ||
+        (change.removed && r.removed)
+    )
+
+    for (let i = copy.length - 1; i >= 0; i--) {
+      htmlChange = copy[i]
+      const openTagIdx = htmlChange.value.indexOf('<')
+      const closeTagIdx = htmlChange.value.indexOf('>')
+      if (openTagIdx === -1 && closeTagIdx === -1) {
+        continue
+      }
+      return openTagIdx > closeTagIdx
+    }
+    return false
   }
 
   return result
