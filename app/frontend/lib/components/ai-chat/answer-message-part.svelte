@@ -17,7 +17,10 @@
 </script>
 
 {#if part.type === 'text'}
-  <p class="w-full m-0">{part.text}</p>
+  <div class="w-full m-0">
+    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+    {@html sanitize(part.text)}
+  </div>
 {:else if part.type === 'suggestion'}
   <button
     class="w-full m-0 bg-ai-chat-suggestion-background hover:opacity-75 p-1 text-sm border rounded-xs text-left cursor-pointer transition"
@@ -27,3 +30,14 @@
     {@html sanitize(part.suggestion.change)}
   </button>
 {/if}
+
+<style>
+  :global(ul) {
+    list-style: disc;
+    margin-left: 1rem;
+  }
+  :global(ol) {
+    list-style: decimal;
+    margin-left: 1rem;
+  }
+</style>
