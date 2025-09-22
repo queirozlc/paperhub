@@ -35,9 +35,18 @@
   --sidebar-ring: oklch(0.705 0.015 286.067);
   --tooltip: hsl(240, 3.7%, 2.42%);
   --tooltip-foreground: hsl(0, 12.42%, 88.42%);
+  --suggestion-accept-background: hsl(120, 100%, 80%);
+  --suggestion-accept-foreground: hsl(120, 100%, 32%);
+  --suggestion-reject-background: hsl(0, 100%, 80%);
+  --suggestion-reject-foreground: hsl(359, 100%, 41%);
+  --suggestion-both-foreground: hsl(39, 100%, 50%);
+  --diff-accept-background: hsl(120, 100%, 35%);
+  --diff-reject-background: hsl(0, 100%, 60%);
+  --ai-chat-suggestion-background: hsl(0, 0%, 87%);
   --border: oklch(0.95 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
   --ring: hsl(240, 5.9%, 10%);
+
   --radius: 0.6rem;
   --font-family:
     'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
@@ -64,6 +73,8 @@
   --muted-foreground: hsl(240, 5%, 64.9%);
   --accent: hsl(240, 3.75%, 15.8%);
   --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: oklch(0.577 0.213 22.325);
+  --destructive-foreground: hsl(0, 85.7%, 97.3%);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
   --sidebar-primary-foreground: oklch(0.985 0 0);
@@ -74,8 +85,14 @@
   --sidebar: oklch(0.27 0 0);
   --tooltip: hsl(236.42, 3.94%, 18.42%);
   --tooltip-foreground: oklch(0.984 0.0062 283.11);
-  --destructive: oklch(0.577 0.213 22.325);
-  --destructive-foreground: hsl(0, 85.7%, 97.3%);
+  --suggestion-accept-background: hsl(120, 100%, 10%);
+  --suggestion-accept-foreground: hsl(120, 100%, 38%);
+  --suggestion-reject-background: hsl(0, 100%, 10%);
+  --suggestion-reject-foreground: hsl(0, 100%, 59%);
+  --suggestion-both-foreground: hsl(39, 100%, 50%);
+  --diff-accept-background: hsl(120, 100%, 25%);
+  --diff-reject-background: hsl(0, 100%, 40%);
+  --ai-chat-suggestion-background: hsl(0, 0%, 16%);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: hsl(240, 4.9%, 83.9%);
@@ -132,6 +149,14 @@
   --color-border: var(--border);
   --color-tooltip: var(--tooltip);
   --color-tooltip-foreground: var(--tooltip-foreground);
+  --color-suggestion-accept-background: var(--suggestion-accept-background);
+  --color-suggestion-accept-foreground: var(--suggestion-accept-foreground);
+  --color-suggestion-reject-background: var(--suggestion-reject-background);
+  --color-suggestion-reject-foreground: var(--suggestion-reject-foreground);
+  --color-suggestion-both-foreground: var(--suggestion-both-foreground);
+  --color-diff-accept-background: var(--diff-accept-background);
+  --color-diff-reject-background: var(--diff-reject-background);
+  --color-ai-chat-suggestion-background: var(--ai-chat-suggestion-background);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --radius-sm: calc(var(--radius) - 4px);

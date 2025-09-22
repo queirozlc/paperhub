@@ -1,5 +1,4 @@
-import { Link } from '$lib/extensions'
-import { TableOfContentsNode } from '$lib/extensions/table-of-contents-node'
+import { Link, TableOfContentsNode } from '$lib/extensions'
 import type { Editor } from 'svelte-tiptap'
 
 export const isTableGripSelected = (node: HTMLElement) => {
