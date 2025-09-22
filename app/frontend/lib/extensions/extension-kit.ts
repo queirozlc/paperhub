@@ -11,6 +11,8 @@ import {
   StarterKit,
   TableOfContents,
   TableOfContentsNode,
+  AiSuggestion,
+  Diff,
   TaskItem,
   TaskList,
   TextAlign,
@@ -56,6 +58,8 @@ export const editorExtensions = [
   Color,
   TableOfContents,
   TableOfContentsNode,
+  AiSuggestion,
+  Diff,
   Underline,
   UniqueID.configure({
     types: ['paragraph', 'heading', 'blockquote', 'codeBlock', 'table'],
