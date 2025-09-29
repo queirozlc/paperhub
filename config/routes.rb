@@ -16,6 +16,10 @@ Rails.application.routes.draw do
     collection do
       delete "destroy_all" => "documents#destroy_all"
     end
+
+    member do
+      get "diffs" => "documents#diffs"
+    end
   end
 
   resources :teams, only: %i[create update destroy] do

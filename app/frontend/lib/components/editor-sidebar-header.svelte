@@ -12,14 +12,14 @@
 
   import { SidebarTrigger } from '$lib/components/ui/sidebar'
   import type { DocumentType } from '$pages/Document/types'
-  import { page, router } from '@inertiajs/svelte'
+  import { Link, page, router } from '@inertiajs/svelte'
   import AvatarStack from './avatar-stack.svelte'
 
   const user = $page.props.user
 
   type Props = {
-    documentTitleInput: HTMLHeadingElement
-    documentTitle: string
+    documentTitleInput?: HTMLHeadingElement
+    documentTitle?: string
     document: DocumentType
   }
 
@@ -73,25 +73,29 @@
     </div>
 
     <div class="flex items-center gap-2">
-      <h5
-        bind:innerText={documentTitle}
-        bind:this={documentTitleInput}
-        class="font-brand tracking-tight text-accent-foreground max-w-md text-nowrap truncate overflow-x-auto no-scrollbar"
-        contenteditable="true"
-        onfocusout={handleTitleFocusOut}
-        onkeydown={handleTitleKeydown}
-      >
-        {document.title || 'Sem título'}
-      </h5>
+      {#if documentTitleInput && documentTitle}
+        <h5
+          bind:innerText={documentTitle}
+          bind:this={documentTitleInput}
+          class="font-brand tracking-tight text-accent-foreground max-w-md text-nowrap truncate overflow-x-auto no-scrollbar"
+          contenteditable="true"
+          onfocusout={handleTitleFocusOut}
+          onkeydown={handleTitleKeydown}
+        >
+          {document.title || 'Sem título'}
+        </h5>
+      {/if}
       <Tabs value="editor">
         <TabsList class="gap-1">
-          <TabsTrigger class="px-2" preserveState value="editor">
+          <TabsTrigger class="px-2" value="editor">
             <Icon class="size-5" name="file" />
           </TabsTrigger>
 
-          <TabsTrigger class="px-2" preserveState value="git">
-            <Icon class="size-5" name="source-control" />
-          </TabsTrigger>
+          <Link href={`/documents/${document.sqid}/diffs`}>
+            <TabsTrigger class="px-2" value="git">
+              <Icon class="size-5" name="source-control" />
+            </TabsTrigger>
+          </Link>
         </TabsList>
       </Tabs>
     </div>

@@ -48,6 +48,15 @@ class DocumentsController < ApplicationController
     redirect_to documents_url, notice: "documents were successfully destroyed."
   end
 
+  # GET /documents/:id/diffs
+  def diffs
+    @document = Document.find_by_sqid!(params[:id])
+
+    render inertia: "Document/Diffs", props: {
+      document: -> { @document.as_json(methods: :sqid) }
+    }
+  end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.
