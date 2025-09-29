@@ -9,6 +9,7 @@
     name: IconName
     strokeWidth?: number
     size?: number
+    pathFill?: string
   } & SvgAttributes
 
   let {
@@ -18,6 +19,7 @@
     size = 20,
     stroke = 'currentColor',
     fill = 'none',
+    pathFill = 'none',
     ...restProps
   }: Props = $props()
 
@@ -58,6 +60,7 @@
         stroke-width={strokeWidth}
         stroke-linecap="round"
         stroke-linejoin="round"
+        fill={pathFill}
       />
     {/if}
   </svg>
