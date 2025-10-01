@@ -12,4 +12,4 @@ export const defaultAvatar = (key: number = Math.random()) =>
       'variant26',
       'variant28',
     ],
-  })
+  }).toDataUri()

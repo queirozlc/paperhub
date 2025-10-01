@@ -138,8 +138,6 @@
     },
   ]
 
-  $inspect(editor)
-
   let pressedStates = $derived(
     items.map(({ slug, kind }) =>
       kind === 'mark'

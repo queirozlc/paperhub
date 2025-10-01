@@ -55,7 +55,7 @@
                 <Avatar.Fallback>
                   <img
                     alt="fallback active team cover"
-                    src={defaultAvatar(active_team.id).toDataUri()}
+                    src={defaultAvatar(active_team.id)}
                     class="size-5 rounded"
                   />
                 </Avatar.Fallback>
@@ -96,7 +96,7 @@
                   <Avatar.Fallback>
                     <img
                       alt="fallback team cover"
-                      src={defaultAvatar(team.id).toDataUri()}
+                      src={defaultAvatar(team.id)}
                       class="size-5 shrink-0 rounded-sm"
                     />
                   </Avatar.Fallback>

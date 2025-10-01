@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Badge from '$lib/components/ui/badge/badge.svelte'
   import { Button } from '$lib/components/ui/button'
   import { type ButtonProps } from '$lib/components/ui/button/button.svelte'
   import {
@@ -84,6 +85,7 @@
 
   <PopoverContent class="p-0" align="start">
     <Command
+      value={actualBranch.name}
       onStateChange={({ search, filtered }) => {
         filterTerm = search
         shouldHideCreateBranch = filtered.items
@@ -107,17 +109,28 @@
               onSelect={() => {
                 actualBranch = branch
               }}
-              class={cn('cursor-pointer text-muted-foreground', {
-                'text-foreground/40 font-semibold':
-                  branch.id === actualBranch.id,
-              })}
+              class={cn(
+                'cursor-pointer my-1 text-muted-foreground justify-between',
+                {
+                  'text-foreground font-semibold bg-accent':
+                    branch.id === actualBranch.id,
+                }
+              )}
             >
               {@const Icon = GitBranch}
-              <Icon class="mr-2 size-4" />
+              <div class="flex items-center gap-2">
+                <Icon class="mr-2 size-4" />
 
-              <span>
-                {branch.name}
-              </span>
+                <span>
+                  {branch.name}
+                </span>
+              </div>
+
+              {#if branch.default}
+                <Badge class="px-1 py-0 text-xs font-medium font-brand"
+                  >Padrão</Badge
+                >
+              {/if}
             </CommandItem>
           {/each}
         </CommandGroup>
