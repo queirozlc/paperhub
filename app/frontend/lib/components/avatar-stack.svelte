@@ -13,10 +13,7 @@
       <Avatar.Image src={user.avatar} alt={`${user.email}'s avatar`} />
 
       <Avatar.Fallback>
-        <img
-          src={defaultAvatar(user.id).toDataUri()}
-          alt="Default fallback avatar"
-        />
+        <img src={defaultAvatar(user.id)} alt="Default fallback avatar" />
       </Avatar.Fallback>
     </Avatar.Root>
   </Tooltip.Trigger>

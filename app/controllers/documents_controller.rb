@@ -52,8 +52,27 @@ class DocumentsController < ApplicationController
   def diffs
     @document = Document.find_by_sqid!(params[:id])
 
+    walker = Rugged::Walker.new(@document.repo)
+    walker.push(@document.repo.head.target)
+    @commits = walker.take(100).map do |commit|
+      if current_user.email == commit.author[:email]
+        avatar = url_for(current_user.avatar)
+      else
+        @user = User.find_by_email(commit.author[:email])
+        avatar = user_avatar(@user)
+      end
+
+      {
+        oid: commit.oid,
+        message: commit.message,
+        author: commit.author.merge(avatar: avatar, id: @user&.id || current_user.id),
+        time: commit.time
+      }
+    end
+
     render inertia: "Document/Diffs", props: {
-      document: -> { @document.as_json(methods: :sqid) }
+      document: -> { @document.as_json(methods: :sqid) },
+      commits: @commits
     }
   end
 
