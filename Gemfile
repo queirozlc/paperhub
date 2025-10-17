@@ -52,7 +52,7 @@ gem "pundit"
 gem "acts_as_tenant"
 
 ### ========== Git ==========
-gem 'rugged', git: 'https://github.com/libgit2/rugged.git', submodules: true
+gem "rugged", git: "https://github.com/libgit2/rugged.git", submodules: true
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

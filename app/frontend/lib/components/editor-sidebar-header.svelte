@@ -87,11 +87,13 @@
       {/if}
       <Tabs value="editor">
         <TabsList class="gap-1">
-          <TabsTrigger class="px-2" value="editor">
-            <Icon class="size-5" name="file" />
-          </TabsTrigger>
+          <Link href={`/documents/${document.sqid}`} prefetch>
+            <TabsTrigger class="px-2" value="editor">
+              <Icon class="size-5" name="file" />
+            </TabsTrigger>
+          </Link>
 
-          <Link href={`/documents/${document.sqid}/diffs`}>
+          <Link href={`/documents/${document.sqid}/diffs`} prefetch>
             <TabsTrigger class="px-2" value="git">
               <Icon class="size-5" name="source-control" />
             </TabsTrigger>

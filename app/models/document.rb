@@ -1,22 +1,40 @@
 class Document < ApplicationRecord
   include Sqids::Rails::Model
 
+  after_create_commit :init_repository
+
+  GIT_FILEMODE_UNREADABLE = 0
+  GIT_FILEMODE_TREE = 040000
+  GIT_FILEMODE_BLOB = 0100644
+  GIT_FILEMODE_LINK = 0120000
+  GIT_FILEMODE_COMMIT = 0160000
+
   acts_as_tenant :team
   enum :visibility, %i[private public], validate: true, default: :public, prefix: true
   has_sqid min_length: 21
 
-  def repo
-    @repo ||= begin
-      if Dir.exist?(repo_path)
-        Rugged::Repository.new(repo_path)
-      else
-        Rugged::Repository.init_at(repo_path)
-      end
+  class << self
+    def file_name
+      "editor.json"
     end
   end
 
+  def branches
+    repo.branches.map(&:name)
+  end
+
+  def repo
+    Rugged::Repository.new(path)
+  end
+
+
   private
-    def repo_path
+    def path
       Rails.root.join("tmp", "repos", "#{team.id}", "#{sqid}").to_s
+    end
+
+    def init_repository
+      Rugged::Repository.init_at path
+      with_default_configs
     end
 end

@@ -17,9 +17,9 @@ Rails.application.routes.draw do
       delete "destroy_all" => "documents#destroy_all"
     end
 
-    member do
-      get "diffs" => "documents#diffs"
-    end
+    resources :branches, only: %i[create]
+    resources :diffs, only: %i[index]
+    resources :commits, only: :create
   end
 
   resources :teams, only: %i[create update destroy] do

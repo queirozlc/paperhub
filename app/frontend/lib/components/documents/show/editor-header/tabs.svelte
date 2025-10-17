@@ -22,13 +22,17 @@
 
 <Tabs value={activeTab}>
   <TabsList class="gap-1">
-    <Link href={`/documents/${document.sqid}`}>
+    <Link href={`/documents/${document.sqid}`} preserveState={false} prefetch>
       <TabsTrigger class="px-2" value="editor">
         <Icon class="size-5" name="file" />
       </TabsTrigger>
     </Link>
 
-    <Link href={`/documents/${document.sqid}/diffs`}>
+    <Link
+      href={`/documents/${document.sqid}/diffs`}
+      preserveState={false}
+      prefetch
+    >
       <TabsTrigger class="px-2" value="git">
         <Icon class="size-5" name="source-control" />
       </TabsTrigger>

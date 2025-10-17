@@ -3,12 +3,12 @@
   import { Button } from '$lib/components/ui/button'
   import { type ButtonProps } from '$lib/components/ui/button/button.svelte'
   import {
-    CommandEmpty,
-    CommandInput,
-    CommandList,
-    CommandGroup,
-    CommandItem,
     Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
   } from '$lib/components/ui/command'
 
   import {
@@ -24,37 +24,34 @@
     TooltipTrigger,
   } from '$lib/components/ui/tooltip'
   import { cn } from '$lib/utils'
-  import { ChevronDown, GitBranch, Plus } from '@lucide/svelte'
+  import { Link, router } from '@inertiajs/svelte'
+
+  import { ChevronDown, GitBranch, LoaderIcon, Plus } from '@lucide/svelte'
+
+  type Props = ButtonProps & {
+    branches: string[]
+    document_id: string
+    current_branch: string
+    createBranch: (name: string, target: string) => void
+  }
 
   const {
     ref = $bindable(null),
     class: className,
+    branches,
+    document_id,
+    current_branch,
+    createBranch,
     ...restProps
-  }: ButtonProps = $props()
+  }: Props = $props()
 
-  let fakeBranches = $state([
-    {
-      id: 1,
-      name: 'main',
-      description: 'Main branch',
-      default: true,
-    },
-    {
-      id: 2,
-      name: 'feature/test',
-      description: 'Test branch',
-      default: false,
-    },
+  function reloadBranches() {
+    router.reload({
+      only: ['branches'],
+    })
+  }
 
-    {
-      id: 3,
-      name: 'feature/test3',
-      description: 'Test branch',
-      default: false,
-    },
-  ])
-
-  let actualBranch = $state(fakeBranches[0])
+  let actualBranch = $derived(current_branch)
   let shouldHideCreateBranch = $state(false)
   let filterTerm = $state('')
 </script>
@@ -73,9 +70,7 @@
           <GitBranch class="size-4" />
           <div class="flex flex-col items-start">
             <span class="text-[10px] text-muted-foreground">Branch Atual</span>
-            <span class="text-xs text-accent-foreground"
-              >{actualBranch.name}</span
-            >
+            <span class="text-xs text-accent-foreground">{actualBranch}</span>
           </div>
         </div>
         <ChevronDown class="size-4" />
@@ -85,12 +80,16 @@
 
   <PopoverContent class="p-0" align="start">
     <Command
-      value={actualBranch.name}
+      value={actualBranch}
       onStateChange={({ search, filtered }) => {
+        if (!branches) {
+          reloadBranches()
+          return
+        }
         filterTerm = search
         shouldHideCreateBranch = filtered.items
           .entries()
-          .filter(([key]) => fakeBranches.some((branch) => branch.name === key))
+          .filter(([key]) => branches?.some((branch) => branch === key))
           .some(([, value]) => value === 1)
       }}
     >
@@ -99,39 +98,47 @@
         class="h-10 text-sm"
       />
       <CommandList>
-        <CommandEmpty class="text-sm text-muted-foreground">
-          Nenhuma branch encontrada
+        <CommandEmpty class="flex items-center justify-center h-full">
+          {#if branches}
+            <span class="text-sm text-muted-foreground">
+              Nenhuma branch encontrada
+            </span>
+          {:else}
+            <LoaderIcon class="size-5 animate-spin mx-auto" />
+          {/if}
         </CommandEmpty>
         <CommandGroup>
-          {#each fakeBranches as branch (branch.id)}
-            <CommandItem
-              value={branch.name}
-              onSelect={() => {
-                actualBranch = branch
-              }}
-              class={cn(
-                'cursor-pointer my-1 text-muted-foreground justify-between',
-                {
-                  'text-foreground font-semibold bg-accent':
-                    branch.id === actualBranch.id,
-                }
-              )}
-            >
-              {@const Icon = GitBranch}
-              <div class="flex items-center gap-2">
-                <Icon class="mr-2 size-4" />
+          {#each branches as branch (branch)}
+            <Link href={`/documents/${document_id}/diffs?ref=${branch}`}>
+              <CommandItem
+                value={branch}
+                onSelect={() => {
+                  actualBranch = branch
+                }}
+                class={cn(
+                  'cursor-pointer my-1 text-muted-foreground justify-between',
+                  {
+                    'text-foreground font-semibold bg-accent':
+                      branch === actualBranch,
+                  }
+                )}
+              >
+                {@const Icon = GitBranch}
+                <div class="flex items-center gap-2">
+                  <Icon class="mr-2 size-4" />
 
-                <span>
-                  {branch.name}
-                </span>
-              </div>
+                  <span>
+                    {branch}
+                  </span>
+                </div>
 
-              {#if branch.default}
-                <Badge class="px-1 py-0 text-xs font-medium font-brand"
-                  >Padrão</Badge
-                >
-              {/if}
-            </CommandItem>
+                {#if branch === 'main' || branch === 'master'}
+                  <Badge class="px-1 py-0 text-xs font-medium font-brand"
+                    >Padrão</Badge
+                  >
+                {/if}
+              </CommandItem>
+            </Link>
           {/each}
         </CommandGroup>
       </CommandList>
@@ -144,12 +151,17 @@
           <TooltipTrigger>
             {#snippet child({ props })}
               <div class="p-2">
-                <Button variant="ghost" class="w-full h-8" {...props}>
+                <Button
+                  variant="ghost"
+                  class="w-full h-8"
+                  {...props}
+                  onclick={() => createBranch(filterTerm, actualBranch)}
+                >
                   <Plus class="size-4" />
                   <span class="text-xs truncate text-ellipsis"
                     >Criar branch <span class="font-bold">{filterTerm}</span> a
                     partir da branch
-                    <span class="font-bold">{actualBranch.name}</span></span
+                    <span class="font-bold">{actualBranch}</span></span
                   >
                 </Button>
               </div>
@@ -158,7 +170,7 @@
 
           <TooltipContent class="inline-block" side="right">
             Criar branch <span class="font-bold">{filterTerm}</span> a partir da
-            branch <span class="font-bold">{actualBranch.name}</span>
+            branch <span class="font-bold">{actualBranch}</span>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

@@ -7,6 +7,7 @@
   import type { Readable } from 'svelte/store'
   import type { DocumentType } from './types'
   import LinkBubbleMenu from '$lib/components/link-bubble-menu.svelte'
+  import { router } from '@inertiajs/svelte'
 
   let { document }: { document: DocumentType } = $props()
 
@@ -23,7 +24,17 @@
           class: 'min-h-full relative',
         },
       },
-      content: '',
+      content: document.content || '',
+      onCreate({ editor }) {
+        if (document.content) {
+          editor.commands.setTextSelection(editor.state.doc.content.size)
+        }
+      },
+      onUpdate: ({ editor }) => {
+        router.patch(`/documents/${document.sqid}`, {
+          document: { content: JSON.stringify(editor.getJSON()) },
+        })
+      },
       extensions,
     })
   })
