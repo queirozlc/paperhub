@@ -8,6 +8,7 @@ export interface DocumentType extends HashableModel {
   team_id: number
   created_at: Date
   updated_at: Date
+  content: Record<string, unknown>
 }
 
 export type DocumentFormType = Omit<
@@ -20,7 +21,11 @@ export type InvitationForm = {
   role: 'owner' | 'member' | ''
 }
 
-export interface CommitType extends HashableModel {
+export interface BranchType {
+  name: string
+}
+
+export interface CommitType {
   oid: string
   message: string
   author: Omit<UserType, 'active_team_id' | 'role'>

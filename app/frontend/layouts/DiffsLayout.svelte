@@ -24,7 +24,7 @@
   } from '$lib/components/ui/tabs'
   import { Changes, Commits } from '$lib/components/diffs'
   import SidebarMenu from '$lib/components/ui/sidebar/sidebar-menu.svelte'
-  import { page } from '@inertiajs/svelte'
+  import { page, router, useForm } from '@inertiajs/svelte'
   import Avatar from '$lib/components/ui/avatar/avatar.svelte'
   import { AvatarFallback, AvatarImage } from '$lib/components/ui/avatar'
   import { userNameFallback } from '$lib/utils'
@@ -36,6 +36,8 @@
   type Props = {
     children: Snippet
     document: DocumentType
+    branches: string[]
+    current_branch: string
     commits: CommitType[]
   }
 
@@ -45,7 +47,13 @@
     label: string
   }
 
-  let { children, document, commits }: Props = $props()
+  export type CommitForm = {
+    message: string
+    description?: string
+  }
+
+  let { children, document, branches, current_branch, commits }: Props =
+    $props()
 
   const tabs: TabItem[] = [
     {
@@ -60,9 +68,36 @@
     },
   ]
 
+  let form = useForm<CommitForm>({
+    message: '',
+    description: '',
+  })
+
   let activeTab = $state<'changes' | 'history'>('changes')
 
   const user = $page.props.user
+
+  function createBranch(name: string, target: string) {
+    router.post(
+      `/documents/${document.sqid}/branches`,
+      {
+        branch: { name, target },
+      },
+      {
+        only: ['branches', 'current_branch'],
+      }
+    )
+  }
+
+  function commitChanges(e: SubmitEvent) {
+    e.preventDefault()
+    $form
+      .transform((data) => ({ commit: { ...data } }))
+      .post(`/documents/${document.sqid}/commits`, {
+        preserveUrl: true,
+      })
+    $form.reset()
+  }
 </script>
 
 <div class="overflow-hidden flex w-full">
@@ -73,7 +108,17 @@
     class="w-fit overflow-hidden max-h-dvh"
   >
     <Sidebar transparent>
-      <Tabs bind:value={activeTab} class="w-full h-full">
+      <Tabs
+        bind:value={activeTab}
+        class="w-full h-full"
+        onValueChange={(tab) => {
+          if (tab === 'history' && !commits) {
+            router.reload({
+              only: ['commits'],
+            })
+          }
+        }}
+      >
         <SidebarHeader class="p-0 h-14 justify-end">
           <TabsList
             class="before:bg-border relative h-auto w-full gap-0.5 bg-transparent p-0 before:absolute before:inset-x-0 before:bottom-0 before:h-px px-1"
@@ -111,39 +156,43 @@
         <SidebarFooter>
           <SidebarMenu>
             <SidebarMenuItem class="gap-4 flex flex-col">
-              <div class="flex items-center gap-4">
-                <Avatar class="size-9">
-                  <AvatarImage
-                    src={user.avatar}
-                    class="object-cover block"
-                    alt={user.name}
+              <form class="flex flex-col w-full gap-2" onsubmit={commitChanges}>
+                <div class="flex items-center gap-2">
+                  <Avatar class="size-9">
+                    <AvatarImage
+                      src={user.avatar}
+                      class="object-cover block"
+                      alt={user.name}
+                    />
+                    <AvatarFallback>
+                      {userNameFallback(user.name)}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  <div class="flex flex-col gap-1 grow">
+                    <Label for="commit-message" class="text-sm font-medium"
+                      >Adicione um comentário</Label
+                    >
+                    <Input
+                      bind:value={$form.message}
+                      id="commit-message"
+                      name="commit-message"
+                      class="text-sm shadow h-9"
+                      placeholder="Ex: 'Novo parágrafo adicionado'"
+                    />
+                  </div>
+                </div>
+
+                <div class="relative">
+                  <Textarea
+                    bind:value={$form.description}
+                    placeholder="Caso necessário, adicione alguns detalhes (opcional)"
+                    class="resize-none pb-10 no-scrollbar"
                   />
-                  <AvatarFallback>
-                    {userNameFallback(user.name)}
-                  </AvatarFallback>
-                </Avatar>
+                </div>
 
-                <form class="flex flex-col w-full gap-1">
-                  <Label for="commit-message" class="text-sm font-medium"
-                    >Adicione um comentário</Label
-                  >
-                  <Input
-                    id="commit-message"
-                    name="commit-message"
-                    class="text-sm shadow h-9"
-                    placeholder="Ex: 'Novo parágrafo adicionado'"
-                  />
-                </form>
-              </div>
-
-              <div class="relative">
-                <Textarea
-                  placeholder="Caso necessário, adicione alguns detalhes (opcional)"
-                  class="resize-none pb-10 no-scrollbar"
-                />
-              </div>
-
-              <Button class="w-full">Salvar alterações</Button>
+                <Button type="submit" class="w-full">Salvar alterações</Button>
+              </form>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarFooter>
@@ -157,7 +206,12 @@
       <EditorSidebar.Tabs {document} />
       <div class="flex items-center gap-2">
         <Separator class="h-4" orientation="vertical" />
-        <EditorSidebar.BranchSelect />
+        <EditorSidebar.BranchSelect
+          document_id={document.sqid}
+          {current_branch}
+          {branches}
+          {createBranch}
+        />
       </div>
     </EditorSidebar.Header>
 

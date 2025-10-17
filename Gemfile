@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 8.0.2"
+gem "rails", "~> 8.0.3"
 # Use postgresql as the database for Active Record
 gem "pg", "~> 1.6"
 # Use the Puma web server [https://github.com/puma/puma]
@@ -52,7 +52,7 @@ gem "pundit"
 gem "acts_as_tenant"
 
 ### ========== Git ==========
-gem 'rugged', git: 'https://github.com/libgit2/rugged.git', submodules: true
+gem "rugged", git: "https://github.com/libgit2/rugged.git", submodules: true
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

@@ -32,7 +32,8 @@ class DocumentsController < ApplicationController
 
   # PATCH/PUT /documents/1
   def update
-    @document.update!(document_params)
+    json_content = JSON.parse(document_params[:content]) if document_params[:content].present?
+    @document.update!(document_params.except(:content).merge(content: json_content))
     redirect_to @document, notice: "Document was successfully updated."
   end
 
@@ -48,35 +49,6 @@ class DocumentsController < ApplicationController
     redirect_to documents_url, notice: "documents were successfully destroyed."
   end
 
-  # GET /documents/:id/diffs
-  def diffs
-    @document = Document.find_by_sqid!(params[:id])
-
-    walker = Rugged::Walker.new(@document.repo)
-    walker.push(@document.repo.head.target)
-    @commits = walker.take(100).map do |commit|
-      if current_user.email == commit.author[:email]
-        avatar = url_for(current_user.avatar)
-      else
-        @user = User.find_by_email(commit.author[:email])
-        avatar = user_avatar(@user)
-      end
-
-      {
-        oid: commit.oid,
-        message: commit.message,
-        author: commit.author.merge(avatar: avatar, id: @user&.id || current_user.id),
-        time: commit.time
-      }
-    end
-
-    render inertia: "Document/Diffs", props: {
-      document: -> { @document.as_json(methods: :sqid) },
-      commits: @commits
-    }
-  end
-
-
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_document_from_hash
@@ -85,7 +57,8 @@ class DocumentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def document_params
-      params.expect(document: [ :title, :description ])
+      # params.expect(document: %i[title description content])
+      params.fetch(:document, {}).permit(%i[title description content])
     end
 
     def document_id_params

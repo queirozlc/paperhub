@@ -5,11 +5,13 @@
   type Props = {
     document: DocumentType
     commits: CommitType[]
+    branches: string[]
+    current_branch: string
   }
 
-  let { document, commits }: Props = $props()
+  let { document, branches, commits, current_branch }: Props = $props()
 </script>
 
-<DiffsLayout {document} {commits}>
+<DiffsLayout {document} {commits} {branches} {current_branch}>
   <div>Diffs</div>
 </DiffsLayout>
