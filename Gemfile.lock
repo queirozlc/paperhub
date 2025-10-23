@@ -1,10 +1,3 @@
-GIT
-  remote: https://github.com/libgit2/rugged.git
-  revision: 762fd37e32c14707d017589a7dfa082dae7d9821
-  submodules: true
-  specs:
-    rugged (1.7.1)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -402,6 +395,7 @@ GEM
     ruby-lsp-rspec (0.1.28)
       ruby-lsp (~> 0.26.0)
     ruby-progressbar (1.13.0)
+    rugged (1.7.1)
     securerandom (0.4.1)
     simplecov (0.22.0)
       docile (~> 1.1)
@@ -514,7 +508,7 @@ DEPENDENCIES
   rubocop-rspec
   rubocop-rspec_rails
   ruby-lsp-rspec
-  rugged!
+  rugged
   simplecov
   solid_cable
   solid_cache
