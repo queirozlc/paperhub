@@ -18,17 +18,6 @@
       ? 'editor'
       : 'git'
   )
-
-  // search by ?ref= param to apply into diff url if possible
-  let ref = $derived(window.location.search.split('?ref=')[1])
-
-  let diffsUrl = $derived(
-    ref
-      ? // if there's a ref then it refer's to the branch
-        `/documents/${document.sqid}/diffs?ref=${ref}`
-      : // if there's no ref then it refer's to main branch
-        `/documents/${document.sqid}/diffs`
-  )
 </script>
 
 <Tabs value={activeTab}>
@@ -44,7 +33,12 @@
       </TabsTrigger>
     </Link>
 
-    <Link href={diffsUrl} prefetch preserveState={false} only={['document']}>
+    <Link
+      href={`/documents/${document.sqid}/diffs`}
+      prefetch
+      preserveState={false}
+      only={['document']}
+    >
       <TabsTrigger class="px-2" value="git">
         <Icon class="size-5" name="source-control" />
       </TabsTrigger>
