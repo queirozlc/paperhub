@@ -4,9 +4,12 @@ class BranchesController < ApplicationController
   def create
     # if branch name has spaces then replace them with hyphens
     branch_name = branch_params[:name].gsub(" ", "-")
-    @branch = @document.repo.branches.create(branch_name, branch_params[:target])
-    @document.repo.checkout(@branch.name)
-    redirect_to document_diffs_path(@document), notice: "Branch was successfully created."
+    target = branch_params[:target]
+
+    commit = @document.repo.rev_parse(target)
+
+    @branch = @document.repo.branches.create(branch_name, commit.oid)
+    redirect_to diffs_document_path(@document, @branch.name), notice: "Branch '#{@branch.name}' created successfully."
   end
 
   private

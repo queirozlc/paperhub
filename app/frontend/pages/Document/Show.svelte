@@ -31,9 +31,17 @@
         }
       },
       onUpdate: ({ editor }) => {
-        router.patch(`/documents/${document.sqid}`, {
-          document: { content: JSON.stringify(editor.getJSON()) },
-        })
+        router.patch(
+          `/documents/${document.sqid}`,
+          {
+            document: { content: JSON.stringify(editor.getJSON()) },
+          },
+          {
+            preserveScroll: true,
+            preserveState: true,
+            only: ['document'],
+          }
+        )
       },
       extensions,
     })

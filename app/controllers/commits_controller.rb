@@ -1,5 +1,6 @@
 class CommitsController < ApplicationController
   before_action :set_document
+  before_action :set_ref_params
   include ExtractRef
 
 
@@ -29,7 +30,7 @@ class CommitsController < ApplicationController
       },
       commit: {
         message: message,
-        update_ref: @ref.name,
+        update_ref: "HEAD",
         parents: []
       }
     }
@@ -46,6 +47,7 @@ class CommitsController < ApplicationController
       ref = repo.references[@ref.name]
       last_commit = ref.target
       commit[:parents] = [ last_commit ]
+      commit[:update_ref] = ref.name
       index.read_tree(last_commit.tree)
     end
 
@@ -64,20 +66,21 @@ class CommitsController < ApplicationController
       committer:,
       message: commit[:message],
       parents: commit[:parents],
-      update_ref: @ref.name
+      update_ref: commit[:update_ref]
     }
-
-    repo.checkout_index(index)
 
     Rugged::Commit.create(repo, commit_opts)
 
-    redirect_to document_diffs_path(document), notice: "Commit was successfully created."
+    redirect_to diffs_document_path(document, ref: normalize_branch_name), notice: "Commit was successfully created."
   end
 
   private
+    def set_ref_params
+      @ref = assign_ref commit_params[:ref]
+    end
 
     def commit_params
-      params.expect(commit: %i[message description])
+      params.expect(commit: %i[message description ref])
     end
 
     def set_document

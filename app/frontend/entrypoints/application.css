@@ -194,6 +194,15 @@
   } */
 
   /* --- Begin editor.css, lists.css, typography.css, placeholder.css --- */
+
+  ins {
+    @apply bg-green-500/20 text-green-700 no-underline dark:bg-green-400/20 dark:text-green-300;
+  }
+
+  delete {
+    @apply bg-red-500/20 text-red-700 line-through dark:bg-red-400/20 dark:text-red-300;
+  }
+
   [data-theme='slash-command'] {
     width: 1000vw;
   }

@@ -39,6 +39,7 @@
     branches: string[]
     current_branch: string
     commits: CommitType[]
+    changesCount: number
   }
 
   export type TabItem = {
@@ -52,8 +53,14 @@
     description?: string
   }
 
-  let { children, document, branches, current_branch, commits }: Props =
-    $props()
+  let {
+    children,
+    document,
+    branches,
+    current_branch,
+    commits,
+    changesCount,
+  }: Props = $props()
 
   const tabs: TabItem[] = [
     {
@@ -92,7 +99,7 @@
   function commitChanges(e: SubmitEvent) {
     e.preventDefault()
     $form
-      .transform((data) => ({ commit: { ...data } }))
+      .transform((data) => ({ commit: { ...data, ref: current_branch } }))
       .post(`/documents/${document.sqid}/commits`, {
         preserveUrl: true,
       })
@@ -143,7 +150,9 @@
         <SidebarContent>
           <SidebarGroup class="space-y-2">
             <TabsContent value="changes">
-              <Changes />
+              {#if current_branch}
+                <Changes {changesCount} />
+              {/if}
             </TabsContent>
             <TabsContent value="history">
               <Commits {commits} />
@@ -204,15 +213,17 @@
     <EditorSidebar.Header>
       <EditorSidebar.Trigger for="git-panel" />
       <EditorSidebar.Tabs {document} />
-      <div class="flex items-center gap-2">
-        <Separator class="h-4" orientation="vertical" />
-        <EditorSidebar.BranchSelect
-          document_id={document.sqid}
-          {current_branch}
-          {branches}
-          {createBranch}
-        />
-      </div>
+      {#if current_branch}
+        <div class="flex items-center gap-2">
+          <Separator class="h-4" orientation="vertical" />
+          <EditorSidebar.BranchSelect
+            document_id={document.sqid}
+            {current_branch}
+            {branches}
+            {createBranch}
+          />
+        </div>
+      {/if}
     </EditorSidebar.Header>
 
     <div class="flex overflow-y-scroll py-4">

@@ -109,7 +109,7 @@
         </CommandEmpty>
         <CommandGroup>
           {#each branches as branch (branch)}
-            <Link href={`/documents/${document_id}/diffs?ref=${branch}`}>
+            <Link href={`/documents/${document_id}/diffs/${branch}`}>
               <CommandItem
                 value={branch}
                 onSelect={() => {

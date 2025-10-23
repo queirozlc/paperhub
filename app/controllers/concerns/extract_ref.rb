@@ -3,19 +3,18 @@ module ExtractRef
 
   included do
     attr_reader :document
-    before_action :assign_ref
   end
 
   private
 
-    def assign_ref
-      ref_name = if params[:ref].present?
-        "refs/heads/#{params[:ref]}"
+    def assign_ref(ref)
+      ref_name = if ref.present?
+        "refs/heads/#{ref}"
       else
-        document.repo.head.name
+        document.repo.head.name unless document.repo.empty?
       end
 
-      @ref = document.repo.references[ref_name]
+      document.repo.references[ref_name] if ref_name.present?
     end
 
     def normalize_branch_name

@@ -49,7 +49,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_13_234658) do
     t.integer "visibility", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.json "content"
+    t.jsonb "content"
     t.index ["team_id"], name: "index_documents_on_team_id"
     t.check_constraint "visibility = ANY (ARRAY[0, 1, 2])", name: "check_visibility"
   end
