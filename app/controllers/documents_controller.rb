@@ -45,7 +45,7 @@ class DocumentsController < ApplicationController
 
   # DELETE /documents
   def destroy_all
-    Document.where(id: document_id_params).destroy_all
+    Document.includes(:team).where(id: document_id_params).destroy_all
     redirect_to documents_url, notice: "documents were successfully destroyed."
   end
 
