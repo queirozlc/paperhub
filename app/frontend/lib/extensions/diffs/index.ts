@@ -68,6 +68,8 @@ interface DiffOptions {
   fromHTML: string
   toHTML: string
 
+  editable: boolean
+
   setDiffCount: (count: number) => void
 }
 
@@ -79,7 +81,8 @@ export const Diff = Extension.create<DiffOptions>({
     return {
       fromHTML: '',
       toHTML: '',
-      setDiffCount: undefined,
+      setDiffCount: null,
+      editable: true,
     }
   },
 
@@ -97,8 +100,9 @@ export const Diff = Extension.create<DiffOptions>({
       )
       this.editor.commands.setContent(diffContent)
 
-      // Make editor non-editable
-      this.editor.setEditable(false)
+      if (!this.options.editable) {
+        this.editor.setEditable(false)
+      }
     }
   },
 
@@ -107,7 +111,7 @@ export const Diff = Extension.create<DiffOptions>({
       new Plugin({
         key: new PluginKey('diffViewer'),
         props: {
-          editable: () => false,
+          editable: () => this.options.editable,
         },
       }),
     ]
