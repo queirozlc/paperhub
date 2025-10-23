@@ -231,9 +231,9 @@
       @apply list-decimal;
     }
 
-    /* ul {
+    ul {
       @apply list-disc;
-    } */
+    }
 
     ul,
     ol {

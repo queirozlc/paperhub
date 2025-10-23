@@ -4,7 +4,6 @@
    * For now, we are going to leave it as is, but this is a security risk
    * @since 18/09/2025
    */
-  import sanitize from 'sanitize-html'
   import type { AiSuggestion } from '../turing-sidebar.svelte'
   import type { AnswerPart } from './types'
 
@@ -19,7 +18,7 @@
 {#if part.type === 'text'}
   <div class="w-full m-0">
     <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-    {@html sanitize(part.text)}
+    {@html part.text}
   </div>
 {:else if part.type === 'suggestion'}
   <button
@@ -27,17 +26,6 @@
     onclick={() => suggest(part.suggestion)}
   >
     <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-    {@html sanitize(part.suggestion.change)}
+    {@html part.suggestion.change}
   </button>
 {/if}
-
-<style>
-  :global(ul) {
-    list-style: disc;
-    margin-left: 1rem;
-  }
-  :global(ol) {
-    list-style: decimal;
-    margin-left: 1rem;
-  }
-</style>
