@@ -102,6 +102,7 @@
       .transform((data) => ({ commit: { ...data, ref: current_branch } }))
       .post(`/documents/${document.sqid}/commits`, {
         preserveUrl: true,
+        preserveState: false,
       })
     $form.reset()
   }

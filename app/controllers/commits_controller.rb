@@ -70,6 +70,8 @@ class CommitsController < ApplicationController
     }
 
     Rugged::Commit.create(repo, commit_opts)
+    Rails.logger.info("Commit created: #{commit[:update_ref]}")
+    @ref = assign_ref commit[:update_ref]
 
     redirect_to diffs_document_path(document, ref: normalize_branch_name), notice: "Commit was successfully created."
   end

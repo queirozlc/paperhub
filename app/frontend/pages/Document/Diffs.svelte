@@ -7,6 +7,7 @@
   import { createEditor, Editor, EditorContent } from 'svelte-tiptap'
   import type { Readable } from 'svelte/store'
   import { Diff } from '$lib/extensions'
+  import { Icon, Info } from '@lucide/svelte'
 
   type Props = {
     document: DocumentType
@@ -19,13 +20,16 @@
   let { document, branches, commits, current_branch, file_content }: Props =
     $props()
 
-  const lastCommitHtml = generateHTML(file_content, editorExtensions)
-  const actualHtml = generateHTML(document.content, editorExtensions)
+  let lastCommitHtml = ''
+  let actualHtml = ''
+
+  if (file_content && document.content) {
+    lastCommitHtml = generateHTML(file_content, editorExtensions)
+    actualHtml = generateHTML(document.content, editorExtensions)
+  }
 
   let editor = $state(null) as Readable<Editor>
   let changesCount = $state(0)
-
-  $inspect(changesCount)
 
   onMount(() => {
     editor = createEditor({
@@ -55,9 +59,18 @@
 </script>
 
 <DiffsLayout {document} {commits} {branches} {current_branch} {changesCount}>
-  <div
-    class="border border-border rounded-lg px-20 bg-background-editor py-16 relative size-full max-w-screen-md mx-auto"
-  >
-    <EditorContent editor={$editor} />
-  </div>
+  {#if lastCommitHtml && actualHtml}
+    <div
+      class="border border-border rounded-lg px-20 bg-background-editor py-16 relative size-full max-w-screen-md mx-auto"
+    >
+      <EditorContent editor={$editor} />
+    </div>
+  {:else}
+    <div class="text-center text-sm text-muted-foreground py-16">
+      <p class="flex items-center gap-2 justify-center">
+        <Info class="size-4" />
+        <span>Salve suas alterações para ver as diferenças</span>
+      </p>
+    </div>
+  {/if}
 </DiffsLayout>
