@@ -26,7 +26,7 @@ class DiffsController < ApplicationController
         }
       end
 
-      last_commit = document.repo.last_commit
+      last_commit = @ref.target
       last_editor_blob = document.repo.blob_at(last_commit.oid, Document.file_name)&.content || ""
 
       render inertia: "Document/Diffs", props: {
