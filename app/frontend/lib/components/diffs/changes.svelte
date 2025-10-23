@@ -1,6 +1,4 @@
 <script lang="ts">
-  import Checkbox from '../ui/checkbox/checkbox.svelte'
-
   type Props = {
     changesCount: number
   }

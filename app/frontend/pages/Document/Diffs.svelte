@@ -7,7 +7,7 @@
   import { createEditor, Editor, EditorContent } from 'svelte-tiptap'
   import type { Readable } from 'svelte/store'
   import { Diff } from '$lib/extensions'
-  import { Icon, Info } from '@lucide/svelte'
+  import { Info } from '@lucide/svelte'
 
   type Props = {
     document: DocumentType
@@ -20,8 +20,8 @@
   let { document, branches, commits, current_branch, file_content }: Props =
     $props()
 
-  let lastCommitHtml = ''
-  let actualHtml = ''
+  let lastCommitHtml = $state('')
+  let actualHtml = $state('')
 
   if (file_content && document.content) {
     lastCommitHtml = generateHTML(file_content, editorExtensions)

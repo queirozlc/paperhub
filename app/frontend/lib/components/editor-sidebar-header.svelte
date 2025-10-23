@@ -2,7 +2,6 @@
   import Button from '$lib/components/ui/button/button.svelte'
   import { Icon } from '$lib/components/ui/icon'
   import { Separator } from '$lib/components/ui/separator'
-  import { Tabs, TabsList, TabsTrigger } from '$lib/components/ui/tabs'
   import {
     Tooltip,
     TooltipContent,
@@ -12,7 +11,7 @@
 
   import { SidebarTrigger } from '$lib/components/ui/sidebar'
   import type { DocumentType } from '$pages/Document/types'
-  import { Link, page, router } from '@inertiajs/svelte'
+  import { page, router } from '@inertiajs/svelte'
   import AvatarStack from './avatar-stack.svelte'
   import { EditorSidebar } from './documents/show/editor-header'
 
