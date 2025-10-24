@@ -1,4 +1,5 @@
 import type { HashableModel } from '$lib/utils'
+import type { UserType } from '$pages/Users/types'
 
 export interface DocumentType extends HashableModel {
   id: number
@@ -7,6 +8,7 @@ export interface DocumentType extends HashableModel {
   team_id: number
   created_at: Date
   updated_at: Date
+  content: Record<string, unknown>
 }
 
 export type DocumentFormType = Omit<
@@ -17,4 +19,15 @@ export type DocumentFormType = Omit<
 export type InvitationForm = {
   email: string
   role: 'owner' | 'member' | ''
+}
+
+export interface BranchType {
+  name: string
+}
+
+export interface CommitType {
+  oid: string
+  message: string
+  author: Omit<UserType, 'active_team_id' | 'role'>
+  time: Date
 }

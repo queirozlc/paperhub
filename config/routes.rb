@@ -16,6 +16,15 @@ Rails.application.routes.draw do
     collection do
       delete "destroy_all" => "documents#destroy_all"
     end
+
+    member do
+      # use document_id instead of id
+      get "diffs/:ref" => "diffs#index", as: :diffs
+      get "diffs" => "diffs#index"
+    end
+
+    resources :branches, only: %i[create]
+    resources :commits, only: :create
   end
 
   resources :teams, only: %i[create update destroy] do

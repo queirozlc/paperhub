@@ -7,10 +7,26 @@
   import type { Readable } from 'svelte/store'
   import type { DocumentType } from './types'
   import LinkBubbleMenu from '$lib/components/link-bubble-menu.svelte'
+  import { router } from '@inertiajs/svelte'
+  import type { Editor as TiptapEditor } from '@tiptap/core'
+  import { debounce } from '@tiptap/extension-table-of-contents'
 
   let { document }: { document: DocumentType } = $props()
 
   let editor = $state() as Readable<Editor>
+
+  function updateDocument(editor: TiptapEditor) {
+    router.patch(
+      `/documents/${document.sqid}`,
+      {
+        document: { content: JSON.stringify(editor.getJSON()) },
+      },
+      {
+        preserveScroll: true,
+        preserveState: true,
+      }
+    )
+  }
 
   onMount(() => {
     editor = createEditor({
@@ -23,7 +39,13 @@
           class: 'min-h-full relative',
         },
       },
-      content: '',
+      content: document.content || '',
+      onCreate({ editor }) {
+        if (document.content) {
+          editor.commands.setTextSelection(editor.state.doc.content.size)
+        }
+      },
+      onUpdate: debounce(({ editor }) => updateDocument(editor), 1000),
       extensions,
     })
   })

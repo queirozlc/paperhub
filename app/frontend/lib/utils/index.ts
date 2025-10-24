@@ -1,5 +1,6 @@
 export { cn } from './cn'
 export { isCustomNodeSelected } from './custom-node'
+export { debounce } from './debounce'
 export { defaultAvatar } from './default-avatar'
 export { diffHtml } from './diff'
 export { getOS } from './os-picker'
