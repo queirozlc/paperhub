@@ -51,8 +51,8 @@ gem "pundit"
 #### ========== Tenant ==========
 gem "acts_as_tenant"
 
-### ========== Notification ==========
-gem "noticed"
+### ========== Git ==========
+gem "rugged"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

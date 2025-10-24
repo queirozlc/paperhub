@@ -64,7 +64,7 @@
   {#if fallback}
     {@render fallback()}
   {:else}
-    <img src={defaultAvatar().toDataUri()} alt="fallback avatar" />
+    <img src={defaultAvatar()} alt="fallback avatar" />
   {/if}
 {/snippet}
 

@@ -23,10 +23,10 @@ export { StarterKit } from '@tiptap/starter-kit'
  * Custom extensions
  */
 
-export { Diff } from './diff'
+export { AiSuggestion } from './ai-suggestion'
+export { Diff } from './diffs'
 export { FontSize } from './font-size'
 export { Link } from './link'
 export { Pagination } from './pagination'
 export { SlashCommands } from './slash-commands'
-export { AiSuggestion } from './ai-suggestion'
 export { TableOfContentsNode } from './table-of-contents-node'

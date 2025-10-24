@@ -32,8 +32,9 @@ class DocumentsController < ApplicationController
 
   # PATCH/PUT /documents/1
   def update
-    @document.update!(document_params)
-    redirect_to @document, notice: "Document was successfully updated."
+    json_content = JSON.parse(document_params[:content]) if document_params[:content].present?
+    @document.update!(document_params.except(:content).merge(content: json_content))
+    redirect_to document_path(@document), notice: "document was successfully updated."
   end
 
   # DELETE /documents/1
@@ -44,10 +45,9 @@ class DocumentsController < ApplicationController
 
   # DELETE /documents
   def destroy_all
-    Document.where(id: document_id_params).destroy_all
+    Document.includes(:team).where(id: document_id_params).destroy_all
     redirect_to documents_url, notice: "documents were successfully destroyed."
   end
-
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -57,7 +57,8 @@ class DocumentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def document_params
-      params.expect(document: [ :title, :description ])
+      # params.expect(document: %i[title description content])
+      params.fetch(:document, {}).permit(%i[title description content])
     end
 
     def document_id_params

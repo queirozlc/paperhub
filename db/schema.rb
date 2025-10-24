@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_15_192757) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_13_234658) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -49,6 +49,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_15_192757) do
     t.integer "visibility", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "content"
     t.index ["team_id"], name: "index_documents_on_team_id"
     t.check_constraint "visibility = ANY (ARRAY[0, 1, 2])", name: "check_visibility"
   end
