@@ -34,7 +34,7 @@ class DocumentsController < ApplicationController
   def update
     json_content = JSON.parse(document_params[:content]) if document_params[:content].present?
     @document.update!(document_params.except(:content).merge(content: json_content))
-    redirect_to @document, notice: "Document was successfully updated."
+    redirect_to document_path(@document), notice: "document was successfully updated."
   end
 
   # DELETE /documents/1

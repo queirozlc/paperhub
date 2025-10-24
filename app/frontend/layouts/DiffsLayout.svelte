@@ -32,6 +32,7 @@
   import Label from '$lib/components/ui/label/label.svelte'
   import { Textarea } from '$lib/components/ui/textarea'
   import Button from '$lib/components/ui/button/button.svelte'
+  import { toast } from 'svelte-sonner'
 
   type Props = {
     children: Snippet
@@ -103,6 +104,9 @@
       .post(`/documents/${document.sqid}/commits`, {
         preserveUrl: true,
         preserveState: false,
+        onSuccess: () => {
+          toast.success('Alterações salvas com sucesso!')
+        },
       })
     $form.reset()
   }
