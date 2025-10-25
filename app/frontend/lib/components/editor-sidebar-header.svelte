@@ -1,13 +1,10 @@
 <script lang="ts">
-  import Button from '$lib/components/ui/button/button.svelte'
-  import { Icon } from '$lib/components/ui/icon'
   import { Separator } from '$lib/components/ui/separator'
   import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
   } from '$lib/components/ui/tooltip'
-  import { DotsHorizontal } from '@voolt_technologies/untitledui-svelte'
 
   import { SidebarTrigger } from '$lib/components/ui/sidebar'
   import type { DocumentType } from '$pages/Document/types'
