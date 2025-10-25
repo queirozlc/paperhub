@@ -1,10 +1,7 @@
 <script lang="ts" module>
   import { Icon, Settings } from '@lucide/svelte'
 
-  import {
-    FilterLines,
-    Home05 as Home,
-  } from '@voolt_technologies/untitledui-svelte'
+  import { Home05 as Home } from '@voolt_technologies/untitledui-svelte'
 
   import type { InvitationForm } from '$pages/Document/types'
 
