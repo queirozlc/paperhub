@@ -77,7 +77,7 @@
     </span>
 
     <span class="text-muted-foreground text-xs font-medium truncate">
-      {document.description || 'Lorem ipsum solar sit amet...'}
+      {document.description || ''}
     </span>
   </div>
 </div>

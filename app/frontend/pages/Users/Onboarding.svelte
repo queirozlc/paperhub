@@ -15,8 +15,10 @@
   import { page, useForm } from '@inertiajs/svelte'
   import { capitalize } from '$lib/utils'
 
+  const user = $page.props.user
+
   const form = useForm({
-    name: '',
+    name: user?.name || '',
   })
 
   function submit(e: SubmitEvent) {
@@ -27,8 +29,6 @@
       }))
       .patch('/onboarding')
   }
-
-  const user = $page.props.user
 
   const placeholder = capitalize(user.email.split('@')[0])
 </script>
