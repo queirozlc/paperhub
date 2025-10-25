@@ -1,10 +1,11 @@
 Rails.application.routes.draw do
   root "welcome#index"
 
-  devise_for :users, path: "", controllers: {
+  devise_for :users, controllers: {
     sessions: "users/sessions",
     verification: "users/onboarding",
-    invitations: "users/invitations"
+    invitations: "users/invitations",
+    omniauth_callbacks: "users/omniauth_callbacks"
   }, skip: %i[verification]
 
   get "verify_email" => "users/confirmations#show", as: :verify_email

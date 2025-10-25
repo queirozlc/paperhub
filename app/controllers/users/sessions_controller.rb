@@ -8,7 +8,7 @@ module Users
 
   private
     def after_sign_in_path_for(resource)
-      if resource.active_team_id
+      if resource.onboarding_completed?
         documents_path
       else
         user_onboarding_path

@@ -44,6 +44,9 @@ gem "devise", "~> 4.9"
 gem "devise_invitable", "~> 2.0.0"
 gem "devise-passwordless"
 gem "devise-verifiable"
+gem "omniauth"
+gem "omniauth-rails_csrf_protection", "~> 1.0.2"
+gem "omniauth-google-oauth2"
 
 #### ========== Authorization ==========
 gem "pundit"

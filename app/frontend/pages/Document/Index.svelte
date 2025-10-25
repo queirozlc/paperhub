@@ -13,7 +13,7 @@
     DropdownMenuTrigger,
   } from '$lib/components/ui/dropdown-menu'
   import { router } from '@inertiajs/svelte'
-  import { Blocks, FileStack } from '@lucide/svelte'
+  import { FileStack } from '@lucide/svelte'
   import { ChevronDown, File02 } from '@voolt_technologies/untitledui-svelte'
   import Document from './Document.svelte'
   import type { DocumentType } from './types'
@@ -72,7 +72,7 @@
           </div>
         </DropdownMenuItem>
 
-        <DropdownMenuItem class="border border-input">
+        <!-- <DropdownMenuItem class="border border-input">
           <div class="flex items-center justify-between w-full px-1">
             <div class="text-sm font-brand flex flex-col">
               <span class="font-medium text-accent-foreground">
@@ -85,7 +85,7 @@
 
             <Blocks class="text-accent-foreground size-7" />
           </div>
-        </DropdownMenuItem>
+        </DropdownMenuItem> -->
       </DropdownMenuContent>
     </DropdownMenu>
   </div>
