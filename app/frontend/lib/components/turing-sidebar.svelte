@@ -303,7 +303,7 @@
           <div
             class="shadow-md rounded-md bg-popover p-2 w-fit flex items-center justify-center"
           >
-            <img src={turingSvg} alt="Turing AI image" />
+            <img src={turingSvg} alt="Turing AI icon" />
           </div>
           <h3 class="font-brand font-semibold text-sm text-accent-foreground">
             Como posso ajudar ?

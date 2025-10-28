@@ -18,7 +18,7 @@
       .transform((data) => ({
         user: { ...data, remember_me: true },
       }))
-      .post('/sign_in')
+      .post('/users/sign_in')
   }
 
   // Get CSRF token for OAuth form
