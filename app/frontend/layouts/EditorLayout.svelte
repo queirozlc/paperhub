@@ -66,7 +66,7 @@
   <Sidebar.Provider
     name="turing"
     open={true}
-    style="--sidebar-width: 18rem;"
+    style="--sidebar-width: 20rem;"
     class="w-fit overflow-hidden max-h-dvh"
   >
     <TuringSidebar {editor} />

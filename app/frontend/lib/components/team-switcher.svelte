@@ -16,7 +16,7 @@
   let open = $state(false)
 
   function logout() {
-    router.delete('/sign_out')
+    router.delete('/users/sign_out')
   }
 
   function switchTeam(team: TeamType) {
@@ -44,7 +44,7 @@
       <DropdownMenu.Root onOpenChange={fetchTeams}>
         <DropdownMenu.Trigger>
           {#snippet child({ props })}
-            <Sidebar.MenuButton {...props} class="w-fit px-1.5">
+            <Sidebar.MenuButton {...props} class="px-1.5">
               <Avatar.Root
                 class="text-sidebar-primary-foreground flex aspect-square size-6 items-center justify-center rounded-md"
               >

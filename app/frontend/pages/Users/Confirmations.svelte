@@ -26,7 +26,7 @@
     class="flex w-full justify-center px-8 py-16 md:mb-32 md:items-center"
   >
     <div class="space-y-6">
-      <Link href="/sign_in" replace class="inline-block">
+      <Link href="/users/sign_in" replace class="inline-block">
         <div
           class="font-brand bg-background dark:bg-muted border-muted-foreground/10 hover:inset-shadow-md flex h-8 items-center gap-1 rounded-lg border-[.5px] px-3 text-sm font-semibold inset-shadow-sm shadow-md hover:shadow-lg"
         >

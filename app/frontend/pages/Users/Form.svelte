@@ -18,7 +18,15 @@
       .transform((data) => ({
         user: { ...data, remember_me: true },
       }))
-      .post('/sign_in')
+      .post('/users/sign_in')
+  }
+
+  // Get CSRF token for OAuth form
+  const getCsrfToken = (): string => {
+    const meta = document.querySelector(
+      'meta[name="csrf-token"]'
+    ) as HTMLMetaElement
+    return meta?.content || ''
   }
 </script>
 
@@ -28,8 +36,10 @@
   <img src={logoDark} alt="Paperhub Logo" class="hidden w-36 dark:block" />
 </div>
 
-<div>
+<form action="/users/auth/google_oauth2" method="post">
+  <input type="hidden" name="authenticity_token" value={getCsrfToken()} />
   <Button
+    type="submit"
     class="font-brand text-accent dark:text-accent-foreground active:animate-button-pop h-12 w-full border bg-[hsl(223.81,0%,16%)] text-lg font-semibold shadow-[1px_1px_2px_rgba(0,0,0,0.1)] duration-200 ease-in-out hover:bg-[hsl(223.81,0%,16%)]/80 dark:bg-[hsl(223.81,0%,30%)]/80 dark:hover:bg-[hsl(223.81,0%,30%)]/60"
   >
     <svg
@@ -57,7 +67,7 @@
     </svg>
     Entrar com google
   </Button>
-</div>
+</form>
 
 <div
   class="text-muted-foreground before:bg-accent after:bg-accent font-brand my-4 flex h-4 items-center gap-4 text-sm whitespace-nowrap before:h-[1px] before:w-full after:h-[1px] after:w-full"

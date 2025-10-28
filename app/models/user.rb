@@ -5,8 +5,8 @@ class User < ApplicationRecord
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :invitable, :magic_link_authenticatable, :rememberable, :validatable,
-         :trackable, :verifiable
+  devise :invitable, :magic_link_authenticatable, :rememberable, :validatable, :async,
+         :trackable, :verifiable, :omniauthable, omniauth_providers: [ :google_oauth2 ]
 
   verify_fields :name
 
@@ -41,6 +41,30 @@ class User < ApplicationRecord
     end
   end
 
+
+  def self.from_omniauth(auth)
+    # Try to find user by provider and uid first
+    user = where(provider: auth.provider, uid: auth.uid).first
+
+    # If not found, try to find by email
+    user ||= find_by(email: auth.info.email)
+
+    # If user found by email but no provider/uid, update them
+    if user
+      user.update(provider: auth.provider, uid: auth.uid) if user.provider.nil? || user.uid.nil?
+      return user
+    end
+
+    # Otherwise, create new user
+    create do |user|
+      user.email = auth.info.email
+      user.avatar.attach(io: StringIO.new(auth.info.image), filename: "avatar.png", content_type: "image/png") if auth.info.image.present?
+      user.name = auth.info.name
+      user.provider = auth.provider
+      user.uid = auth.uid
+    end
+  end
+
   def new_personal_team(attrs = {})
     name = attrs[:name]
     return if active_team.present? || name.blank?
@@ -55,6 +79,10 @@ class User < ApplicationRecord
     ActsAsTenant.with_mutable_tenant do
       update!(active_team: team)
     end
+  end
+
+  def onboarding_completed?
+    active_team.present? && name.present?
   end
 
   def can_invite?(invited_user)

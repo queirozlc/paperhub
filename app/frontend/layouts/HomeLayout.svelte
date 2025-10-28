@@ -1,17 +1,7 @@
 <script lang="ts" module>
-  import {
-    Blocks,
-    Icon,
-    MessageCircleQuestion,
-    Settings,
-    Sparkles,
-  } from '@lucide/svelte'
+  import { Icon, Settings } from '@lucide/svelte'
 
-  import {
-    FilterLines,
-    Home05 as Home,
-    Inbox01 as Inbox,
-  } from '@voolt_technologies/untitledui-svelte'
+  import { Home05 as Home } from '@voolt_technologies/untitledui-svelte'
 
   import type { InvitationForm } from '$pages/Document/types'
 
@@ -49,11 +39,7 @@
     SidebarGroup,
   } from '$lib/components/ui/sidebar'
 
-  import {
-    NavFolders,
-    NavMain,
-    NavSecondary,
-  } from '$lib/components/documents/index'
+  import { NavMain, NavSecondary } from '$lib/components/documents/index'
   import TeamSwitcher from '$lib/components/team-switcher.svelte'
   import {
     Avatar,
@@ -62,7 +48,6 @@
   } from '$lib/components/ui/avatar'
   import Button from '$lib/components/ui/button/button.svelte'
   import Separator from '$lib/components/ui/separator/separator.svelte'
-  import { Tabs, TabsList, TabsTrigger } from '$lib/components/ui/tabs'
   import type { TeamType } from '$pages/Team/types'
   import { Send } from '@lucide/svelte'
   import type { Snippet } from 'svelte'
@@ -83,18 +68,15 @@
   const sidebarSections: {
     navMain: NavMainItem[]
     navSecondary: NavSecondaryItem[]
-    // Just for a while
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    folders: any[]
   } = {
     navMain: [
-      {
-        title: 'Pergunte ao Turing ✨',
-        url: '#',
-        icon: Sparkles,
-        tooltip:
-          'Faça perguntas sobre seus documentos e receba respostas instantâneas',
-      },
+      // {
+      //   title: 'Pergunte ao Turing ✨',
+      //   url: '#',
+      //   icon: Sparkles,
+      //   tooltip:
+      //     'Faça perguntas sobre seus documentos e receba respostas instantâneas',
+      // },
       {
         title: 'Página inicial',
         url: '#',
@@ -102,14 +84,14 @@
         isActive: true,
         tooltip: 'Volte para a página inicial',
       },
-      {
-        title: 'Inbox',
-        url: '#',
-        icon: Inbox,
-        badge: 10,
-        tooltip:
-          'Acesse sua caixa de entrada para ver as atualizações mais recentes',
-      },
+      // {
+      //   title: 'Inbox',
+      //   url: '#',
+      //   icon: Inbox,
+      //   badge: 10,
+      //   tooltip:
+      //     'Acesse sua caixa de entrada para ver as atualizações mais recentes',
+      // },
     ],
     navSecondary: [
       {
@@ -117,20 +99,19 @@
         title: 'Configurações',
         icon: Settings,
       },
-      {
-        name: 'templates',
-        title: 'Modelos',
-        url: '#',
-        icon: Blocks,
-      },
-      {
-        name: 'help',
-        title: 'Ajuda',
-        url: '#',
-        icon: MessageCircleQuestion,
-      },
+      // {
+      //   name: 'templates',
+      //   title: 'Modelos',
+      //   url: '#',
+      //   icon: Blocks,
+      // },
+      // {
+      //   name: 'help',
+      //   title: 'Ajuda',
+      //   url: '#',
+      //   icon: MessageCircleQuestion,
+      // },
     ],
-    folders: [],
   }
 
   let { teams, children, user_invitations, team_members, active_team }: Props =
@@ -174,7 +155,7 @@
       <NavMain items={sidebarSections.navMain} />
     </SidebarHeader>
     <SidebarContent>
-      <NavFolders folders={sidebarSections.folders} />
+      <!-- <NavFolders folders={sidebarSections.folders} /> -->
       <NavSecondary
         class="mt-auto"
         items={sidebarSections.navSecondary}
@@ -197,21 +178,21 @@
       <div class="flex items-center gap-2">
         <SidebarTrigger />
         <Separator class="mr-2 h-4" orientation="vertical" />
-        <Button class="gap-2 h-7 shadow-none" size="sm" variant="outline">
+        <!-- <Button class="gap-2 h-7 shadow-none" size="sm" variant="outline">
           <div class="rounded-full border border-accent-foreground p-0.5">
             <FilterLines class="size-2 text-accent-foreground" />
           </div>
           <span class="text-accent-foreground/80 font-medium">Filtrar</span>
-        </Button>
+        </Button> -->
       </div>
-      <div>
+      <!-- <div>
         <Tabs value="documents">
           <TabsList>
             <TabsTrigger value="documents">Documentos</TabsTrigger>
             <TabsTrigger value="folders">Pastas</TabsTrigger>
           </TabsList>
         </Tabs>
-      </div>
+      </div> -->
       <div class="flex items-center gap-5">
         <Avatar class="size-8">
           <AvatarImage

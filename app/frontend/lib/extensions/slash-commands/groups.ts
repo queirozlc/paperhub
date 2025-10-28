@@ -3,39 +3,37 @@ import {
   Heading1,
   Heading2,
   Heading3,
-  Image,
   List,
   ListOrdered,
   ListTodo,
   Quote,
-  Sparkles,
   SquareCode,
 } from '@lucide/svelte'
 import type { Editor } from '@tiptap/core'
 import type { Group } from './types'
 export const GROUPS: Group[] = [
-  {
-    name: 'ai',
-    title: 'IA ✨',
-    commands: [
-      {
-        name: 'aiWriter',
-        label: 'Escreva com IA',
-        icon: Sparkles,
-        description: 'Deixe a IA completar seus pensamentos',
-        shouldBeHidden: (editor: Editor) => editor.isActive('columns'),
-        action: (editor: Editor) => editor.chain().focus().setAiWriter().run(),
-      },
-      {
-        name: 'aiImage',
-        label: 'Imagem IA',
-        icon: Sparkles,
-        description: 'Gerar uma imagem a partir do texto',
-        shouldBeHidden: (editor: Editor) => editor.isActive('columns'),
-        action: (editor: Editor) => editor.chain().focus().setAiImage().run(),
-      },
-    ],
-  },
+  // {
+  //   name: 'ai',
+  //   title: 'IA ✨',
+  //   commands: [
+  //     {
+  //       name: 'aiWriter',
+  //       label: 'Escreva com IA',
+  //       icon: Sparkles,
+  //       description: 'Deixe a IA completar seus pensamentos',
+  //       shouldBeHidden: (editor: Editor) => editor.isActive('columns'),
+  //       action: (editor: Editor) => editor.chain().focus().setAiWriter().run(),
+  //     },
+  //     {
+  //       name: 'aiImage',
+  //       label: 'Imagem IA',
+  //       icon: Sparkles,
+  //       description: 'Gerar uma imagem a partir do texto',
+  //       shouldBeHidden: (editor: Editor) => editor.isActive('columns'),
+  //       action: (editor: Editor) => editor.chain().focus().setAiImage().run(),
+  //     },
+  //   ],
+  // },
   {
     name: 'basic',
     title: 'Blocos Básicos',
@@ -143,16 +141,16 @@ export const GROUPS: Group[] = [
       //       .run()
       //   },
       // },
-      {
-        name: 'image',
-        label: 'Imagem',
-        icon: Image,
-        description: 'Inserir uma imagem',
-        aliases: ['img'],
-        action: (editor: Editor) => {
-          editor.chain().focus().setImageUpload().run()
-        },
-      },
+      // {
+      //   name: 'image',
+      //   label: 'Imagem',
+      //   icon: Image,
+      //   description: 'Inserir uma imagem',
+      //   aliases: ['img'],
+      //   action: (editor: Editor) => {
+      //     editor.chain().focus().setImageUpload().run()
+      //   },
+      // },
       // {
       //   name: 'columns',
       //   label: 'Colunas',

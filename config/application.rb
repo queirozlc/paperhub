@@ -46,5 +46,8 @@ module Paperhub
       g.test_framework :rspec, fixtures: false, view_specs: false,
         helper_specs: false, routing_specs: false
     end
+
+    config.mission_control.jobs.base_controller_class = "AdminController"
+    config.mission_control.jobs.http_basic_auth_enabled = false
   end
 end

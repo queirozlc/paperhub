@@ -1,13 +1,10 @@
 <script lang="ts">
-  import Button from '$lib/components/ui/button/button.svelte'
-  import { Icon } from '$lib/components/ui/icon'
   import { Separator } from '$lib/components/ui/separator'
   import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
   } from '$lib/components/ui/tooltip'
-  import { DotsHorizontal } from '@voolt_technologies/untitledui-svelte'
 
   import { SidebarTrigger } from '$lib/components/ui/sidebar'
   import type { DocumentType } from '$pages/Document/types'
@@ -36,9 +33,16 @@
     }
 
     if (documentTitle !== document.title) {
-      router.patch(`/documents/${document.sqid}`, {
-        document: { title: documentTitle },
-      })
+      router.patch(
+        `/documents/${document.sqid}`,
+        {
+          document: { title: documentTitle },
+        },
+        {
+          preserveState: false,
+          preserveScroll: true,
+        }
+      )
     }
   }
 
@@ -73,22 +77,20 @@
     </div>
 
     <div class="flex items-center gap-2">
-      {#if documentTitleInput && documentTitle}
-        <h5
-          bind:innerText={documentTitle}
-          bind:this={documentTitleInput}
-          class="font-brand tracking-tight text-accent-foreground max-w-md text-nowrap truncate overflow-x-auto no-scrollbar"
-          contenteditable="true"
-          onfocusout={handleTitleFocusOut}
-          onkeydown={handleTitleKeydown}
-        >
-          {document.title || 'Sem título'}
-        </h5>
-      {/if}
+      <h5
+        bind:innerText={documentTitle}
+        bind:this={documentTitleInput}
+        class="font-brand tracking-tight text-accent-foreground overflow-x-hidden no-scrollbar max-w-xs truncate"
+        contenteditable="true"
+        onfocusout={handleTitleFocusOut}
+        onkeydown={handleTitleKeydown}
+      >
+        {document.title || 'Sem título'}
+      </h5>
       <EditorSidebar.Tabs {document} />
     </div>
 
-    <div class="flex items-center gap-2">
+    <!-- <div class="flex items-center gap-2">
       <Button
         class="text-muted-foreground hover:text-accent-foreground"
         size="icon"
@@ -104,7 +106,7 @@
       >
         <DotsHorizontal class="size-5" />
       </Button>
-    </div>
+    </div> -->
   </div>
 
   <div class="flex items-center gap-4">

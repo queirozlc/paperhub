@@ -22,9 +22,27 @@ default: &default
   host: localhost
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
+sqlite: &sqlite
+  adapter: sqlite3
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+
 development:
-  <<: *default
-  database: paperhub_development
+  primary:
+    <<: *default
+    database: paperhub_development
+  cache:
+    <<: *sqlite
+    database: storage/paperhub_development_cache.sqlite3
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *sqlite
+    database: storage/paperhub_development_queue.sqlite3
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *sqlite
+    database: storage/paperhub_development_cable.sqlite3
+    migrations_paths: db/cable_migrate
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
@@ -86,15 +104,19 @@ production:
     database: paperhub_production
     username: paperhub
     password: <%= ENV["PAPERHUB_DATABASE_PASSWORD"] %>
+    url: <%= ENV["DATABASE_URL"] %>
   cache:
     <<: *primary_production
     database: paperhub_production_cache
     migrations_paths: db/cache_migrate
+    url: <%= URI.parse(ENV["DATABASE_URL"]).tap { |url| url.path += "_cache" } if ENV["DATABASE_URL"] %>
   queue:
     <<: *primary_production
     database: paperhub_production_queue
     migrations_paths: db/queue_migrate
+    url: <%= URI.parse(ENV["DATABASE_URL"]).tap { |url| url.path += "_queue" } if ENV["DATABASE_URL"] %>
   cable:
     <<: *primary_production
     database: paperhub_production_cable
     migrations_paths: db/cable_migrate
+    url: <%= URI.parse(ENV["DATABASE_URL"]).tap { |url| url.path += "_cable" } if ENV["DATABASE_URL"] %>
