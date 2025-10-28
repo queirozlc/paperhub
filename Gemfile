@@ -4,6 +4,8 @@ source "https://rubygems.org"
 gem "rails", "~> 8.1.0"
 # Use postgresql as the database for Active Record
 gem "pg", "~> 1.6"
+# Use SQLite as the database for Solid Trifecta (Queue, Cache, Cable)
+gem "sqlite3"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
@@ -42,6 +44,7 @@ gem "thruster", require: false
 #### ========== Authentication ==========
 gem "devise", "~> 4.9"
 gem "devise_invitable", "~> 2.0.0"
+gem "devise-async"
 gem "devise-passwordless"
 gem "devise-verifiable"
 gem "omniauth"
@@ -56,6 +59,13 @@ gem "acts_as_tenant"
 
 ### ========== Git ==========
 gem "rugged"
+
+#### ========== Email ==========
+gem "resend"
+
+#### ========== Background Jobs ==========
+gem "mission_control-jobs"
+gem "propshaft"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
