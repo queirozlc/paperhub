@@ -114,3 +114,5 @@ group :development do
 
   gem "letter_opener"
 end
+
+gem "dockerfile-rails", ">= 1.7", group: :development
