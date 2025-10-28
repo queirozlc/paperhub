@@ -5,7 +5,7 @@ class User < ApplicationRecord
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :invitable, :magic_link_authenticatable, :rememberable, :validatable,
+  devise :invitable, :magic_link_authenticatable, :rememberable, :validatable, :async,
          :trackable, :verifiable, :omniauthable, omniauth_providers: [ :google_oauth2 ]
 
   verify_fields :name
@@ -64,7 +64,6 @@ class User < ApplicationRecord
       user.uid = auth.uid
     end
   end
-
 
   def new_personal_team(attrs = {})
     name = attrs[:name]

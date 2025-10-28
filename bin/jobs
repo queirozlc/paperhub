@@ -1,6 +1,10 @@
 #!/usr/bin/env ruby
 
 require_relative "../config/environment"
+
+# Reload routes to ensure Devise mappings are available
+Rails.application.reload_routes!
+
 require "solid_queue/cli"
 
 SolidQueue::Cli.start(ARGV)

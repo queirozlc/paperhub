@@ -22,9 +22,27 @@ default: &default
   host: localhost
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
+sqlite: &sqlite
+  adapter: sqlite3
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+
 development:
-  <<: *default
-  database: paperhub_development
+  primary:
+    <<: *default
+    database: paperhub_development
+  cache:
+    <<: *sqlite
+    database: storage/paperhub_development_cache.sqlite3
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *sqlite
+    database: storage/paperhub_development_queue.sqlite3
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *sqlite
+    database: storage/paperhub_development_cable.sqlite3
+    migrations_paths: db/cable_migrate
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
