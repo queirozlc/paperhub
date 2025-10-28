@@ -2,10 +2,31 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Attach to rdbg Process",
       "type": "rdbg",
-      "request": "attach",
-      "debugPort": "${workspaceRoot}/tmp/sockets/rdbg.socket",
+      "name": "Attach with rdbg",
+      "request": "attach"
     },
+    {
+      "type": "rdbg",
+      "name": "Run rake spec - current file",
+      "request": "launch",
+      "useBundler": true,
+      "command": "rspec",
+      "script": "${file}",
+      "args": [],
+      "askParameters": false,
+      "waitLaunchTime": 500
+    },
+    {
+      "type": "rdbg",
+      "name": "Run single test",
+      "request": "launch",
+      "useBundler": true,
+      "command": "rspec",
+      "script": "${file}:${lineNumber}",
+      "args": [],
+      "askParameters": false,
+      "waitLaunchTime": 500
+    }
   ]
 }
