@@ -130,7 +130,7 @@
       .transform(({ email, role }) => ({
         user: { email, invitation_role: role },
       }))
-      .post('/invitation', {
+      .post('/users/invitation', {
         preserveState: false,
         onSuccess: () => {
           openInvitationDialog = false

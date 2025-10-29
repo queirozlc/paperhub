@@ -32,8 +32,10 @@ class Document < ApplicationRecord
 
 
   private
+    # The path must be on the storage mount because is a path that exists both in development and production
+    # the storage is a mounted volume which is persistent between deployments
     def path
-      Rails.root.join("tmp", "repos", "#{team.id}", "#{sqid}").to_s
+      Rails.root.join("storage", "repos", "#{team.id}", "#{sqid}").to_s
     end
 
     def init_repository
