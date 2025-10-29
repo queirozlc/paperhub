@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for paperhub on 2025-10-28T17:41:51-03:00
+# fly.toml app configuration file generated for paperhub on 2025-10-28T19:39:44-03:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -17,6 +17,10 @@ PORT = '8080'
 
 [processes]
 app = './bin/rails server'
+
+[[mounts]]
+source = 'paperhub_storage'
+destination = '/rails/storage'
 
 [http_service]
 internal_port = 8080
@@ -38,11 +42,31 @@ tls_skip_verify = false
 [http_service.checks.headers]
 X-Forwarded-Proto = 'https'
 
+[[http_service.checks]]
+interval = '10s'
+timeout = '2s'
+grace_period = '5s'
+method = 'GET'
+path = '/up'
+protocol = 'http'
+tls_skip_verify = false
+
+[http_service.checks.headers]
+X-Forwarded-Proto = 'https'
+
+[[http_service.checks]]
+interval = '10s'
+timeout = '2s'
+grace_period = '5s'
+method = 'GET'
+path = '/up'
+protocol = 'http'
+tls_skip_verify = false
+
+[http_service.checks.headers]
+X-Forwarded-Proto = 'https'
+
 [[vm]]
 memory = '1gb'
 cpu_kind = 'shared'
 cpus = 1
-
-[mounts]
-source = "paperhub_storage"
-destination = "/mnt/paperhub_storage"

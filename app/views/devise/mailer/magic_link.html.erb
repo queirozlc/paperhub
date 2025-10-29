@@ -1,7 +1,10 @@
-<p>Hello <%= @resource.email %>!</p>
+<p>Olá, <%= @resource.email %>! Seja bem-vindo ao PaperHub.</p>
 
-<p>You can login using the link below:</p>
+<p>Você pode entrar na sua conta usando o link abaixo:</p>
 
-<p><%= link_to "Log in to my account", magic_link_url(@resource, @scope_name => {email: @resource.email, token: @token, remember_me: @remember_me}) %></p>
+<p><%= link_to "Entrar na minha conta", magic_link_url(@resource, @scope_name => {email: @resource.email, token: @token, remember_me: @remember_me}) %></p>
 
-<p>Note that the link will expire in <%= Devise.passwordless_login_within.inspect %>.</p>          
+<p>Não se esqueça que o link expira em <%= Devise.passwordless_login_within.inspect %>.</p>
+
+<p>Atenciosamente,</p>
+<p>Equipe PaperHub</p>

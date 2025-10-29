@@ -70,7 +70,7 @@
 
   function revokeInvitation(email: string) {
     router.get(
-      `/invitation/remove?email=${email}`,
+      `/users/invitation/remove?email=${email}`,
       {},
       {
         preserveState: true,
@@ -86,7 +86,7 @@
       .transform(({ email, role }) => ({
         user: { email, invitation_role: role },
       }))
-      .post('/invitation', {
+      .post('/users/invitation', {
         only: ['user_invitations', 'team_members'],
         onSuccess: () => {
           openInvitationDialog = false
