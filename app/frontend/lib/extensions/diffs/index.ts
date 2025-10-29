@@ -81,7 +81,7 @@ export const Diff = Extension.create<DiffOptions>({
     return {
       fromHTML: '',
       toHTML: '',
-      setDiffCount: null,
+      setDiffCount: () => {},
       editable: true,
     }
   },
@@ -186,6 +186,7 @@ function diffNodes(
     // If both are text nodes, diff the text
     if (from.nodeType === Node.TEXT_NODE && to.nodeType === Node.TEXT_NODE) {
       const { html, count } = diffText(fromInfo.content, toInfo.content)
+      console.log({ fromInfo, toInfo, count })
       setDiffCount(count)
       return html
     }
@@ -259,12 +260,23 @@ function diffText(
   let result = ''
   diffs.forEach((part) => {
     if (part.added) {
+      console.log('added', part.value)
       result += `<ins>${part.value}</ins>`
     } else if (part.removed) {
+      console.log('removed', part.value)
       result += `<delete>${part.value}</delete>`
     } else {
+      console.log('no change', part.value)
       result += part.value
     }
+  })
+
+  console.log({
+    count: diffs.reduce(
+      (acc, part) => acc + (part.added || part.removed ? 1 : 0),
+      0
+    ),
+    diffs,
   })
 
   return {

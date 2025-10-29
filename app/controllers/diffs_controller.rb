@@ -29,6 +29,8 @@ class DiffsController < ApplicationController
       last_commit = @ref.target
       last_editor_blob = document.repo.blob_at(last_commit.oid, Document.file_name)&.content || ""
 
+      Rails.logger.info("[diffs_controller] last_editor_blob: #{last_editor_blob}")
+
       render inertia: "Document/Diffs", props: {
         document: document.as_json(methods: %i[sqid]),
         current_branch: -> { normalize_branch_name },
