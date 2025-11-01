@@ -27,7 +27,8 @@
       prefetch
       replace
       preserveState={false}
-      only={['documents']}
+      only={['document']}
+      replace
     >
       <TabsTrigger class="px-2" value="editor">
         <Icon class="size-5" name="file" />
@@ -39,7 +40,8 @@
       prefetch
       replace
       preserveState={false}
-      only={['documents', 'file_content']}
+      only={['document']}
+      replace
     >
       <TabsTrigger class="px-2" value="git">
         <Icon class="size-5" name="source-control" />
