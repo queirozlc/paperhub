@@ -6,18 +6,18 @@ import { defineConfig } from 'vite'
 import ViteRails from 'vite-plugin-rails'
 
 export default defineConfig({
-  build: {
-    assetsInlineLimit: 0,
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            return 'vendor'
-          }
-        },
-      },
-    },
-  },
+  // build: {
+  //   assetsInlineLimit: 0,
+  //   rollupOptions: {
+  //     output: {
+  //       manualChunks(id) {
+  //         if (id.includes('node_modules')) {
+  //           return 'vendor'
+  //         }
+  //       },
+  //     },
+  //   },
+  // },
   plugins: [
     tailwindcss(),
     ViteRails({}),
@@ -39,15 +39,8 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./app/frontend/test-setup.ts'],
-    include: [
-      'app/frontend/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'
-    ],
-    exclude: [
-      'node_modules',
-      'dist',
-      '.svelte-kit',
-      'build'
-    ],
+    include: ['app/frontend/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    exclude: ['node_modules', 'dist', '.svelte-kit', 'build'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
@@ -55,16 +48,16 @@ export default defineConfig({
       include: [
         'app/frontend/lib/**/*.{js,ts,svelte}',
         'app/frontend/pages/**/*.{js,ts,svelte}',
-        'app/frontend/layouts/**/*.{js,ts,svelte}'
+        'app/frontend/layouts/**/*.{js,ts,svelte}',
       ],
       exclude: [
         'app/frontend/**/*.test.{js,ts}',
         'app/frontend/**/*.spec.{js,ts}',
         'app/frontend/test-setup.ts',
-        'app/frontend/**/*.d.ts'
-      ]
+        'app/frontend/**/*.d.ts',
+      ],
     },
 
-    testTimeout: 10000
-  }
+    testTimeout: 10000,
+  },
 })

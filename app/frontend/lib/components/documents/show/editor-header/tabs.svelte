@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Tabs, TabsList, TabsTrigger } from '$lib/components/ui/tabs'
   import { Icon } from '$lib/components/ui/icon'
-  import { Link } from '@inertiajs/svelte'
+  import { Tabs, TabsList, TabsTrigger } from '$lib/components/ui/tabs'
   import type { DocumentType } from '$pages/Document/types'
+  import { Link } from '@inertiajs/svelte'
 
   type Props = {
     document: DocumentType
@@ -27,6 +27,7 @@
       prefetch
       preserveState={false}
       only={['document']}
+      replace
     >
       <TabsTrigger class="px-2" value="editor">
         <Icon class="size-5" name="file" />
@@ -38,6 +39,7 @@
       prefetch
       preserveState={false}
       only={['document']}
+      replace
     >
       <TabsTrigger class="px-2" value="git">
         <Icon class="size-5" name="source-control" />

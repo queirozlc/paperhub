@@ -11,8 +11,7 @@ createInertiaApp({
   // Disable progress bar
   //
   // see https://inertia-rails.dev/guide/progress-indicators
-  // progress: false,
-
+  // @ts-expect-error Inertia random type error, the setup is correct though
   resolve: (name) => {
     const pages = import.meta.glob<ResolvedComponent>('../pages/**/*.svelte', {
       eager: true,

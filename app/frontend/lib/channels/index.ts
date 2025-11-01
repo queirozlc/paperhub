@@ -1,0 +1,1 @@
+export { consumer } from './consumer'

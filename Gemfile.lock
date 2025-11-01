@@ -394,6 +394,9 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.3.0)
+    rake-compiler-dock (1.9.1)
+    rb_sys (0.9.117)
+      rake-compiler-dock (= 1.9.1)
     rbs (3.9.5)
       logger
     rdoc (6.15.0)
@@ -551,6 +554,18 @@ GEM
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    y-rb (0.6.0-aarch64-linux-gnu)
+      rake (~> 13.2)
+      rb_sys (~> 0.9.110)
+    y-rb (0.6.0-arm64-darwin)
+      rake (~> 13.2)
+      rb_sys (~> 0.9.110)
+    y-rb (0.6.0-x86_64-linux-gnu)
+      rake (~> 13.2)
+      rb_sys (~> 0.9.110)
+    y-rb_actioncable (0.1.7)
+      rails (>= 7.0.4)
+      y-rb (>= 0.4.5)
     zeitwerk (2.7.3)
 
 PLATFORMS
@@ -609,6 +624,8 @@ DEPENDENCIES
   tzinfo-data
   vite_rails (~> 3.0)
   web-console
+  y-rb
+  y-rb_actioncable
 
 BUNDLED WITH
    2.6.6

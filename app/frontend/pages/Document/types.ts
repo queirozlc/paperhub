@@ -8,7 +8,8 @@ export interface DocumentType extends HashableModel {
   team_id: number
   created_at: Date
   updated_at: Date
-  content: Record<string, unknown>
+  content?: Record<string, unknown>
+  yjs_content?: string // Base64 encoded Yjs binary state
 }
 
 export type DocumentFormType = Omit<

@@ -1,0 +1,19 @@
+// Project-local debug tasks
+//
+// For more documentation on how to configure debug tasks,
+// see: https://zed.dev/docs/debugger
+[
+  {
+    "label": "Debug Rails server",
+    "adapter": "rdbg",
+    "request": "launch",
+    "command": "./bin/rails",
+    "args": [
+      "server"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "env": {
+      "RUBY_DEBUG_OPEN": "true"
+    }
+  }
+]
