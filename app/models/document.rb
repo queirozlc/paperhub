@@ -30,8 +30,35 @@ class Document < ApplicationRecord
     Rugged::Repository.new(path)
   end
 
+  def root_ref
+    @root_ref ||= discover_default_branch
+  end
+
+  def repo_head?
+    repo.head
+  end
+
+  def extract_ref_name(ref_name)
+    ref_name.sub(BRANCH_REF_PREFIX, "")
+  end
+
 
   private
+    def discover_default_branch
+      names = branches
+
+      return if names.empty?
+
+      return names[0] if names.length == 1
+
+      if repo_head?
+        extract_ref_name(repo.head.name)
+      else
+        return "master" if names.include?("master")
+        names[0]
+      end
+    end
+
     # The path must be on the storage mount because is a path that exists both in development and production
     # the storage is a mounted volume which is persistent between deployments
     def path

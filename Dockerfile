@@ -42,6 +42,7 @@ RUN apt-get update -qq && \
 ARG BUN_VERSION=1.3.0
 ENV BUN_INSTALL=/usr/local/bun
 ENV PATH=/usr/local/bun/bin:$PATH
+ENV VITE_AI_SERVICE_URL=https://paperhub-ai-application.fly.dev
 RUN curl -fsSL https://bun.sh/install | bash -s -- "bun-v${BUN_VERSION}"
 
 # Install application gems

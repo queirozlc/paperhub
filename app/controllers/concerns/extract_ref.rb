@@ -18,7 +18,7 @@ module ExtractRef
     end
 
     def normalize_branch_name
-      return "main" if @ref.nil? || @ref.name == "HEAD"
-      @ref.name.gsub("refs/heads/", "")
+      return document.root_ref if @ref.nil? || @ref.name == "HEAD"
+      document.extract_ref_name(@ref.name)
     end
 end
