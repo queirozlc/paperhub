@@ -91,6 +91,15 @@ class User < ApplicationRecord
     active_team.has_owner_role?(self)
   end
 
+  def pretty_invitation_role
+    case invitation_role.to_sym
+    when :member
+      "Membro"
+    when :owner
+      "Administrador"
+    end
+  end
+
   def invite_for_team(invited_user, invitation_role: :member)
     if active_team.present?
       invited_user.invited_team = active_team

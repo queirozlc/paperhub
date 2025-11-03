@@ -229,4 +229,22 @@ RSpec.describe User do
       end
     end
   end
+
+  describe "#pretty_invitation_role" do
+    subject { user.pretty_invitation_role }
+
+    let(:user) { build(:user) }
+
+    context "when invitation role is owner" do
+      before { user.update(invitation_role: :owner) }
+
+      it { is_expected.to eq("Administrador") }
+    end
+
+    context "when invitation role is member" do
+      before { user.update(invitation_role: :member) }
+
+      it { is_expected.to eq("Membro") }
+    end
+  end
 end

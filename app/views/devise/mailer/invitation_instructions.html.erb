@@ -1,0 +1,14 @@
+<p>Olá, <%= @resource.email %>!</p>
+
+<p>Você foi convidado para ser <%= @resource.pretty_invitation_role.downcase %> da equipe <%= @resource.invited_team.name %> no PaperHub.</p>
+
+<p>Para aceitar o convite, clique no link abaixo:</p>
+
+<p><%= link_to "Aceitar convite", accept_invitation_url(@resource, invitation_token: @token) %></p>
+
+<% if @resource.invitation_due_at %>
+  <p>O convite expira em <%= l(@resource.invitation_due_at, format: '%d/%m/%Y') %> às <%= l(@resource.invitation_due_at, format: '%H:%M') %>.</p>
+<% end %>
+
+<p>Atenciosamente,</p>
+<p>Equipe PaperHub</p>
