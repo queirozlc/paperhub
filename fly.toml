@@ -17,12 +17,10 @@ PORT = '8080'
 
 [processes]
 app = './bin/rails server'
-jobs = './bin/jobs start'
 
 [[mounts]]
 source = 'paperhub_storage'
 destination = '/rails/storage'
-processes = ['app', 'jobs']
 
 [http_service]
 internal_port = 8080
