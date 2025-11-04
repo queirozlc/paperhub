@@ -6,18 +6,18 @@ import { defineConfig } from 'vite'
 import ViteRails from 'vite-plugin-rails'
 
 export default defineConfig({
-  // build: {
-  //   assetsInlineLimit: 0,
-  //   rollupOptions: {
-  //     output: {
-  //       manualChunks(id) {
-  //         if (id.includes('node_modules')) {
-  //           return 'vendor'
-  //         }
-  //       },
-  //     },
-  //   },
-  // },
+  build: {
+    assetsInlineLimit: 0,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return 'vendor'
+          }
+        },
+      },
+    },
+  },
   plugins: [
     tailwindcss(),
     ViteRails({}),

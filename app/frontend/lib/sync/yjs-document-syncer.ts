@@ -3,7 +3,6 @@ import { fromUint8Array } from 'js-base64'
 import { IndexeddbPersistence } from 'y-indexeddb'
 import * as Y from 'yjs'
 
-
 export interface SyncerOptions {
   documentId: string
   doc: Y.Doc
@@ -122,6 +121,8 @@ export class YjsDocumentSyncer {
           content: fromUint8Array(Y.encodeStateAsUpdate(this.doc)),
         },
         {
+          preserveState: true,
+          preserveScroll: true,
           onSuccess: () => {
             this.onSyncSuccess?.(bytesCount)
           },
