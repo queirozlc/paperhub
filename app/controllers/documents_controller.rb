@@ -37,10 +37,16 @@ class DocumentsController < ApplicationController
   # PATCH/PUT /documents/1
   def update
     # get the actual content from the database, build a new instance of Y::Doc, merge the incoming update then save the updated content back to the database
-    decoded_update = Y::Lib0::Decoding.decode_base64_to_uint8_array(document_params[:content])
+    decoded_update = Y::Lib0::Decoding.decode_base64_to_uint8_array(document_params[:content]) if document_params[:content]
+
+    update_params = if decoded_update
+      document_params.except(:content).merge(content: decoded_update)
+    else
+      document_params
+    end
 
 
-    @document.update!(content: decoded_update)
+    @document.update!(update_params)
     redirect_to document_path(@document), notice: "document was successfully updated."
   end
 
