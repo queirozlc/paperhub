@@ -45,7 +45,7 @@
           editor.commands.setTextSelection(editor.state.doc.content.size)
         }
       },
-      onUpdate: debounce(({ editor }) => updateDocument(editor), 1000),
+      onUpdate: debounce(({ editor }) => updateDocument(editor), 500),
       extensions,
     })
   })

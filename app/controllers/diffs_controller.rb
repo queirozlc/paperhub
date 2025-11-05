@@ -30,7 +30,7 @@ class DiffsController < ApplicationController
       last_editor_blob = document.repo.blob_at(last_commit.oid, Document.file_name)&.content || ""
 
       render inertia: "Document/Diffs", props: {
-        document: document.as_json(methods: %i[sqid]),
+        document: -> { document.as_json(methods: %i[sqid]) },
         current_branch: -> { normalize_branch_name },
         branches: InertiaRails.optional { document.branches },
         commits: InertiaRails.optional { @commits },
