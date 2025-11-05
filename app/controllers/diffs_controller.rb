@@ -32,7 +32,7 @@ class DiffsController < ApplicationController
       Rails.logger.info("[diffs_controller] last_editor_blob: #{last_editor_blob}")
 
       render inertia: "Document/Diffs", props: {
-        document: document.as_json(methods: %i[sqid]),
+        document: -> { document.as_json(methods: %i[sqid]) },
         current_branch: -> { normalize_branch_name },
         branches: InertiaRails.optional { document.branches },
         commits: InertiaRails.optional { @commits },

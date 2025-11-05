@@ -25,9 +25,9 @@
     <Link
       href={`/documents/${document.sqid}`}
       prefetch
-      preserveState={false}
-      only={['document']}
       replace
+      preserveState={false}
+      only={['documents']}
     >
       <TabsTrigger class="px-2" value="editor">
         <Icon class="size-5" name="file" />
@@ -37,9 +37,9 @@
     <Link
       href={`/documents/${document.sqid}/diffs`}
       prefetch
-      preserveState={false}
-      only={['document']}
       replace
+      preserveState={false}
+      only={['documents', 'file_content']}
     >
       <TabsTrigger class="px-2" value="git">
         <Icon class="size-5" name="source-control" />
