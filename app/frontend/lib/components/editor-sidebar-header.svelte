@@ -39,7 +39,7 @@
           document: { title: documentTitle },
         },
         {
-          preserveState: false,
+          preserveState: true,
           preserveScroll: true,
         }
       )
