@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_24_183739) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_04_041943) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -43,7 +43,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_24_183739) do
   end
 
   create_table "documents", force: :cascade do |t|
-    t.jsonb "content"
+    t.binary "content"
     t.datetime "created_at", null: false
     t.string "description"
     t.bigint "team_id", null: false
@@ -62,6 +62,21 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_24_183739) do
     t.datetime "updated_at", null: false
     t.index ["member_id"], name: "index_memberships_on_member_id"
     t.index ["team_id"], name: "index_memberships_on_team_id"
+  end
+
+  create_table "snapshots", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "message", null: false
+    t.binary "snapshot_data", null: false
+    t.datetime "snapshot_date", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.bigint "workspace_id", null: false
+    t.index ["user_id"], name: "index_snapshots_on_user_id"
+    t.index ["workspace_id", "created_at"], name: "index_snapshots_on_workspace_id_and_created_at"
+    t.index ["workspace_id"], name: "index_snapshots_on_workspace_id"
   end
 
   create_table "teams", force: :cascade do |t|
@@ -104,13 +119,26 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_24_183739) do
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
   end
 
+  create_table "workspaces", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.boolean "default", default: false
+    t.bigint "document_id", null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["document_id", "name"], name: "index_workspaces_on_document_id_and_name", unique: true
+    t.index ["document_id"], name: "index_workspaces_on_document_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "documents", "teams"
   add_foreign_key "memberships", "teams"
   add_foreign_key "memberships", "users", column: "member_id"
+  add_foreign_key "snapshots", "users"
+  add_foreign_key "snapshots", "workspaces"
   add_foreign_key "teams", "users", column: "owner_id"
   add_foreign_key "users", "teams", column: "active_team_id"
   add_foreign_key "users", "teams", column: "invited_team_id"
   add_foreign_key "users", "users", column: "invited_by_id"
+  add_foreign_key "workspaces", "documents"
 end
