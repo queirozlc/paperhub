@@ -24,7 +24,7 @@
   } from '$lib/components/ui/tabs'
   import { Changes, Commits } from '$lib/components/diffs'
   import SidebarMenu from '$lib/components/ui/sidebar/sidebar-menu.svelte'
-  import { page, router, useForm } from '@inertiajs/svelte'
+  import { Link, page, router, useForm } from '@inertiajs/svelte'
   import Avatar from '$lib/components/ui/avatar/avatar.svelte'
   import { AvatarFallback, AvatarImage } from '$lib/components/ui/avatar'
   import { userNameFallback } from '$lib/utils'
@@ -33,6 +33,13 @@
   import { Textarea } from '$lib/components/ui/textarea'
   import Button from '$lib/components/ui/button/button.svelte'
   import { toast } from 'svelte-sonner'
+  import {
+    Tooltip,
+    TooltipProvider,
+    TooltipTrigger,
+  } from '$lib/components/ui/tooltip'
+  import { Home05 } from '@voolt_technologies/untitledui-svelte'
+  import TooltipContent from '$lib/components/ui/tooltip/tooltip-content.svelte'
 
   type Props = {
     children: Snippet
@@ -218,6 +225,31 @@
     <EditorSidebar.Header>
       <EditorSidebar.Trigger for="git-panel" />
       <EditorSidebar.Tabs {document} />
+      <Separator class="mr-2 h-4" orientation="vertical" />
+
+      <TooltipProvider>
+        <Tooltip delayDuration={100} disableHoverableContent>
+          <TooltipTrigger>
+            {#snippet child({ props })}
+              <Link href="/documents" {...props}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  class="text-muted-foreground hover:text-accent-foreground transition-colors"
+                >
+                  <Home05 class="size-5" />
+                </Button>
+              </Link>
+            {/snippet}
+          </TooltipTrigger>
+
+          <TooltipContent>
+            <span class="pointer-events-none">Voltar para a página inicial</span
+            >
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
       {#if current_branch}
         <div class="flex items-center gap-2">
           <Separator class="h-4" orientation="vertical" />
