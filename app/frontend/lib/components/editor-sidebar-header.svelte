@@ -4,13 +4,16 @@
     Tooltip,
     TooltipContent,
     TooltipProvider,
+    TooltipTrigger,
   } from '$lib/components/ui/tooltip'
 
   import { SidebarTrigger } from '$lib/components/ui/sidebar'
   import type { DocumentType } from '$pages/Document/types'
-  import { page, router } from '@inertiajs/svelte'
+  import { Link, page, router } from '@inertiajs/svelte'
   import AvatarStack from './avatar-stack.svelte'
   import { EditorSidebar } from './documents/show/editor-header'
+  import { Button } from './ui/button'
+  import { Home05 } from '@voolt_technologies/untitledui-svelte'
 
   const user = $page.props.user
 
@@ -90,23 +93,29 @@
       <EditorSidebar.Tabs {document} />
     </div>
 
-    <!-- <div class="flex items-center gap-2">
-      <Button
-        class="text-muted-foreground hover:text-accent-foreground"
-        size="icon"
-        variant="ghost"
-      >
-        <Icon class="size-5" name="info-circle" strokeWidth={2} />
-      </Button>
+    <Separator class="mr-2 h-4" orientation="vertical" />
 
-      <Button
-        class="text-muted-foreground hover:text-accent-foreground"
-        size="icon"
-        variant="ghost"
-      >
-        <DotsHorizontal class="size-5" />
-      </Button>
-    </div> -->
+    <TooltipProvider>
+      <Tooltip delayDuration={100} disableHoverableContent>
+        <TooltipTrigger>
+          {#snippet child({ props })}
+            <Link href="/documents" {...props}>
+              <Button
+                variant="ghost"
+                size="icon"
+                class="text-muted-foreground hover:text-accent-foreground transition-colors"
+              >
+                <Home05 class="size-5" />
+              </Button>
+            </Link>
+          {/snippet}
+        </TooltipTrigger>
+
+        <TooltipContent>
+          <span class="pointer-events-none">Voltar para a página inicial</span>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   </div>
 
   <div class="flex items-center gap-4">
