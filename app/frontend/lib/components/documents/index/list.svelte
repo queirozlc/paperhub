@@ -83,9 +83,9 @@
 </div>
 
 <div
-  class="grid grid-cols-[100px_100px_3.5rem] text-sm font-brand font-medium gap-4 pr-2 text-right"
+  class="grid grid-cols-2 sm:grid-cols-[100px_100px_3.5rem] text-sm font-brand font-medium gap-4 pr-2 text-right"
 >
-  <span class="text-accent-foreground tabular-nums">
+  <span class="text-accent-foreground tabular-nums hidden sm:inline-flex">
     {daysAgo(new Date(document.created_at))}
   </span>
   <span class="text-accent-foreground">

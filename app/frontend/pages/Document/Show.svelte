@@ -97,16 +97,14 @@
   })
 </script>
 
-<EditorLayout {document} {editor}>
-  <div class="flex flex-col min-h-[calc(100svh-theme(spacing.4))]">
-    <div
-      class="relative border border-border px-20 py-16 size-full max-w-screen-md mx-auto"
-    >
-      <div bind:this={element}></div>
-      {#if editor}
-        <!-- <ToolsBubbleMenu editor={editor} />
-        <LinkBubbleMenu editor={editor} /> -->
-      {/if}
-    </div>
+<EditorLayout {document} editor={$editor}>
+  <div
+    class=" min-h-[calc(100svh-theme(spacing.4))] border border-border px-4 sm:px-20 py-16 size-full max-w-lg mx-auto"
+  >
+    <EditorContent editor={$editor} />
+    {#if $editor}
+      <ToolsBubbleMenu editor={$editor} />
+      <LinkBubbleMenu editor={$editor} />
+    {/if}
   </div>
 </EditorLayout>

@@ -14,7 +14,11 @@
   } from '$lib/components/ui/dropdown-menu'
   import { router } from '@inertiajs/svelte'
   import { FileStack } from '@lucide/svelte'
-  import { ChevronDown, File02 } from '@voolt_technologies/untitledui-svelte'
+  import {
+    ChevronDown,
+    File02,
+    Plus,
+  } from '@voolt_technologies/untitledui-svelte'
   import Document from './Document.svelte'
   import type { DocumentType } from './types'
   import type { TeamType } from '../Team/types'
@@ -48,9 +52,17 @@
     </h5>
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Button size="sm" class="shadow-none gap-1" variant="outline">
+        <Button
+          size="sm"
+          class="shadow-none hidden sm:inline-flex gap-1"
+          variant="outline"
+        >
           Criar Documento
           <ChevronDown class="size-4" />
+        </Button>
+
+        <Button size="icon" variant="outline" class="sm:hidden">
+          <Plus class="size-4" />
         </Button>
       </DropdownMenuTrigger>
 
