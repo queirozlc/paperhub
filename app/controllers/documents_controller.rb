@@ -32,8 +32,16 @@ class DocumentsController < ApplicationController
 
   # PATCH/PUT /documents/1
   def update
-    json_content = JSON.parse(document_params[:content]) if document_params[:content].present?
-    @document.update!(document_params.except(:content).merge(content: json_content))
+    json_content = JSON.parse(document_params[:content]) if document_params[:content]
+
+    params = if json_content.present?
+      document_params.except(:content).merge(content: json_content)
+    else
+      document_params
+    end
+
+    @document.update!(params)
+
     redirect_to document_path(@document), notice: "document was successfully updated."
   end
 
