@@ -43,7 +43,6 @@ class User < ApplicationRecord
 
 
   def self.from_omniauth(auth)
-    # Try to find user by provider and uid first
     user = where(provider: auth.provider, uid: auth.uid).first
 
     # If not found, try to find by email
@@ -55,10 +54,12 @@ class User < ApplicationRecord
       return user
     end
 
+    downloaded_image = URI.open(auth.info.image)
+
     # Otherwise, create new user
     create do |user|
       user.email = auth.info.email
-      user.avatar.attach(io: StringIO.new(auth.info.image), filename: "avatar.png", content_type: "image/png") if auth.info.image.present?
+      user.avatar.attach(io: downloaded_image, filename: "avatar.jpg", content_type: downloaded_image.content_type) if auth.info.image.present?
       user.name = auth.info.name
       user.provider = auth.provider
       user.uid = auth.uid

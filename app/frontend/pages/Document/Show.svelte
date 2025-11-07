@@ -61,7 +61,7 @@
           autocomplete: 'off',
           autocorrect: 'off',
           autocapitalize: 'off',
-          class: 'min-h-full relative',
+          class: '',
         },
       },
       onCreate: ({ editor }) => {
@@ -99,7 +99,7 @@
 
 <EditorLayout {document} editor={$editor}>
   <div
-    class=" min-h-[calc(100svh-theme(spacing.4))] border border-border px-4 sm:px-20 py-16 size-full max-w-lg mx-auto"
+    class=" min-h-[calc(100svh-theme(spacing.10))] border border-border px-12 py-16 w-full"
   >
     <EditorContent editor={$editor} />
     {#if $editor}
