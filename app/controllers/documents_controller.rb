@@ -108,7 +108,7 @@ class DocumentsController < ApplicationController
     end
 
     def team_cover(team)
-      url_for(team.cover) if team.cover.attached?
+      public_cdn_url(team.cover) if team.cover.attached?
     end
 
     def serialize_user_invitation(user)

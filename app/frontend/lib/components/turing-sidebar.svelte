@@ -102,9 +102,6 @@
       const res = await aiApiService.post('/ask', body)
       const data = res.data as TuringResponse
 
-      console.log('Turing response')
-      console.log(data)
-
       processAiResponse(data)
     } catch (e) {
       console.error('Error:', e)
@@ -234,10 +231,6 @@
           original: originalDiff,
           suggestion: suggestionDiff,
         }
-        console.log('Originals')
-        console.log({ original: htmlContent, suggestion: suggestion.change })
-        console.log('Diffs')
-        console.log(diff)
 
         return true
       })
