@@ -62,12 +62,13 @@
   <div
     class="inline-flex gap-0.5 h-full items-center leading-none text-foreground"
   >
-    <AiDropdown />
+    <!-- TODO: Uncomment this when the AI dropdown is implemented -->
+    <!-- <AiDropdown /> -->
 
-    <Separator
+    <!-- <Separator
       orientation="vertical"
       class="h-full min-h-[1.5rem] w-px mx-1 first:ml-0 last:mr-0"
-    />
+    /> -->
 
     <ContentTypePicker {editor} />
 

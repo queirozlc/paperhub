@@ -54,6 +54,6 @@ class ApplicationController < ActionController::Base
     def user_avatar(user)
       return if user.avatar.blank?
 
-      url_for(user.avatar)
+      public_cdn_url(user.avatar)
     end
 end

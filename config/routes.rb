@@ -46,6 +46,13 @@ Rails.application.routes.draw do
     patch "profile" => "profile#update"
   end
 
+  direct :public_cdn do |representation, options|
+    if Rails.configuration.active_storage.service == :amazon
+      "https://#{ENV["CDN_HOST"]}/#{representation.key}"
+    else
+      url_for(representation)
+    end
+  end
 
   get "up" => "rails/health#show", as: :rails_health_check
 end
