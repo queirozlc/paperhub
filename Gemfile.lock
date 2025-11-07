@@ -148,6 +148,8 @@ GEM
     dockerfile-rails (1.7.10)
       rails (>= 3.0.0)
     dotenv (3.1.8)
+    down (5.4.2)
+      addressable (~> 2.8)
     drb (2.2.3)
     dry-cli (1.2.0)
     ed25519 (1.4.0)
@@ -584,6 +586,7 @@ DEPENDENCIES
   devise-verifiable
   devise_invitable (~> 2.0.0)
   dockerfile-rails (>= 1.7)
+  down (~> 5.0)
   erb-formatter
   factory_bot_rails
   foreman
