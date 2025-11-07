@@ -54,7 +54,7 @@ class User < ApplicationRecord
       return user
     end
 
-    downloaded_image = URI.open(auth.info.image)
+    downloaded_image = Down.download(auth.info.image)
 
     # Otherwise, create new user
     create do |user|
