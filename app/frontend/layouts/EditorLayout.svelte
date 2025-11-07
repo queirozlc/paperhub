@@ -7,8 +7,6 @@
   import { type Snippet } from 'svelte'
   import type { Editor } from '@tiptap/core'
   import { cn } from '$lib/utils'
-  import { MediaQuery } from 'svelte/reactivity'
-  import { IsMobile } from '$lib/hooks/is-mobile.svelte'
 
   type Props = {
     document: DocumentType

@@ -9,15 +9,12 @@
 
   import { SidebarTrigger } from '$lib/components/ui/sidebar'
   import type { DocumentType } from '$pages/Document/types'
-  import { Link, page, router } from '@inertiajs/svelte'
-  import AvatarStack from './avatar-stack.svelte'
+  import { Link, router } from '@inertiajs/svelte'
   import { EditorSidebar } from './documents/show/editor-header'
   import { Button } from './ui/button'
   import { Home02 } from '@voolt_technologies/untitledui-svelte'
   import { getSidebarRegistry } from './ui/sidebar/registry.svelte'
   import { MediaQuery } from 'svelte/reactivity'
-
-  const user = $page.props.user
 
   type Props = {
     documentTitleInput?: HTMLHeadingElement
