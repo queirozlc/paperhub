@@ -81,13 +81,13 @@ Rails.application.configure do
   config.active_record.attributes_for_inspect = [ :id ]
 
   # Enable DNS rebinding protection and other `Host` header attacks.
-  # config.hosts = [
-  #   "example.com",     # Allow requests from example.com
-  #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
-  # ]
+  config.hosts = [
+    "paperhub.com.br",     # Allow requests from paperhub.com.br
+    /.*\.paperhub\.com\.br/ # Allow requests from subdomains like `www.paperhub.com.br`,
+  ]
   # Allow requests from the CDN host
   config.hosts << ENV["CDN_HOST"]
   #
   # Skip DNS rebinding protection for the default health check endpoint.
-  # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+  config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 end
