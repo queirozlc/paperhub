@@ -58,7 +58,7 @@
     }
   ) {
     if (textareaRef) {
-      const target = event.target as HTMLInputElement
+      const target = event.target as HTMLTextAreaElement
       textareaRef.style.height = 'auto'
       textareaRef.style.height = `${target.scrollHeight - 0}px`
     }
@@ -254,6 +254,15 @@
       )
       .run()
   }
+
+  function handleTextareaKeyDown(e: KeyboardEvent) {
+    // if not shift + enter, submit the form
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+
+      submitQuestion(e)
+    }
+  }
 </script>
 
 <Sidebar.Root side="right" transparent>
@@ -337,16 +346,20 @@
 
   <Sidebar.Footer class="px-2">
     <div class="flex flex-col justify-center gap-4">
-      <form class="relative" onsubmit={submitQuestion}>
+      <form
+        class="relative"
+        onsubmit={submitQuestion}
+        id="turing-sidebar-form"
+        name="turing-sidebar-form"
+      >
         <Textarea
+          form="turing-sidebar-form"
           bind:ref={textareaRef}
           placeholder="Do que você está precisando ?"
           class="resize-none pb-10 no-scrollbar"
           bind:value={question}
           oninput={resize}
-          onkeydown={(e) => {
-            if (e.ctrlKey && e.key === 'Enter') submitQuestion(e)
-          }}
+          onkeydown={handleTextareaKeyDown}
         />
 
         <div class="absolute gap-2 bottom-2 left-2 flex items-center">

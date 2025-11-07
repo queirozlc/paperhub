@@ -43,6 +43,7 @@
     open: () => open,
     setOpen: (value: boolean) => {
       open = value
+      openProp = value
       onOpenChange(value)
 
       // This sets the cookie to keep the sidebar state.
