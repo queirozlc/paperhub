@@ -6,6 +6,9 @@
   import type { DocumentType } from '$pages/Document/types'
   import { type Snippet } from 'svelte'
   import type { Editor } from '@tiptap/core'
+  import { cn } from '$lib/utils'
+  import { MediaQuery } from 'svelte/reactivity'
+  import { IsMobile } from '$lib/hooks/is-mobile.svelte'
 
   type Props = {
     document: DocumentType
@@ -18,6 +21,9 @@
   let documentTitle = $state(document.title || 'Sem título')
 
   let documentTitleInput = $state(null)
+
+  let turingSidebarOpen = $state(true)
+  let summarySidebarOpen = $state(false)
 </script>
 
 <svelte:head>
@@ -28,7 +34,7 @@
 
 <div class="overflow-hidden flex w-full">
   <Sidebar.Provider
-    open={false}
+    bind:open={summarySidebarOpen}
     name="summary"
     class="w-fit overflow-hidden max-h-dvh"
   >
@@ -54,21 +60,24 @@
       bind:documentTitleInput
       bind:documentTitle
       {document}
+      {summarySidebarOpen}
+      {turingSidebarOpen}
     />
 
-    <div class="flex overflow-y-scroll py-4">
-      <div
-        class="flex flex-1 container mx-auto flex-col gap-4 scrollbar-hidden"
-      >
-        {@render children()}
-      </div>
+    <div
+      class={cn(
+        'flex w-full max-w-screen-md mx-auto gap-4 scrollbar-hidden py-6 px-4 lg:px-0',
+        turingSidebarOpen && 'max-w-md lg:max-w-screen-md px-0'
+      )}
+    >
+      {@render children()}
     </div>
   </Sidebar.Inset>
 
   <Sidebar.Provider
     name="turing"
-    open={true}
-    style="--sidebar-width: 20rem;"
+    bind:open={turingSidebarOpen}
+    style="--sidebar-width: 18rem;"
     class="w-fit overflow-hidden max-h-dvh"
   >
     <TuringSidebar {editor} />
