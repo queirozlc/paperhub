@@ -37,6 +37,7 @@
 
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'ArrowDown' || (event.key === 'n' && event.ctrlKey)) {
+      event.preventDefault()
       if (!items.length) {
         return false
       }
