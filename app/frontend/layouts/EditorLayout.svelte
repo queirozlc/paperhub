@@ -57,7 +57,9 @@
     />
 
     <div class="flex overflow-y-scroll py-4">
-      <div class="flex flex-1 flex-col gap-4 scrollbar-hidden">
+      <div
+        class="flex flex-1 container mx-auto flex-col gap-4 scrollbar-hidden"
+      >
         {@render children()}
       </div>
     </div>
