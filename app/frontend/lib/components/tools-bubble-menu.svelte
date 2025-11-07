@@ -4,7 +4,6 @@
   import { Separator } from './ui/separator'
   import FontFamilyPicker from './font-family-picker.svelte'
   import ContentTypePicker from './content-type-picker.svelte'
-  import AiDropdown from './ai-dropdown.svelte'
   import { isCustomNodeSelected, isTextSelected } from '$lib/utils'
   import type { EditorView } from '@tiptap/pm/view'
 
