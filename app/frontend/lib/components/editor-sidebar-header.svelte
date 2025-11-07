@@ -13,7 +13,7 @@
   import AvatarStack from './avatar-stack.svelte'
   import { EditorSidebar } from './documents/show/editor-header'
   import { Button } from './ui/button'
-  import { Home05 } from '@voolt_technologies/untitledui-svelte'
+  import { Home02, Home05 } from '@voolt_technologies/untitledui-svelte'
 
   const user = $page.props.user
 
@@ -83,7 +83,7 @@
       <h5
         bind:innerText={documentTitle}
         bind:this={documentTitleInput}
-        class="font-brand tracking-tight text-accent-foreground overflow-x-hidden no-scrollbar max-w-xs truncate"
+        class="font-brand tracking-tight text-accent-foreground overflow-x-hidden no-scrollbar max-w-xs truncate text-sm"
         contenteditable="true"
         onfocusout={handleTitleFocusOut}
         onkeydown={handleTitleKeydown}
@@ -97,7 +97,7 @@
 
     <TooltipProvider>
       <Tooltip delayDuration={100} disableHoverableContent>
-        <TooltipTrigger>
+        <TooltipTrigger class="sm:inline-flex hidden">
           {#snippet child({ props })}
             <Link href="/documents" {...props}>
               <Button
@@ -105,7 +105,7 @@
                 size="icon"
                 class="text-muted-foreground hover:text-accent-foreground transition-colors"
               >
-                <Home05 class="size-5" />
+                <Home02 class="size-5" />
               </Button>
             </Link>
           {/snippet}
@@ -119,9 +119,9 @@
   </div>
 
   <div class="flex items-center gap-4">
-    <div class="flex items-center gap-2">
-      <Separator class="mr-2 h-4" orientation="vertical" />
-      <div class="flex items-center gap-1">
+    <div class="sm:flex items-center gap-2 hidden">
+      <Separator class="mr-2 h-4 hidden sm:block" orientation="vertical" />
+      <div class="sm:flex items-center gap-1 hidden">
         <div class="size-2 rounded-full bg-green-500"></div>
         <span class="font-medium text-muted-foreground text-xs font-brand"
           >Online</span
@@ -140,7 +140,7 @@
     </div>
 
     <div class="flex items-center">
-      <Separator class="mr-2 h-4" orientation="vertical" />
+      <Separator class="mr-2 h-4 hidden sm:block" orientation="vertical" />
 
       <SidebarTrigger class="-mr-1 ml-auto rotate-180" for="turing" />
     </div>

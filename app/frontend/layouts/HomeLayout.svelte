@@ -205,7 +205,7 @@
         </Avatar>
 
         <Button
-          class="font-brand font-semibold rounded-lg px-6"
+          class="font-brand hidden font-semibold rounded-lg px-6 sm:inline-flex"
           onclick={() => (openInvitationDialog = true)}
           size="sm"
         >

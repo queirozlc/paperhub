@@ -86,10 +86,12 @@
   </div>
 
   <div class="flex items-center gap-4 text-sm font-brand font-medium">
-    <span class="cursor-pointer hover:text-accent-foreground/70">Criado em</span
+    <span
+      class="cursor-pointer hidden sm:inline-flex hover:text-accent-foreground/70"
+      >Criado em</span
     >
 
-    <Separator orientation="vertical" class="h-4" />
+    <Separator orientation="vertical" class="h-4 hidden sm:block" />
 
     <span class="cursor-pointer hover:text-accent-foreground/70"
       >Última edição</span
