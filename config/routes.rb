@@ -22,12 +22,16 @@ Rails.application.routes.draw do
 
     member do
       # use document_id instead of id
-      get "diffs/:ref" => "diffs#index", as: :diffs
-      get "diffs" => "diffs#index"
+      # get "diffs/:ref" => "diffs#index", as: :diffs
+      # get "diffs" => "diffs#index"
+      get "diffs/snapshots" => "diffs#snapshots", as: :snapshot_diffs
     end
 
     resources :branches, only: %i[create]
     resources :commits, only: :create
+    resources :workspaces, only: %i[create index] do
+      resources :snapshots, only: %i[create index]
+    end
   end
 
   resources :teams, only: %i[create update destroy] do

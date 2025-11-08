@@ -18,7 +18,6 @@ import {
   TextStyle,
   Typography,
   Underline,
-  UniqueID,
 } from '.'
 
 export const editorExtensions = [
@@ -48,9 +47,6 @@ export const editorExtensions = [
     HTMLAttributes: {
       class: 'task-item',
     },
-  }),
-  UniqueID.configure({
-    types: ['paragraph', 'heading', 'blockquote', 'codeBlock', 'table'],
   }),
   TextAlign.extend({
     addKeyboardShortcuts() {

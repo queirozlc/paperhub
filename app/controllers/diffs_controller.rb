@@ -45,6 +45,12 @@ class DiffsController < ApplicationController
     end
   end
 
+  def snapshots
+    render inertia: "Document/SnapshotDiffs", props: {
+      document: document.as_json(methods: %i[sqid]).merge(content: Y::Lib0::Encoding.encode_uint8_array_to_base64(JSON.parse(document.content)))
+    }
+  end
+
   private
 
     def set_ref_params

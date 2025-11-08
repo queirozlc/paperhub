@@ -1,6 +1,14 @@
-import { Extension, Mark, mergeAttributes } from '@tiptap/core'
+import {
+  Extension,
+  generateHTML,
+  getSchema,
+  Mark,
+  mergeAttributes,
+} from '@tiptap/core'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { diffWords } from 'diff'
+import { yXmlFragmentToProseMirrorRootNode } from 'y-prosemirror'
+import * as Y from 'yjs'
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -65,8 +73,10 @@ const DiffDeletion = Mark.create({
 })
 
 interface DiffOptions {
-  fromHTML: string
-  toHTML: string
+  fromHTML?: string
+  toHTML?: string
+  fromYDoc?: Y.Doc
+  toYDoc?: Y.Doc
 
   editable: boolean
 
@@ -91,11 +101,35 @@ export const Diff = Extension.create<DiffOptions>({
   },
 
   onCreate() {
+    let fromHTML = this.options.fromHTML
+    let toHTML = this.options.toHTML
+
+    // Convert Y.Doc to HTML if provided
+    if (this.options.fromYDoc && this.options.toYDoc) {
+      const schema = getSchema(this.editor.extensionManager.extensions)
+
+      const fromFragment = this.options.fromYDoc.getXmlFragment('default')
+      const toFragment = this.options.toYDoc.getXmlFragment('default')
+
+      const fromNode = yXmlFragmentToProseMirrorRootNode(fromFragment, schema)
+      const toNode = yXmlFragmentToProseMirrorRootNode(toFragment, schema)
+
+      // Convert to HTML for diffing
+      fromHTML = generateHTML(
+        fromNode.toJSON(),
+        this.editor.extensionManager.extensions
+      )
+      toHTML = generateHTML(
+        toNode.toJSON(),
+        this.editor.extensionManager.extensions
+      )
+    }
+
     // Generate diff content when editor is created
-    if (this.options.fromHTML && this.options.toHTML) {
+    if (fromHTML && toHTML) {
       const diffContent = generateDiffContent(
-        this.options.fromHTML,
-        this.options.toHTML,
+        fromHTML,
+        toHTML,
         this.options.setDiffCount
       )
       this.editor.commands.setContent(diffContent)
