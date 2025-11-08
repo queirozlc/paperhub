@@ -27,7 +27,11 @@ class Document < ApplicationRecord
   end
 
   def repo
-    Rugged::Repository.new(path)
+    begin
+      Rugged::Repository.new(path)
+    rescue Rugged::RepositoryError, Rugged::OSError
+      Rugged::Repository.init_at(path, :bare)
+    end
   end
 
   def root_ref
@@ -40,6 +44,11 @@ class Document < ApplicationRecord
 
   def extract_ref_name(ref_name)
     ref_name.sub(BRANCH_REF_PREFIX, "")
+  end
+
+
+  def init_repository
+    Rugged::Repository.init_at path, :bare
   end
 
 
@@ -63,10 +72,6 @@ class Document < ApplicationRecord
     # the storage is a mounted volume which is persistent between deployments
     def path
       Rails.root.join("storage", "repos", "#{team.id}", "#{sqid}").to_s
-    end
-
-    def init_repository
-      Rugged::Repository.init_at path, :bare
     end
 
     def close_repository
