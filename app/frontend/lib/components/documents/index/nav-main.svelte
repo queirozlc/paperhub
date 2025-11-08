@@ -2,7 +2,7 @@
   import * as Sidebar from '$lib/components/ui/sidebar'
   import { Link } from '@inertiajs/svelte'
   import { SearchSm } from '@voolt_technologies/untitledui-svelte'
-  import { getOS } from '$lib/utils'
+  import { displayUnavailableFunctionalityToast, getOS } from '$lib/utils'
 
   import type { NavMainItem } from '$layouts/HomeLayout.svelte'
 
@@ -17,6 +17,7 @@
       tooltipContentProps={{
         class: 'space-x-1',
       }}
+      onclick={displayUnavailableFunctionalityToast}
     >
       {#snippet tooltipContent()}
         <span class="text-xs">Pesquise por projetos, tarefas e muito mais.</span

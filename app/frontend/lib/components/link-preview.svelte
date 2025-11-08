@@ -1,14 +1,9 @@
 <script lang="ts">
   import { Icon, Link, Pen, Unlink } from '@lucide/svelte'
   import { CopyButton } from './ui/copy-button'
-  import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-  } from './ui/tooltip'
   import { Button } from './ui/button'
   import { Editor } from 'svelte-tiptap'
+  import SimpleTooltip from './simple-tooltip.svelte'
   type Props = {
     url: string
     editor: Editor
@@ -72,24 +67,16 @@
     <CopyButton {copied} handleCopy={copyLink} />
 
     {#each actionButtons as action (action.name)}
-      <TooltipProvider delayDuration={0} disableHoverableContent>
-        <Tooltip>
-          <TooltipTrigger
-            ><Button
-              variant="ghost"
-              size="icon"
-              aria-label={action.info}
-              onclick={action.onClick}
-            >
-              <action.icon />
-            </Button></TooltipTrigger
-          >
-
-          <TooltipContent>
-            {action.info}
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <SimpleTooltip text={action.info} delay="no">
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label={action.info}
+          onclick={action.onClick}
+        >
+          <action.icon />
+        </Button>
+      </SimpleTooltip>
     {/each}
   </div>
 </div>

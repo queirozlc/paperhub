@@ -8,7 +8,7 @@
     Send01,
     Translate01,
     Loading02 as Loading,
-    Paperclip
+    Paperclip,
   } from '@voolt_technologies/untitledui-svelte'
   import Button from './ui/button/button.svelte'
   import Textarea from './ui/textarea/textarea.svelte'
@@ -19,12 +19,13 @@
     extractNodeHtmlContent,
     setIdsToNewAiSuggestions,
     diffHtml,
+    displayUnavailableFunctionalityToast,
   } from '$lib/utils'
   import AiChatMessage from './ai-chat/chat-message.svelte'
   import type { Editor } from '@tiptap/core'
   import type { Node as NodeType } from '@tiptap/pm/model'
   import type { AnswerPart, ConversationPart } from './ai-chat/types'
-  import Tooltip from '$lib/components/tooltip.svelte'
+  import SimpleTooltip from '$lib/components/simple-tooltip.svelte'
 
   export type AiSuggestion = {
     id?: number
@@ -305,31 +306,40 @@
         </div>
 
         <ul class="flex flex-col items-center justify-center gap-4">
-          <li
-            class="text-muted-foreground cursor-pointer flex items-center hover:underline gap-2"
-          >
-            <Translate01 class="size-4" />
-            <span class="font-medium font-brand text-xs text-center"
-              >Leia artigos em qualquer idioma</span
+          <li>
+            <button
+              class="text-muted-foreground cursor-pointer flex items-center hover:underline gap-2"
+              onclick={displayUnavailableFunctionalityToast}
             >
+              <Translate01 class="size-4" />
+              <span class="font-medium font-brand text-xs text-center"
+                >Leia artigos em qualquer idioma</span
+              >
+            </button>
           </li>
 
-          <li
-            class="text-muted-foreground cursor-pointer group flex hover:underline items-center gap-2"
-          >
-            <Edit03 class="size-4" />
-            <span class="font-medium font-brand text-xs text-left"
-              >Escreva com a ajuda do Turing AI</span
+          <li>
+            <button
+              class="text-muted-foreground cursor-pointer flex items-center hover:underline gap-2"
+              onclick={displayUnavailableFunctionalityToast}
             >
+              <Edit03 class="size-4" />
+              <span class="font-medium font-brand text-xs text-left"
+                >Escreva com a ajuda do Turing AI</span
+              >
+            </button>
           </li>
 
-          <li
-            class="text-muted-foreground cursor-pointer flex hover:underline items-center gap-2"
-          >
-            <MessageQuestionCircle class="size-4" />
-            <span class="font-medium font-brand text-xs text-left"
-              >Tire alguma dúvida sobre o tema</span
+          <li>
+            <button
+              class="text-muted-foreground cursor-pointer flex items-center hover:underline gap-2"
+              onclick={displayUnavailableFunctionalityToast}
             >
+              <MessageQuestionCircle class="size-4" />
+              <span class="font-medium font-brand text-xs text-left"
+                >Tire alguma dúvida sobre o tema</span
+              >
+            </button>
           </li>
         </ul>
       {/if}
@@ -351,7 +361,7 @@
         />
 
         <div class="absolute gap-2 bottom-2 left-2 flex items-center">
-          <Tooltip text="Novo chat">
+          <SimpleTooltip text="Novo chat">
             <Button
               size="icon"
               variant="outline"
@@ -360,9 +370,9 @@
             >
               <Plus />
             </Button>
-          </Tooltip>
+          </SimpleTooltip>
 
-          <Tooltip text="Limpar tudo">
+          <SimpleTooltip text="Limpar tudo">
             <Button
               variant="ghost"
               size="icon"
@@ -371,21 +381,22 @@
             >
               <Icon name="broom" />
             </Button>
-          </Tooltip>
+          </SimpleTooltip>
         </div>
 
         <div class="absolute gap-2 bottom-2 right-2 flex items-center">
-          <Tooltip text="Anexar arquivo">
+          <SimpleTooltip text="Anexar arquivo">
             <Button
               variant="ghost"
               size="icon"
               class="size-6 text-muted-foreground hover:text-accent-foreground"
+              onclick={displayUnavailableFunctionalityToast}
             >
               <Paperclip />
             </Button>
-          </Tooltip>
+          </SimpleTooltip>
 
-          <Tooltip text="Enviar">
+          <SimpleTooltip text="Enviar">
             <Button
               type="submit"
               variant="outline"
@@ -394,7 +405,7 @@
             >
               <Send01 />
             </Button>
-          </Tooltip>
+          </SimpleTooltip>
         </div>
       </form>
 

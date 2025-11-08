@@ -3,7 +3,7 @@
   import { Icon } from '$lib/components/ui/icon'
   import { Link } from '@inertiajs/svelte'
   import type { DocumentType } from '$pages/Document/types'
-  import Tooltip from '$lib/components/tooltip.svelte'
+  import SimpleTooltip from '$lib/components/simple-tooltip.svelte'
 
   type Props = {
     document: DocumentType
@@ -23,7 +23,7 @@
 
 <Tabs value={activeTab}>
   <TabsList class="gap-1">
-    <Tooltip text="Documento">
+    <SimpleTooltip text="Documento">
       <Link
         href={`/documents/${document.sqid}`}
         prefetch
@@ -35,9 +35,9 @@
           <Icon class="size-5" name="file" />
         </TabsTrigger>
       </Link>
-    </Tooltip>
+    </SimpleTooltip>
 
-    <Tooltip text="Versionamento (git)">
+    <SimpleTooltip text="Versionamento (git)">
       <Link
         href={`/documents/${document.sqid}/diffs`}
         prefetch
@@ -49,6 +49,6 @@
           <Icon class="size-5" name="source-control" />
         </TabsTrigger>
       </Link>
-    </Tooltip>
+    </SimpleTooltip>
   </TabsList>
 </Tabs>

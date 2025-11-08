@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Separator } from '$lib/components/ui/separator'
-  import Tooltip from '$lib/components/tooltip.svelte'
+  import SimpleTooltip from '$lib/components/simple-tooltip.svelte'
 
   import { SidebarTrigger } from '$lib/components/ui/sidebar'
   import type { DocumentType } from '$pages/Document/types'
@@ -8,7 +8,7 @@
   import AvatarStack from './avatar-stack.svelte'
   import { EditorSidebar } from './documents/show/editor-header'
   import { Button } from './ui/button'
-  import { Home02, Home05 } from '@voolt_technologies/untitledui-svelte'
+  import { Home02 } from '@voolt_technologies/untitledui-svelte'
 
   const user = $page.props.user
 
@@ -70,9 +70,9 @@
 >
   <div class="flex items-center gap-2">
     <div class="flex items-center gap-2">
-      <Tooltip text="Mostrar/esconder menú lateral">
+      <SimpleTooltip text="Mostrar/esconder menú lateral">
         <SidebarTrigger for="summary" />
-      </Tooltip>
+      </SimpleTooltip>
 
       <Separator class="mr-2 h-4" orientation="vertical" />
     </div>
@@ -93,7 +93,7 @@
 
     <Separator class="mr-2 h-4" orientation="vertical" />
 
-    <Tooltip text="Voltar para a página inicial">
+    <SimpleTooltip text="Voltar para a página inicial">
       <Link href="/documents">
         <Button
           variant="ghost"
@@ -103,7 +103,7 @@
           <Home02 class="size-5" />
         </Button>
       </Link>
-    </Tooltip>
+    </SimpleTooltip>
   </div>
 
   <div class="flex items-center gap-4">
@@ -116,17 +116,17 @@
         >
       </div>
 
-      <Tooltip text={user.name}>
+      <SimpleTooltip text={user.name}>
         <AvatarStack />
-      </Tooltip>
+      </SimpleTooltip>
     </div>
 
     <div class="flex items-center">
       <Separator class="mr-2 h-4 hidden sm:block" orientation="vertical" />
 
-      <Tooltip text="Mostrar/esconder chat com Turing AI">
+      <SimpleTooltip text="Mostrar/esconder chat com Turing AI">
         <SidebarTrigger class="-mr-1 ml-auto rotate-180" for="turing" />
-      </Tooltip>
+      </SimpleTooltip>
     </div>
   </div>
 </header>

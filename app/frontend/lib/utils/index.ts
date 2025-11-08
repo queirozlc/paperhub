@@ -9,6 +9,7 @@ export {
   extractNodeHtmlContent,
 } from './ai-suggestion'
 export { isTextSelected } from './text-selection'
+export { displayUnavailableFunctionalityToast } from './toast'
 
 export type HashableModel = {
   sqid: string

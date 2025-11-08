@@ -33,13 +33,8 @@
   import { Textarea } from '$lib/components/ui/textarea'
   import Button from '$lib/components/ui/button/button.svelte'
   import { toast } from 'svelte-sonner'
-  import {
-    Tooltip,
-    TooltipProvider,
-    TooltipTrigger,
-  } from '$lib/components/ui/tooltip'
   import { Home05 } from '@voolt_technologies/untitledui-svelte'
-  import TooltipContent from '$lib/components/ui/tooltip/tooltip-content.svelte'
+  import SimpleTooltip from '$lib/components/simple-tooltip.svelte'
 
   type Props = {
     children: Snippet
@@ -227,28 +222,17 @@
       <EditorSidebar.Tabs {document} />
       <Separator class="mr-2 h-4" orientation="vertical" />
 
-      <TooltipProvider>
-        <Tooltip delayDuration={100} disableHoverableContent>
-          <TooltipTrigger>
-            {#snippet child({ props })}
-              <Link href="/documents" {...props}>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  class="text-muted-foreground hover:text-accent-foreground transition-colors"
-                >
-                  <Home05 class="size-5" />
-                </Button>
-              </Link>
-            {/snippet}
-          </TooltipTrigger>
-
-          <TooltipContent>
-            <span class="pointer-events-none">Voltar para a página inicial</span
-            >
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <SimpleTooltip text="Voltar para a página inicial">
+        <Link href="/documents">
+          <Button
+            variant="ghost"
+            size="icon"
+            class="text-muted-foreground hover:text-accent-foreground transition-colors"
+          >
+            <Home05 class="size-5" />
+          </Button>
+        </Link>
+      </SimpleTooltip>
 
       {#if current_branch}
         <div class="flex items-center gap-2">
