@@ -3,6 +3,7 @@
   import { Icon } from '$lib/components/ui/icon'
   import { Link } from '@inertiajs/svelte'
   import type { DocumentType } from '$pages/Document/types'
+  import Tooltip from '$lib/components/tooltip.svelte'
 
   type Props = {
     document: DocumentType
@@ -22,28 +23,32 @@
 
 <Tabs value={activeTab}>
   <TabsList class="gap-1">
-    <Link
-      href={`/documents/${document.sqid}`}
-      prefetch
-      replace
-      preserveState={false}
-      only={['documents']}
-    >
-      <TabsTrigger class="px-2" value="editor">
-        <Icon class="size-5" name="file" />
-      </TabsTrigger>
-    </Link>
+    <Tooltip text="Documento">
+      <Link
+        href={`/documents/${document.sqid}`}
+        prefetch
+        replace
+        preserveState={false}
+        only={['documents']}
+      >
+        <TabsTrigger class="px-2" value="editor">
+          <Icon class="size-5" name="file" />
+        </TabsTrigger>
+      </Link>
+    </Tooltip>
 
-    <Link
-      href={`/documents/${document.sqid}/diffs`}
-      prefetch
-      replace
-      preserveState={false}
-      only={['documents', 'file_content']}
-    >
-      <TabsTrigger class="px-2" value="git">
-        <Icon class="size-5" name="source-control" />
-      </TabsTrigger>
-    </Link>
+    <Tooltip text="Versionamento (git)">
+      <Link
+        href={`/documents/${document.sqid}/diffs`}
+        prefetch
+        replace
+        preserveState={false}
+        only={['documents', 'file_content']}
+      >
+        <TabsTrigger class="px-2" value="git">
+          <Icon class="size-5" name="source-control" />
+        </TabsTrigger>
+      </Link>
+    </Tooltip>
   </TabsList>
 </Tabs>

@@ -1,11 +1,6 @@
 <script lang="ts">
   import { Separator } from '$lib/components/ui/separator'
-  import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-  } from '$lib/components/ui/tooltip'
+  import Tooltip from '$lib/components/tooltip.svelte'
 
   import { SidebarTrigger } from '$lib/components/ui/sidebar'
   import type { DocumentType } from '$pages/Document/types'
@@ -75,7 +70,10 @@
 >
   <div class="flex items-center gap-2">
     <div class="flex items-center gap-2">
-      <SidebarTrigger for="summary" />
+      <Tooltip text="Mostrar/esconder menú lateral">
+        <SidebarTrigger for="summary" />
+      </Tooltip>
+
       <Separator class="mr-2 h-4" orientation="vertical" />
     </div>
 
@@ -95,27 +93,17 @@
 
     <Separator class="mr-2 h-4" orientation="vertical" />
 
-    <TooltipProvider>
-      <Tooltip delayDuration={100} disableHoverableContent>
-        <TooltipTrigger class="sm:inline-flex hidden">
-          {#snippet child({ props })}
-            <Link href="/documents" {...props}>
-              <Button
-                variant="ghost"
-                size="icon"
-                class="text-muted-foreground hover:text-accent-foreground transition-colors"
-              >
-                <Home02 class="size-5" />
-              </Button>
-            </Link>
-          {/snippet}
-        </TooltipTrigger>
-
-        <TooltipContent>
-          <span class="pointer-events-none">Voltar para a página inicial</span>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Tooltip text="Voltar para a página inicial">
+      <Link href="/documents">
+        <Button
+          variant="ghost"
+          size="icon"
+          class="text-muted-foreground hover:text-accent-foreground transition-colors"
+        >
+          <Home02 class="size-5" />
+        </Button>
+      </Link>
+    </Tooltip>
   </div>
 
   <div class="flex items-center gap-4">
@@ -128,21 +116,17 @@
         >
       </div>
 
-      <TooltipProvider>
-        <Tooltip delayDuration={100}>
-          <AvatarStack />
-
-          <TooltipContent>
-            <span class="pointer-events-none">{user.name}</span>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <Tooltip text={user.name}>
+        <AvatarStack />
+      </Tooltip>
     </div>
 
     <div class="flex items-center">
       <Separator class="mr-2 h-4 hidden sm:block" orientation="vertical" />
 
-      <SidebarTrigger class="-mr-1 ml-auto rotate-180" for="turing" />
+      <Tooltip text="Mostrar/esconder chat com Turing AI">
+        <SidebarTrigger class="-mr-1 ml-auto rotate-180" for="turing" />
+      </Tooltip>
     </div>
   </div>
 </header>

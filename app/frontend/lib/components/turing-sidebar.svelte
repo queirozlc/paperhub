@@ -2,13 +2,13 @@
   import * as Sidebar from '$lib/components/ui/sidebar'
   import {
     Edit03,
-    Image01,
     InfoCircle,
     MessageQuestionCircle,
     Plus,
     Send01,
     Translate01,
     Loading02 as Loading,
+    Paperclip
   } from '@voolt_technologies/untitledui-svelte'
   import Button from './ui/button/button.svelte'
   import Textarea from './ui/textarea/textarea.svelte'
@@ -24,6 +24,7 @@
   import type { Editor } from '@tiptap/core'
   import type { Node as NodeType } from '@tiptap/pm/model'
   import type { AnswerPart, ConversationPart } from './ai-chat/types'
+  import Tooltip from '$lib/components/tooltip.svelte'
 
   export type AiSuggestion = {
     id?: number
@@ -350,46 +351,50 @@
         />
 
         <div class="absolute gap-2 bottom-2 left-2 flex items-center">
-          <Button
-            size="icon"
-            variant="outline"
-            class="size-6 text-muted-foreground hover:text-accent-foreground"
-            title="Novo chat"
-            onclick={startNewChat}
-          >
-            <Plus />
-          </Button>
+          <Tooltip text="Novo chat">
+            <Button
+              size="icon"
+              variant="outline"
+              class="size-6 text-muted-foreground hover:text-accent-foreground"
+              onclick={startNewChat}
+            >
+              <Plus />
+            </Button>
+          </Tooltip>
 
-          <Button
-            title="Limpar tudo"
-            variant="ghost"
-            size="icon"
-            class="size-6 text-muted-foreground hover:text-accent-foreground"
-            onclick={() => (question = '')}
-          >
-            <Icon name="broom" />
-          </Button>
+          <Tooltip text="Limpar tudo">
+            <Button
+              variant="ghost"
+              size="icon"
+              class="size-6 text-muted-foreground hover:text-accent-foreground"
+              onclick={() => (question = '')}
+            >
+              <Icon name="broom" />
+            </Button>
+          </Tooltip>
         </div>
 
         <div class="absolute gap-2 bottom-2 right-2 flex items-center">
-          <Button
-            title="Anexar arquivo"
-            variant="ghost"
-            size="icon"
-            class="size-6 text-muted-foreground hover:text-accent-foreground"
-          >
-            <Image01 />
-          </Button>
+          <Tooltip text="Anexar arquivo">
+            <Button
+              variant="ghost"
+              size="icon"
+              class="size-6 text-muted-foreground hover:text-accent-foreground"
+            >
+              <Paperclip />
+            </Button>
+          </Tooltip>
 
-          <Button
-            title="Enviar"
-            type="submit"
-            variant="outline"
-            size="icon"
-            class="size-6 text-muted-foreground hover:text-accent-foreground"
-          >
-            <Send01 />
-          </Button>
+          <Tooltip text="Enviar">
+            <Button
+              type="submit"
+              variant="outline"
+              size="icon"
+              class="size-6 text-muted-foreground hover:text-accent-foreground"
+            >
+              <Send01 />
+            </Button>
+          </Tooltip>
         </div>
       </form>
 
