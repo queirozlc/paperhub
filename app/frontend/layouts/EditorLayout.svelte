@@ -7,6 +7,7 @@
   import { type Snippet } from 'svelte'
   import type { Editor } from '@tiptap/core'
   import { cn } from '$lib/utils'
+  import { IsMobile } from '$lib/hooks/is-mobile.svelte'
 
   type Props = {
     document: DocumentType
@@ -22,6 +23,8 @@
 
   let turingSidebarOpen = $state(true)
   let summarySidebarOpen = $state(false)
+
+  const isMobile = new IsMobile()
 </script>
 
 <svelte:head>
@@ -65,7 +68,7 @@
     <div
       class={cn(
         'flex w-full max-w-screen-md mx-auto gap-4 scrollbar-hidden py-6 px-4 lg:px-0',
-        turingSidebarOpen && 'max-w-md lg:max-w-screen-md px-0'
+        turingSidebarOpen && !isMobile && 'max-w-md lg:max-w-screen-md px-0'
       )}
     >
       {@render children()}
