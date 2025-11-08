@@ -30,6 +30,7 @@ class DocumentsController < ApplicationController
   # POST /documents
   def create
     @document = Document.create!(document_params)
+    @document.init_repository
     redirect_to document_path(@document), notice: "document was successfully created."
   end
 
