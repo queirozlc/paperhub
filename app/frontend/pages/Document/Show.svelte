@@ -55,7 +55,7 @@
           autocomplete: 'off',
           autocorrect: 'off',
           autocapitalize: 'off',
-          class: 'min-h-full relative',
+          class: '',
         },
       },
       onCreate: ({ editor }) => {

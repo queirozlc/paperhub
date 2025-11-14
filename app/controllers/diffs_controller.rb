@@ -11,7 +11,7 @@ class DiffsController < ApplicationController
 
       @commits = walker.take(100).map do |commit|
         if current_user.email == commit.author[:email]
-          avatar = public_cdn_url
+          avatar = user_avatar(current_user)
         else
           Rails.logger.info("Finding user by email: #{commit.author[:email]}")
           @user = User.find_by_email(commit.author[:email])

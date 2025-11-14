@@ -27,7 +27,7 @@ gem "solid_cable"
 
 #### ========== Frontend ==========
 gem "vite_rails", "~> 3.0"
-gem "inertia_rails", "~> 3.11"
+gem "inertia_rails", "~> 3.12"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
@@ -70,9 +70,6 @@ gem "resend"
 gem "mission_control-jobs"
 gem "propshaft"
 
-### ========== Editor Sync ==========
-gem "y-rb"
-gem "y-rb_actioncable"
 ### ========== Logs and Monitouring =================
 gem "appsignal"
 
