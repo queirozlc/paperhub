@@ -22,7 +22,7 @@ class DocumentsController < ApplicationController
     yjs_content = Y::Lib0::Encoding.encode_uint8_array_to_base64(JSON.parse(@document.content)) if @document.content.present?
     render inertia: "Document/Show", props: {
       document: -> {
-        @document.as_json(methods: :sqid).merge(content: yjs_content)
+        @document.as_json(methods: :sqid).merge("content" => yjs_content)
       }
     }
   end
