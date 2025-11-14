@@ -5,17 +5,20 @@
   import Collaboration from '@tiptap/extension-collaboration'
   import { toUint8Array } from 'js-base64'
   import { onDestroy, onMount } from 'svelte'
-  import { Editor } from '@tiptap/core'
   import * as Y from 'yjs'
   import type { DocumentType } from './types'
   import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
   import { WebsocketProvider } from '@y-rb/actioncable'
   import { consumer } from '$lib/channels'
   import { page } from '@inertiajs/svelte'
+  import { createEditor, Editor } from 'svelte-tiptap'
+  import type { Readable } from 'svelte/store'
+  import ToolsBubbleMenu from '$lib/components/tools-bubble-menu.svelte'
+  import LinkBubbleMenu from '$lib/components/link-bubble-menu.svelte'
 
   let { document }: { document: DocumentType } = $props()
 
-  let editor = $state<Editor | null>(null)
+  let editor = $state(null) as Readable<Editor>
   let element = $state<HTMLElement | null>(null)
 
   const ydoc = new Y.Doc()
@@ -47,7 +50,7 @@
   }
 
   onMount(() => {
-    editor = new Editor({
+    editor = createEditor({
       element,
       autofocus: true,
       editorProps: {
@@ -85,20 +88,17 @@
   // Cleanup on component unmount
   onDestroy(() => {
     syncer.destroy()
-    if (editor) {
-      editor.destroy()
-    }
   })
 </script>
 
-<EditorLayout {document} {editor}>
+<EditorLayout {document} editor={$editor}>
   <div
     class="min-h-[calc(100svh-theme(spacing.4))] border border-border px-20 py-16 w-full max-w-screen-md mx-auto"
   >
     <div bind:this={element}></div>
-    {#if editor}
-      <!-- <ToolsBubbleMenu editor={editor} />
-        <LinkBubbleMenu editor={editor} /> -->
+    {#if $editor}
+      <ToolsBubbleMenu editor={$editor} />
+      <LinkBubbleMenu editor={$editor} />
     {/if}
   </div>
 </EditorLayout>
