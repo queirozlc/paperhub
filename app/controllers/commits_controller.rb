@@ -15,7 +15,7 @@ class CommitsController < ApplicationController
     options = {
       file: {
         path: Document.file_name,
-        content: JSON.generate(document.content),
+        content: JSON.parse(commit_params[:content]),
         mode: Document::GIT_FILEMODE_BLOB
       },
       author: {
@@ -57,7 +57,7 @@ class CommitsController < ApplicationController
       file[:mode] = file_entry[:mode]
     end
 
-    oid = repo.write(file[:content], :blob)
+    oid = repo.write(JSON.generate(file[:content]), :blob)
     index.add(path: file[:path], oid:, mode: file[:mode])
 
     commit_opts = {
@@ -81,7 +81,7 @@ class CommitsController < ApplicationController
     end
 
     def commit_params
-      params.expect(commit: %i[message description ref])
+      params.expect(commit: %i[message description ref content])
     end
 
     def set_document

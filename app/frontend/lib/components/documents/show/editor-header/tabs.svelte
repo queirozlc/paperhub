@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Tabs, TabsList, TabsTrigger } from '$lib/components/ui/tabs'
   import { Icon } from '$lib/components/ui/icon'
-  import { Link } from '@inertiajs/svelte'
+  import { Tabs, TabsList, TabsTrigger } from '$lib/components/ui/tabs'
   import type { DocumentType } from '$pages/Document/types'
+  import { Link } from '@inertiajs/svelte'
 
   type Props = {
     document: DocumentType

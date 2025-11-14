@@ -19,8 +19,11 @@ class DocumentsController < ApplicationController
 
   # GET /documents/:sqid
   def show
+    yjs_content = Y::Lib0::Encoding.encode_uint8_array_to_base64(JSON.parse(@document.content)) if @document.content.present?
     render inertia: "Document/Show", props: {
-      document: -> { @document.as_json(methods: :sqid) }
+      document: -> {
+        @document.as_json(methods: :sqid).merge("content" => yjs_content)
+      }
     }
   end
 
@@ -33,16 +36,17 @@ class DocumentsController < ApplicationController
 
   # PATCH/PUT /documents/1
   def update
-    json_content = JSON.parse(document_params[:content]) if document_params[:content]
+    # get the actual content from the database, build a new instance of Y::Doc, merge the incoming update then save the updated content back to the database
+    decoded_update = Y::Lib0::Decoding.decode_base64_to_uint8_array(document_params[:content]) if document_params[:content]
 
-    params = if json_content.present?
-      document_params.except(:content).merge(content: json_content)
+    update_params = if decoded_update
+      document_params.except(:content).merge(content: decoded_update)
     else
       document_params
     end
 
-    @document.update!(params)
 
+    @document.update!(update_params)
     redirect_to document_path(@document), notice: "document was successfully updated."
   end
 
@@ -56,6 +60,38 @@ class DocumentsController < ApplicationController
   def destroy_all
     Document.includes(:team).where(id: document_id_params).destroy_all
     redirect_to documents_url, notice: "documents were successfully destroyed."
+  end
+
+  # POST /documents/:sqid/sync
+  def sync
+    # Read raw binary data from request body
+    update_binary = request.body.read
+
+    if update_binary.blank?
+      render json: { error: "No update provided" }, status: :bad_request
+      return
+    end
+
+    begin
+      # Create a new Y::Doc and load existing state
+      ydoc = Y::Doc.new
+      Y.apply_update(ydoc, @document.yjs_state) if @document.content.present?
+
+      # Apply the new update (already in binary format)
+      Y.apply_update(ydoc, update_binary)
+
+      # Encode the full state and save to database
+      new_state = Y.encode_state_as_update(ydoc)
+      @document.update_column(:content, new_state)
+
+      Rails.logger.info("Synced Yjs update for document #{@document.sqid} (#{update_binary.bytesize} bytes)")
+
+      render json: { success: true, size: new_state.bytesize }
+    rescue => e
+      Rails.logger.error("Error syncing Yjs update: #{e.message}")
+      Rails.logger.error(e.backtrace.join("\n"))
+      render json: { error: e.message }, status: :internal_server_error
+    end
   end
 
   private

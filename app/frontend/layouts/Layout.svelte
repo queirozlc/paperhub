@@ -17,7 +17,7 @@
     event.stopImmediatePropagation()
 
     router.reload({
-      except: ['flash', 'team_members', 'user_invitations'],
+      except: ['flash', 'team_members', 'user_invitations', 'teams'],
     })
   }
 </script>
