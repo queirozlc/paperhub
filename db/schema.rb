@@ -43,7 +43,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_30_131346) do
   end
 
   create_table "documents", force: :cascade do |t|
-    t.jsonb "content"
+    t.binary "content"
     t.datetime "created_at", null: false
     t.string "description"
     t.bigint "team_id", null: false
