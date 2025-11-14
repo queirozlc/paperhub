@@ -40,6 +40,11 @@
   } from '$lib/components/ui/tooltip'
   import { Home05 } from '@voolt_technologies/untitledui-svelte'
   import TooltipContent from '$lib/components/ui/tooltip/tooltip-content.svelte'
+  import * as Y from 'yjs'
+  import { toUint8Array } from 'js-base64'
+  import { yXmlFragmentToProseMirrorRootNode } from 'y-prosemirror'
+  import { getSchema } from '@tiptap/core'
+  import { editorExtensions } from '$lib/extensions/extension-kit'
 
   type Props = {
     children: Snippet
@@ -104,10 +109,29 @@
     )
   }
 
+  const ydoc = new Y.Doc()
+
+  if (document.content) {
+    Y.applyUpdate(ydoc, toUint8Array(document.content))
+  }
+
+  const fragment = ydoc.getXmlFragment('default')
+
+  const jsonContent = yXmlFragmentToProseMirrorRootNode(
+    fragment,
+    getSchema(editorExtensions)
+  ).toJSON()
+
   function commitChanges(e: SubmitEvent) {
     e.preventDefault()
     $form
-      .transform((data) => ({ commit: { ...data, ref: current_branch } }))
+      .transform((data) => ({
+        commit: {
+          ...data,
+          ref: current_branch,
+          content: JSON.stringify(jsonContent),
+        },
+      }))
       .post(`/documents/${document.sqid}/commits`, {
         preserveUrl: true,
         preserveState: false,

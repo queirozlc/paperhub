@@ -11,11 +11,11 @@ class DiffsController < ApplicationController
 
       @commits = walker.take(100).map do |commit|
         if current_user.email == commit.author[:email]
-          avatar = public_cdn_url(current_user.avatar) if current_user.avatar.attached?
+          avatar = public_cdn_url
         else
           Rails.logger.info("Finding user by email: #{commit.author[:email]}")
           @user = User.find_by_email(commit.author[:email])
-          avatar = user_avatar(@user) if @user.avatar.attached?
+          avatar = user_avatar(@user)
         end
 
         {
@@ -32,7 +32,7 @@ class DiffsController < ApplicationController
       Rails.logger.info("[diffs_controller] last_editor_blob: #{last_editor_blob}")
 
       render inertia: "Document/Diffs", props: {
-        document: -> { document.as_json(methods: %i[sqid]) },
+        document: -> { document.as_json(methods: %i[sqid]).merge(content: Y::Lib0::Encoding.encode_uint8_array_to_base64(JSON.parse(document.content))) },
         current_branch: -> { normalize_branch_name },
         branches: InertiaRails.optional { document.branches },
         commits: InertiaRails.optional { @commits },
@@ -40,7 +40,7 @@ class DiffsController < ApplicationController
       }
     else
       render inertia: "Document/Diffs", props: {
-        document: document.as_json(methods: %i[sqid])
+        document: document.as_json(methods: %i[sqid]).merge(content: Y::Lib0::Encoding.encode_uint8_array_to_base64(JSON.parse(document.content)))
       }
     end
   end

@@ -25,20 +25,15 @@
   })
 
   // Load initial Yjs state from the server if available
-  if (document.yjs_content) {
+  if (document.content) {
     try {
       // Decode base64 string to Uint8Array
-      const bytes = toUint8Array(document.yjs_content)
-      console.log({ bytes })
-      // Apply the server state to the local Yjs document
+      const bytes = toUint8Array(document.content)
       Y.applyUpdate(ydoc, bytes)
     } catch (error) {
       console.error('Error loading initial Yjs state:', error)
     }
   }
-
-  const versions = ydoc.getArray('versions')
-  console.log({ versions: versions.toArray() })
 
   // Initialize the document syncer
   const syncer = new YjsDocumentSyncer({

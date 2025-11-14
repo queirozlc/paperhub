@@ -9,7 +9,6 @@ export interface DocumentType extends HashableModel {
   created_at: Date
   updated_at: Date
   content?: string // Base64 encoded Yjs binary state
-  yjs_content?: string // Base64 encoded Yjs binary state
 }
 
 export type DocumentFormType = Omit<

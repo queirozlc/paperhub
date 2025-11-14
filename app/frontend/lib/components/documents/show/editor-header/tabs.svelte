@@ -12,15 +12,11 @@
 
   // if url is /documents/:sqid, activeTab is editor
   // if url is /documents/:sqid/diffs, activeTab is git
-  // if url is /documents/:sqid/diffs/snapshots, activeTab is snapshots
 
   let activeTab = $state(
     window.location.pathname === `/documents/${document.sqid}`
       ? 'editor'
-      : window.location.pathname ===
-          `/documents/${document.sqid}/diffs/snapshots`
-        ? 'snapshots'
-        : 'git'
+      : 'git'
   )
 </script>
 
@@ -46,18 +42,6 @@
       only={['document']}
     >
       <TabsTrigger class="px-2" value="git">
-        <Icon class="size-5" name="source-control" />
-      </TabsTrigger>
-    </Link>
-
-    <Link
-      href={`/documents/${document.sqid}/diffs/snapshots`}
-      prefetch
-      preserveState={false}
-      only={['document']}
-      replace
-    >
-      <TabsTrigger class="px-2" value="snapshots">
         <Icon class="size-5" name="source-control" />
       </TabsTrigger>
     </Link>

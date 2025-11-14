@@ -1,6 +1,7 @@
 import type { UserType } from '$pages/Users/types'
 import { Extension } from '@tiptap/core'
 import * as Y from 'yjs'
+import { YChange } from './ychange'
 
 interface UpdateEvent {
   update: Uint8Array<ArrayBufferLike>
@@ -49,6 +50,10 @@ export const SnapshotDiff = Extension.create<SnapshotDiffOptions>({
       user: null,
       onUpdate: () => {},
     }
+  },
+
+  addExtensions() {
+    return [YChange]
   },
 
   addCommands() {

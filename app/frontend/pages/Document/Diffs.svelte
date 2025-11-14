@@ -1,6 +1,6 @@
 <script lang="ts">
   import DiffsLayout from '$layouts/DiffsLayout.svelte'
-  import { generateHTML } from '@tiptap/core'
+  import { generateHTML, getSchema } from '@tiptap/core'
   import type { DocumentType, CommitType } from './types'
   import { editorExtensions } from '$lib/extensions/extension-kit'
   import { onMount } from 'svelte'
@@ -8,6 +8,9 @@
   import type { Readable } from 'svelte/store'
   import { Diff } from '$lib/extensions'
   import { Info } from '@lucide/svelte'
+  import * as Y from 'yjs'
+  import { toUint8Array } from 'js-base64'
+  import { yXmlFragmentToProseMirrorRootNode } from 'y-prosemirror'
 
   type Props = {
     document: DocumentType
@@ -23,9 +26,20 @@
   let lastCommitHtml = $state('')
   let actualHtml = $state('')
 
+  const ydoc = new Y.Doc()
+
   if (file_content && document.content) {
+    Y.applyUpdate(ydoc, toUint8Array(document.content))
+
+    const fragment = ydoc.getXmlFragment('default')
+
+    const jsonContent = yXmlFragmentToProseMirrorRootNode(
+      fragment,
+      getSchema(editorExtensions)
+    ).toJSON()
+
     lastCommitHtml = generateHTML(file_content, editorExtensions)
-    actualHtml = generateHTML(document.content, editorExtensions)
+    actualHtml = generateHTML(jsonContent, editorExtensions)
   }
 
   let editor = $state(null) as Readable<Editor>

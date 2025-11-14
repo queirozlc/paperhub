@@ -52,8 +52,6 @@ class ApplicationController < ActionController::Base
     end
 
     def user_avatar(user)
-      return if user.avatar.blank?
-
-      public_cdn_url(user.avatar)
+      public_cdn_url(user.avatar) if user.avatar.attached?
     end
 end
