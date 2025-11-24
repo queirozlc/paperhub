@@ -51,7 +51,7 @@ gem "devise-async"
 gem "devise-passwordless"
 gem "devise-verifiable"
 gem "omniauth"
-gem "omniauth-rails_csrf_protection", "~> 1.0.2"
+gem "omniauth-rails_csrf_protection", "~> 2.0.0"
 gem "omniauth-google-oauth2"
 
 #### ========== Authorization ==========
