@@ -13,22 +13,17 @@
   import { EditorSidebar } from './documents/show/editor-header'
   import { Button } from './ui/button'
   import { Home02 } from '@voolt_technologies/untitledui-svelte'
-  import { getSidebarRegistry } from './ui/sidebar/registry.svelte'
 
   type Props = {
     documentTitleInput?: HTMLHeadingElement
     documentTitle?: string
     document: DocumentType
-    summarySidebarOpen: boolean
-    turingSidebarOpen: boolean
   }
 
   let {
     documentTitleInput = $bindable(null),
     documentTitle = $bindable(''),
     document,
-    summarySidebarOpen,
-    turingSidebarOpen,
   }: Props = $props()
 
   function updateTitle(target: HTMLHeadingElement) {
@@ -70,16 +65,6 @@
       documentTitleInput.blur()
     }
   }
-
-  const turingSidebar = $derived.by(() => {
-    const registry = getSidebarRegistry()
-    return registry.get('turing')
-  })
-
-  const summarySidebar = $derived.by(() => {
-    const registry = getSidebarRegistry()
-    return registry.get('summary')
-  })
 </script>
 
 <header

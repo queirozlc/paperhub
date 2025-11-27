@@ -154,6 +154,7 @@
         'Suporte limitado',
       ],
       cta: 'Quero só explorar',
+      href: '/users/sign_in',
     },
     {
       title: 'Mestre',
@@ -173,6 +174,7 @@
         'Suporte dedicado',
       ],
       cta: 'Fazer um teste grátis',
+      href: '/users/sign_in',
     },
     {
       title: 'Doutor',
@@ -191,6 +193,7 @@
         'Suporte Premium',
       ],
       cta: 'Sou um profissional',
+      href: '/users/sign_in',
     },
   ]
 
@@ -227,7 +230,7 @@
 
       <!-- Desktop Navigation -->
       <div class="hidden md:flex items-center gap-8">
-        {#each navItems as item}
+        {#each navItems as item, index (index)}
           <a
             href={item.href}
             class="text-sm font-medium text-muted-foreground hover:text-accent-foreground transition-colors"
@@ -263,7 +266,7 @@
         </SheetTrigger>
         <SheetContent side="top" class="w-full h-full flex flex-col x-0">
           <div class="flex flex-col gap-6 mt-8">
-            {#each navItems as item}
+            {#each navItems as item, index (index)}
               <a
                 href={item.href}
                 class="text-lg px-6 font-medium text-foreground hover:text-accent transition-colors"
@@ -373,7 +376,7 @@
           <h2 class="font-brand font-bold">Por que o Paperhub?</h2>
 
           <div class="grid lg:grid-cols-2 gap-6 lg:grid-rows-2">
-            {#each whyPaperhubItems as item}
+            {#each whyPaperhubItems as item, index (index)}
               <div class="flex flex-col gap-8">
                 <img
                   src={item.image}
@@ -436,7 +439,7 @@
         </div>
 
         <div class="grid lg:grid-cols-2 gap-6 lg:grid-rows-2">
-          {#each testimonials as item}
+          {#each testimonials as item, index (index)}
             <div class="flex flex-col gap-4">
               <p class="text-accent-foreground font-medium text-lg italic">
                 &ldquo;{item.description}&rdquo;
@@ -455,7 +458,7 @@
                 />
 
                 <div class="flex items-center gap-1">
-                  {#each getStars(item.rating) as starType}
+                  {#each getStars(item.rating) as starType, index (index)}
                     {#if starType === 'filled'}
                       <img
                         src={starFill}
@@ -533,7 +536,7 @@
           </p>
 
           <div class="grid lg:grid-cols-3 gap-6 w-full">
-            {#each plans as plan}
+            {#each plans as plan, index (index)}
               <Card
                 class={plan.bestChoice
                   ? 'border-primary border-2 relative'
@@ -580,7 +583,7 @@
                     </div>
                   </div>
                   <ul class="space-y-3">
-                    {#each plan.features as feature}
+                    {#each plan.features as feature, index (index)}
                       <li class="flex items-start gap-2">
                         <Check
                           class="size-5 text-primary mt-0.5 flex-shrink-0"
@@ -593,13 +596,15 @@
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button
-                    class="w-full font-brand font-semibold"
-                    variant={plan.bestChoice ? 'default' : 'outline'}
-                  >
-                    {plan.cta}
-                    <ArrowUpRight class="size-5" />
-                  </Button>
+                  <Link href={plan.href}>
+                    <Button
+                      class="w-full font-brand font-semibold"
+                      variant={plan.bestChoice ? 'default' : 'outline'}
+                    >
+                      {plan.cta}
+                      <ArrowUpRight class="size-5" />
+                    </Button>
+                  </Link>
                 </CardFooter>
               </Card>
             {/each}
