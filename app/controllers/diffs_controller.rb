@@ -32,23 +32,17 @@ class DiffsController < ApplicationController
       Rails.logger.info("[diffs_controller] last_editor_blob: #{last_editor_blob}")
 
       render inertia: "Document/Diffs", props: {
-        document: -> { document.as_json(methods: %i[sqid]).merge(content: Y::Lib0::Encoding.encode_uint8_array_to_base64(JSON.parse(document.content))) },
-        current_branch: -> { normalize_branch_name },
+        document: document.as_json(methods: %i[sqid]).merge(content: Y::Lib0::Encoding.encode_uint8_array_to_base64(JSON.parse(document.content))),
+        current_branch: normalize_branch_name,
+        file_content: JSON.parse(last_editor_blob),
         branches: InertiaRails.optional { document.branches },
-        commits: InertiaRails.optional { @commits },
-        file_content: -> { JSON.parse(last_editor_blob) }
+        commits: InertiaRails.optional { @commits }
       }
     else
       render inertia: "Document/Diffs", props: {
         document: document.as_json(methods: %i[sqid]).merge(content: Y::Lib0::Encoding.encode_uint8_array_to_base64(JSON.parse(document.content)))
       }
     end
-  end
-
-  def snapshots
-    render inertia: "Document/SnapshotDiffs", props: {
-      document: document.as_json(methods: %i[sqid]).merge(content: Y::Lib0::Encoding.encode_uint8_array_to_base64(JSON.parse(document.content)))
-    }
   end
 
   private

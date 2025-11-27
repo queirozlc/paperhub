@@ -5,5 +5,12 @@
       "source.fixAll.eslint": "always",
       "source.removeUnusedImports": "always",
     }
-  }
+  },
+  "[ruby]": {
+    "editor.defaultFormatter": "Shopify.ruby-lsp"
+  },
+  "rubyLsp.formatter": "rubocop",
+  "rubyLsp.linters": [
+    "rubocop"
+  ]
 }

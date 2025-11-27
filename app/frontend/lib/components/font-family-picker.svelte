@@ -1,8 +1,14 @@
 <script lang="ts">
-  import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
+  import * as DropdownMenu from './ui/dropdown-menu'
   import Button from '$lib/components/ui/button/button.svelte'
   import { ChevronDown } from '@voolt_technologies/untitledui-svelte'
   import type { Editor } from 'svelte-tiptap'
+  import {
+    TooltipProvider,
+    Tooltip,
+    TooltipTrigger,
+    TooltipContent,
+  } from './ui/tooltip'
 
   type Group = {
     slug: string
@@ -90,16 +96,23 @@
     }
   }}
 >
-  <DropdownMenu.Trigger>
-    <Button
-      size="default"
-      variant="ghost"
-      class="gap-2 items-center text-muted-foreground hover:text-foreground"
-    >
-      <span class="text-sm font-medium font-brand">{currentFont}</span>
-      <ChevronDown class="size-3" />
-    </Button>
-  </DropdownMenu.Trigger>
+  <TooltipProvider>
+    <Tooltip disableHoverableContent delayDuration={0}>
+      <TooltipTrigger>
+        <DropdownMenu.Trigger>
+          <Button
+            size="default"
+            variant="ghost"
+            class="gap-2 items-center text-muted-foreground hover:text-foreground"
+          >
+            <span class="text-sm font-medium font-brand">{currentFont}</span>
+            <ChevronDown class="size-3" />
+          </Button>
+        </DropdownMenu.Trigger>
+      </TooltipTrigger>
+      <TooltipContent>Selecionar fonte do texto</TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
   <DropdownMenu.Content
     onOpenAutoFocus={(e) => e.preventDefault()}
     bind:ref={aiToolsDropdownContent}

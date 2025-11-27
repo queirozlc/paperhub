@@ -12,6 +12,12 @@
     Pilcrow,
   } from '@lucide/svelte'
   import type { Editor } from 'svelte-tiptap'
+  import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+  } from './ui/tooltip'
 
   type Group = {
     slug: string
@@ -96,12 +102,19 @@
     }
   }}
 >
-  <DropdownMenu.Trigger>
-    <Button size="sm" variant="ghost" class="gap-2 items-center px-1">
-      <Pilcrow />
-      <ChevronDown class="size-3" />
-    </Button>
-  </DropdownMenu.Trigger>
+  <TooltipProvider>
+    <Tooltip disableHoverableContent delayDuration={0}>
+      <TooltipTrigger>
+        <DropdownMenu.Trigger>
+          <Button size="sm" variant="ghost" class="gap-2 items-center px-1">
+            <Pilcrow />
+            <ChevronDown class="size-3" />
+          </Button>
+        </DropdownMenu.Trigger>
+      </TooltipTrigger>
+      <TooltipContent>Selecionar tipo de conteúdo</TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
   <DropdownMenu.Content
     onOpenAutoFocus={(e) => e.preventDefault()}
     bind:ref={aiToolsDropdownContent}

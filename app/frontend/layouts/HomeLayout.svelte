@@ -148,7 +148,7 @@
   />
 </svelte:head>
 
-<SidebarProvider>
+<SidebarProvider name="home">
   <Sidebar>
     <SidebarHeader>
       <TeamSwitcher {teams} {active_team} />
@@ -176,7 +176,7 @@
   <SidebarInset>
     <header class="flex h-14 items-center px-4 justify-between">
       <div class="flex items-center gap-2">
-        <SidebarTrigger />
+        <SidebarTrigger for="home" />
         <Separator class="mr-2 h-4" orientation="vertical" />
         <!-- <Button class="gap-2 h-7 shadow-none" size="sm" variant="outline">
           <div class="rounded-full border border-accent-foreground p-0.5">

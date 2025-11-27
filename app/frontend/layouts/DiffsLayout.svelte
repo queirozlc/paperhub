@@ -145,10 +145,10 @@
 
 <div class="overflow-hidden flex w-full">
   <SidebarProvider
-    open={true}
+    open={false}
     name="git-panel"
     style="--sidebar-width: 20rem;"
-    class="w-fit overflow-hidden max-h-dvh"
+    class="w-fit overflow-hidden"
   >
     <Sidebar transparent>
       <Tabs
