@@ -63,9 +63,6 @@
         Diff.configure({
           fromHTML: lastCommitHtml,
           toHTML: actualHtml,
-          setDiffCount: (count: number) => {
-            changesCount = count
-          },
         }),
       ],
     })

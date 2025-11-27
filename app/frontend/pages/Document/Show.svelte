@@ -11,7 +11,7 @@
   import { WebsocketProvider } from '@y-rb/actioncable'
   import { consumer } from '$lib/channels'
   import { page } from '@inertiajs/svelte'
-  import { createEditor, Editor } from 'svelte-tiptap'
+  import { createEditor, Editor, EditorContent } from 'svelte-tiptap'
   import type { Readable } from 'svelte/store'
   import ToolsBubbleMenu from '$lib/components/tools-bubble-menu.svelte'
   import LinkBubbleMenu from '$lib/components/link-bubble-menu.svelte'
@@ -19,7 +19,6 @@
   let { document }: { document: DocumentType } = $props()
 
   let editor = $state(null) as Readable<Editor>
-  let element = $state<HTMLElement | null>(null)
 
   const ydoc = new Y.Doc()
 
@@ -51,7 +50,6 @@
 
   onMount(() => {
     editor = createEditor({
-      element,
       autofocus: true,
       editorProps: {
         attributes: {
@@ -93,9 +91,9 @@
 
 <EditorLayout {document} editor={$editor}>
   <div
-    class="min-h-[calc(100svh-theme(spacing.4))] border border-border px-20 py-16 w-full max-w-screen-md mx-auto"
+    class="min-h-[calc(100svh-theme(spacing.4))] border border-border px-10 lg:px-20 py-16 w-full max-w-screen-md mx-auto"
   >
-    <div bind:this={element}></div>
+    <EditorContent editor={$editor} />
     {#if $editor}
       <ToolsBubbleMenu editor={$editor} />
       <LinkBubbleMenu editor={$editor} />

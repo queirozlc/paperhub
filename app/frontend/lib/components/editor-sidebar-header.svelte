@@ -13,23 +13,17 @@
   import { EditorSidebar } from './documents/show/editor-header'
   import { Button } from './ui/button'
   import { Home02 } from '@voolt_technologies/untitledui-svelte'
-  import { getSidebarRegistry } from './ui/sidebar/registry.svelte'
-  import { MediaQuery } from 'svelte/reactivity'
 
   type Props = {
     documentTitleInput?: HTMLHeadingElement
     documentTitle?: string
     document: DocumentType
-    summarySidebarOpen: boolean
-    turingSidebarOpen: boolean
   }
 
   let {
     documentTitleInput = $bindable(null),
     documentTitle = $bindable(''),
     document,
-    summarySidebarOpen,
-    turingSidebarOpen,
   }: Props = $props()
 
   function updateTitle(target: HTMLHeadingElement) {
@@ -71,36 +65,6 @@
       documentTitleInput.blur()
     }
   }
-
-  const turingSidebar = $derived.by(() => {
-    const registry = getSidebarRegistry()
-    return registry.get('turing')
-  })
-
-  const summarySidebar = $derived.by(() => {
-    const registry = getSidebarRegistry()
-    return registry.get('summary')
-  })
-
-  const isMobile = new MediaQuery('(max-width: 895px)')
-
-  function closeTuringSidebar() {
-    // close the turing sidebar if it's a small screen and the turing sidebar is open, and if the summary sidebar is being opened
-    if (isMobile.current && turingSidebarOpen) {
-      if (!summarySidebarOpen) {
-        turingSidebar.setOpen(false)
-      }
-    }
-  }
-
-  function closeSummarySidebar() {
-    // close the summary sidebar if it's a small screen and the summary sidebar is open, and if the turing sidebar is being opened
-    if (isMobile.current && summarySidebarOpen) {
-      if (!turingSidebarOpen) {
-        summarySidebar.setOpen(false)
-      }
-    }
-  }
 </script>
 
 <header
@@ -108,7 +72,7 @@
 >
   <div class="flex items-center gap-2">
     <div class="flex items-center gap-2">
-      <SidebarTrigger for="summary" onclick={closeTuringSidebar} />
+      <SidebarTrigger for="summary" />
       <Separator class="mr-2 h-4" orientation="vertical" />
     </div>
 
@@ -157,11 +121,7 @@
     <div class="flex items-center">
       <Separator class="mr-2 h-4 hidden sm:block" orientation="vertical" />
 
-      <SidebarTrigger
-        class="-mr-1 ml-auto rotate-180"
-        for="turing"
-        onclick={closeSummarySidebar}
-      />
+      <SidebarTrigger class="-mr-1 ml-auto rotate-180" for="turing" />
     </div>
   </div>
 </header>

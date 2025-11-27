@@ -1,8 +1,6 @@
 class Document < ApplicationRecord
+  include GitTrackable
   include Sqids::Rails::Model
-
-  after_create_commit :init_repository
-  after_destroy_commit :close_repository
 
   GIT_FILEMODE_UNREADABLE = 0
   GIT_FILEMODE_TREE = 040000
@@ -27,11 +25,9 @@ class Document < ApplicationRecord
   end
 
   def repo
-    begin
-      Rugged::Repository.new(path)
-    rescue Rugged::RepositoryError, Rugged::OSError
-      Rugged::Repository.init_at(path, :bare)
-    end
+    Rugged::Repository.new(path)
+  rescue Rugged::RepositoryError, Rugged::OSError
+    Rugged::Repository.init_at(path, :bare)
   end
 
   def root_ref
@@ -46,12 +42,6 @@ class Document < ApplicationRecord
     ref_name.sub(BRANCH_REF_PREFIX, "")
   end
 
-
-  def init_repository
-    Rugged::Repository.init_at path, :bare
-  end
-
-
   private
     def discover_default_branch
       names = branches
@@ -65,18 +55,6 @@ class Document < ApplicationRecord
       else
         return "master" if names.include?("master")
         names[0]
-      end
-    end
-
-    # The path must be on the storage mount because is a path that exists both in development and production
-    # the storage is a mounted volume which is persistent between deployments
-    def path
-      Rails.root.join("storage", "repos", "#{team.id}", "#{sqid}").to_s
-    end
-
-    def close_repository
-      if Dir.exist?(path)
-        FileUtils.rm_rf(path)
       end
     end
 end

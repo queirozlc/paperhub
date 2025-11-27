@@ -6,6 +6,7 @@
   import ContentTypePicker from './content-type-picker.svelte'
   import { isCustomNodeSelected, isTextSelected } from '$lib/utils'
   import type { EditorView } from '@tiptap/pm/view'
+  import { TextAlignPicker } from './editor'
 
   let { editor }: { editor: Editor } = $props()
 
@@ -77,6 +78,8 @@
       orientation="vertical"
       class="h-full min-h-[1.5rem] w-px mx-1 first:ml-0 last:mr-0"
     />
+
+    <TextAlignPicker {editor} />
 
     <ToggleTools {editor} />
   </div>
