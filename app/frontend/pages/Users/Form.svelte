@@ -7,6 +7,7 @@
   import { cn } from '$lib/utils'
   import { useForm } from '@inertiajs/svelte'
   import { LoaderIcon, Mail } from '@lucide/svelte'
+  import { onMount } from 'svelte'
 
   const form = useForm<{ email: '' }>({
     email: '',
@@ -22,12 +23,16 @@
   }
 
   // Get CSRF token for OAuth form
-  const getCsrfToken = (): string => {
-    const meta = document.querySelector(
-      'meta[name="csrf-token"]'
-    ) as HTMLMetaElement
-    return meta?.content || ''
-  }
+  let csrfToken = $state('')
+
+  onMount(() => {
+    if (typeof document !== 'undefined') {
+      const meta = document.querySelector(
+        'meta[name="csrf-token"]'
+      ) as HTMLMetaElement
+      csrfToken = meta?.content || ''
+    }
+  })
 </script>
 
 <div class="mb-8 flex items-center justify-center">
@@ -37,7 +42,7 @@
 </div>
 
 <form action="/users/auth/google_oauth2" method="post">
-  <input type="hidden" name="authenticity_token" value={getCsrfToken()} />
+  <input type="hidden" name="authenticity_token" value={csrfToken} />
   <Button
     type="submit"
     class="font-brand text-accent dark:text-accent-foreground active:animate-button-pop h-12 w-full border bg-[hsl(223.81,0%,16%)] text-lg font-semibold shadow-[1px_1px_2px_rgba(0,0,0,0.1)] duration-200 ease-in-out hover:bg-[hsl(223.81,0%,16%)]/80 dark:bg-[hsl(223.81,0%,30%)]/80 dark:hover:bg-[hsl(223.81,0%,30%)]/60"

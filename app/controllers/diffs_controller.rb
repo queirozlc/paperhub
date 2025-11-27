@@ -31,8 +31,14 @@ class DiffsController < ApplicationController
 
       Rails.logger.info("[diffs_controller] last_editor_blob: #{last_editor_blob}")
 
+      if document.content
+        content = Y::Lib0::Encoding.encode_uint8_array_to_base64(JSON.parse(document.content))
+      else
+        content = ""
+      end
+
       render inertia: "Document/Diffs", props: {
-        document: document.as_json(methods: %i[sqid]).merge(content: Y::Lib0::Encoding.encode_uint8_array_to_base64(JSON.parse(document.content))),
+        document: document.as_json(methods: %i[sqid]).merge(content:),
         current_branch: normalize_branch_name,
         file_content: JSON.parse(last_editor_blob),
         branches: InertiaRails.optional { document.branches },
@@ -40,7 +46,7 @@ class DiffsController < ApplicationController
       }
     else
       render inertia: "Document/Diffs", props: {
-        document: document.as_json(methods: %i[sqid]).merge(content: Y::Lib0::Encoding.encode_uint8_array_to_base64(JSON.parse(document.content)))
+        document: document.as_json(methods: %i[sqid]).merge(content:)
       }
     end
   end
