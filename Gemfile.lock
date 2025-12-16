@@ -211,7 +211,7 @@ GEM
     json (2.18.0)
     jwt (3.1.2)
       base64
-    kamal (2.10.0)
+    kamal (2.10.1)
       activesupport (>= 7.0)
       base64 (~> 0.2)
       bcrypt_pbkdf (~> 1.0)
@@ -566,7 +566,7 @@ GEM
     y-rb_actioncable (0.1.7)
       rails (>= 7.0.4)
       y-rb (>= 0.4.5)
-    zeitwerk (2.7.3)
+    zeitwerk (2.7.4)
 
 PLATFORMS
   aarch64-linux
