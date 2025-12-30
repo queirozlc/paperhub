@@ -27,7 +27,7 @@ gem "solid_cable"
 
 #### ========== Frontend ==========
 gem "vite_rails", "~> 3.0"
-gem "inertia_rails", "~> 3.15"
+gem "inertia_rails", "~> 3.16"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
