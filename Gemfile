@@ -109,7 +109,7 @@ group :development, :test do
 end
 
 group :test do
-  gem "rspec-rails", "~> 8.0.2"
+  gem "rspec-rails", "~> 8.0.3"
   gem "pundit-matchers", "~> 4.0"
   gem "simplecov", require: false
 end
