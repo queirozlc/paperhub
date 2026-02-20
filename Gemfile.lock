@@ -197,7 +197,7 @@ GEM
       actionpack (>= 6.0.0)
       activesupport (>= 6.0.0)
       railties (>= 6.0.0)
-    inertia_rails (3.16.0)
+    inertia_rails (3.17.0)
       railties (>= 6)
     io-console (0.8.2)
     irb (1.17.0)
@@ -592,7 +592,7 @@ DEPENDENCIES
   erb-formatter
   factory_bot_rails
   foreman
-  inertia_rails (~> 3.16)
+  inertia_rails (~> 3.17)
   jbuilder
   kamal
   letter_opener
