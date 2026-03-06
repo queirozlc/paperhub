@@ -198,7 +198,7 @@ GEM
       actionpack (>= 6.0.0)
       activesupport (>= 6.0.0)
       railties (>= 6.0.0)
-    inertia_rails (3.16.0)
+    inertia_rails (3.17.0)
       railties (>= 6)
     io-console (0.8.2)
     irb (1.17.0)
@@ -210,7 +210,7 @@ GEM
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
     jmespath (1.6.2)
-    json (2.18.1)
+    json (2.19.0)
     jwt (3.1.2)
       base64
     kamal (2.10.1)
@@ -385,8 +385,8 @@ GEM
       activesupport (>= 5.0.0)
       minitest
       nokogiri (>= 1.6)
-    rails-html-sanitizer (1.6.2)
-      loofah (~> 2.21)
+    rails-html-sanitizer (1.7.0)
+      loofah (~> 2.25)
       nokogiri (>= 1.15.7, != 1.16.7, != 1.16.6, != 1.16.5, != 1.16.4, != 1.16.3, != 1.16.2, != 1.16.1, != 1.16.0.rc1, != 1.16.0)
     railties (8.1.2)
       actionpack (= 8.1.2)
@@ -594,7 +594,7 @@ DEPENDENCIES
   erb-formatter
   factory_bot_rails
   foreman
-  inertia_rails (~> 3.16)
+  inertia_rails (~> 3.17)
   jbuilder
   kamal
   letter_opener
